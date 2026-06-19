@@ -1,6 +1,11 @@
-import { ArticleGraph } from './features/article/index.jsx';
+import { BrowserRouter } from 'react-router-dom';
+import AppRoutes from './app/routes/AppRoutes.jsx';
 
 export default function App() {
-  return <></>;
+  return (
+    <BrowserRouter>
+      <AppRoutes/>
+    </BrowserRouter>
+  );
 }
 
