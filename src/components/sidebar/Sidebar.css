@@ -1,0 +1,203 @@
+/* Sidebar Container */
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 240px;
+  min-width: 240px; /* Ensure exact width */
+  height: 100vh;
+  background-color: #f8f9fa; /* Light gray background matching screenshot */
+  border-right: 1px solid #eaeaea;
+  transition: width 0.3s ease;
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.sidebar.collapsed {
+  width: 64px;
+  min-width: 64px;
+}
+
+/* Header */
+.sidebar-header {
+  height: auto; /* Allow content to dictate height */
+  display: flex;
+  align-items: center;
+  padding: 24px 20px 16px 20px;
+  cursor: pointer;
+}
+
+.sidebar-header.collapsed {
+  justify-content: center;
+  padding: 24px 0 16px 0;
+}
+
+.sidebar-logo-text-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.sidebar-logo-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1f2937;
+  line-height: 1.2;
+}
+
+.sidebar-logo-subtitle {
+  margin: 0;
+  font-size: 10px;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+.sidebar-logo-icon {
+  width: 24px;
+  height: 24px;
+}
+
+/* Menu */
+.sidebar-menu {
+  flex: 1; /* Pushes footer to the bottom */
+  padding: 8px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px; /* Tighter spacing between items */
+  overflow-y: auto;
+}
+
+/* Items */
+.sidebar-item,
+.sidebar-footer-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px; /* Reduced menu item height */
+  border-radius: 4px; /* Slightly sharper corners */
+  color: #333333; /* Dark text for unselected */
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  font-size: 13px; /* Smaller font size */
+}
+
+.sidebar-item:hover,
+.sidebar-footer-item:hover {
+  background-color: #ededed; /* Subtle gray hover */
+}
+
+/* Active State */
+.sidebar-item.active {
+  background-color: #faeadf; /* Light orange background */
+  color: #c45b23; /* Dark orange/brown text */
+}
+
+.sidebar-item.active .sidebar-item-icon {
+  color: #c45b23; /* Dark orange/brown icon */
+}
+
+.sidebar-item-icon {
+  font-size: 16px; /* Smaller icons */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-right: 10px; /* Tighter spacing between icon and label */
+  color: #555555; /* Default icon color */
+}
+
+.sidebar-item.collapsed,
+.sidebar-footer-item.collapsed {
+  padding: 8px;
+  justify-content: center;
+}
+
+.sidebar-item.collapsed .sidebar-item-icon,
+.sidebar-footer-item.collapsed .sidebar-item-icon {
+  margin-right: 0;
+}
+
+.sidebar-item-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Footer */
+.sidebar-footer {
+  padding: 16px 16px 24px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sidebar-footer-item {
+  font-size: 12px; /* Reduce footer font size */
+}
+
+/* Mobile Toggle & Menu Logic */
+.sidebar-mobile-toggle {
+  display: none;
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  z-index: 101;
+  background-color: #ffffff;
+  border: 1px solid #eaeaea;
+  border-radius: 8px;
+  padding: 8px;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.sidebar-mobile-backdrop {
+  display: none;
+}
+
+.sidebar-mobile-close {
+  display: none;
+}
+
+@media (max-width: 1023px) {
+  /* Tablet handles auto collapse via JS state */
+}
+
+@media (max-width: 767px) {
+  .sidebar-mobile-toggle {
+    display: block;
+  }
+  
+  .sidebar {
+    position: fixed;
+    transform: translateX(-100%);
+    width: 240px; 
+  }
+
+  .sidebar.mobile-open {
+    transform: translateX(0);
+  }
+
+  .sidebar-mobile-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 99;
+  }
+
+  .sidebar-mobile-close {
+    display: block;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: transparent;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #333333;
+  }
+}

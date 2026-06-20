@@ -5,7 +5,7 @@ import ArticleGraphEmbedPage from '../../features/articles/pages/ArticleGraphEmb
 export default function AppRoutes() {
   return (
     <Routes>
-        <Route path="/embed/article-graph" element={<ArticleGraphEmbedPage />} />
+      <Route path="/embed/article-graph" element={<ArticleGraphEmbedPage />} />
     </Routes>
   )
 }
