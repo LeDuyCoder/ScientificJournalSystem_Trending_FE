@@ -5,8 +5,6 @@ export const sidebarConfig = {
   logo: {
     title: "Scientia",
     subtitle: "Bibliometric Excellence",
-    full: "/assets/logo/full.svg",
-    icon: "/assets/logo/icon.svg"
   },
   menuItems: [
     { label: "Dashboard", path: "/dashboard", icon: FiGrid },

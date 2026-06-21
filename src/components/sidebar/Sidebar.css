@@ -55,10 +55,17 @@
   margin-top: 2px;
 }
 
-.sidebar-logo-icon {
-  width: 24px;
-  height: 24px;
+.sidebar-logo-full {
+  width: 150px;
+  height: auto;
 }
+
+.sidebar-logo-icon {
+  width: 32px;
+  height: 32px;
+}
+
+
 
 /* Menu */
 .sidebar-menu {
