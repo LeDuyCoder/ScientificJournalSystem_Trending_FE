@@ -6,6 +6,7 @@ import DashboardGrid from '../components/layout/DashboardGrid';
 import DashboardHeader from '../components/layout/DashboardHeader';
 import DashboardFilters from '../components/layout/DashboardFilters';
 import AnalyticsDashboard from '../components/layout/AnalyticsDashboard';
+import FutureInsightsSection from '../components/dashboard/FutureInsightsSection';
 
 export default function Dashboard() {
   const placeholderStyle = {
@@ -36,10 +37,7 @@ export default function Dashboard() {
 
         {/* 4. Insights Section */}
         <DashboardSection title="Insights" className="dashboard-insights-section">
-          <DashboardGrid columns={2}>
-            <div style={{ ...placeholderStyle, height: '350px' }}>Chart Placeholder</div>
-            <div style={{ ...placeholderStyle, height: '350px' }}>Chart Placeholder</div>
-          </DashboardGrid>
+          <FutureInsightsSection />
         </DashboardSection>
 
         {/* 5. Footer Section */}
