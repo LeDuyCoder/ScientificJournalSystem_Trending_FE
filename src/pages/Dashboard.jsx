@@ -3,6 +3,7 @@ import DashboardContainer from '../components/layout/DashboardContainer';
 import DashboardLayout from '../components/layout/DashboardLayout';
 import DashboardSection from '../components/layout/DashboardSection';
 import DashboardGrid from '../components/layout/DashboardGrid';
+import DashboardHeader from '../components/layout/DashboardHeader';
 
 export default function Dashboard() {
   const placeholderStyle = {
@@ -21,11 +22,7 @@ export default function Dashboard() {
     <DashboardContainer>
       <DashboardLayout>
         {/* 1. Header Section */}
-        <DashboardSection className="dashboard-header-section">
-          <div style={{ ...placeholderStyle, height: '80px', padding: 'var(--spacing-md)' }}>
-            Header Section Placeholder
-          </div>
-        </DashboardSection>
+        <DashboardHeader />
 
         {/* 2. Filter Control Section */}
         <DashboardSection className="dashboard-filter-section">
