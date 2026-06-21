@@ -1,0 +1,64 @@
+.ds-card {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: var(--border-light);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  height: 100%; /* Ensures cards stretch evenly in the grid */
+}
+
+.ds-card:hover {
+  box-shadow: var(--shadow-hover);
+}
+
+.ds-card-header {
+  padding: var(--spacing-md) var(--spacing-lg);
+  border-bottom: 1px solid var(--color-neutral-100);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--spacing-md);
+}
+
+.ds-card-header-content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.ds-card-title {
+  margin: 0;
+  font-size: var(--font-size-subtitle);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-neutral-800);
+}
+
+.ds-card-subtitle {
+  margin: 0;
+  font-size: var(--font-size-caption);
+  color: var(--color-neutral-500);
+}
+
+.ds-card-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.ds-card-body {
+  padding: var(--spacing-lg);
+  flex: 1; /* Pushes content and fills space */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+  .ds-card-header,
+  .ds-card-body {
+    padding: var(--spacing-md);
+  }
+}

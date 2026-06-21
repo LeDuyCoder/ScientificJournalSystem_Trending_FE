@@ -1,0 +1,88 @@
+/* Dashboard Layout Wrapper */
+.dashboard-layout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  max-width: 1440px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.dashboard-header-area,
+.dashboard-filters-area,
+.dashboard-footer-area {
+  width: 100%;
+}
+
+.dashboard-content-area {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+  width: 100%;
+}
+
+/* Dashboard Grid System */
+.dashboard-grid {
+  display: grid;
+  gap: var(--spacing-lg);
+  width: 100%;
+}
+
+.dashboard-grid-cols-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.dashboard-grid-cols-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.dashboard-grid-cols-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+/* Layout Section */
+.layout-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  width: 100%;
+}
+
+.layout-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-sm);
+}
+
+.layout-section-title {
+  font-size: var(--font-size-section-title);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-neutral-900);
+  margin: 0;
+}
+
+/* Responsive Grid Adjustments */
+@media (max-width: 1024px) {
+  /* Tablet / Smaller Desktop */
+  .dashboard-grid-cols-3,
+  .dashboard-grid-cols-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  /* Mobile */
+  .dashboard-grid {
+    grid-template-columns: 1fr !important;
+  }
+  
+  .dashboard-layout {
+    gap: var(--spacing-md);
+  }
+  
+  .dashboard-content-area {
+    gap: var(--spacing-lg);
+  }
+}
