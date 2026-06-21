@@ -5,6 +5,7 @@ import './AnalyticsDashboard.css';
 import PublicationTrendChart from '../dashboard/PublicationTrendChart';
 import CitationMirroringChart from '../dashboard/CitationMirroringChart';
 import TopicEvolutionChart from '../dashboard/TopicEvolutionChart';
+import FrontierDetectionChart from '../dashboard/FrontierDetectionChart';
 
 const MOCK_CARDS = [
   { id: 'trend', title: 'Publication Trend' },
@@ -35,6 +36,8 @@ export default function AnalyticsDashboard() {
               <CitationMirroringChart />
             ) : card.id === 'evolution' ? (
               <TopicEvolutionChart />
+            ) : card.id === 'frontier' ? (
+              <FrontierDetectionChart />
             ) : (
               <div className="analytics-mock-chart">
                 <span className="analytics-mock-text">Mock Chart Area</span>
