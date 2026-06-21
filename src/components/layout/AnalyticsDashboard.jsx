@@ -8,10 +8,10 @@ import TopicEvolutionChart from '../dashboard/TopicEvolutionChart';
 import FrontierDetectionChart from '../dashboard/FrontierDetectionChart';
 
 const MOCK_CARDS = [
-  { id: 'trend', title: 'Publication Trend' },
-  { id: 'mirroring', title: 'Citation Mirroring' },
-  { id: 'evolution', title: 'Topic Evolution' },
-  { id: 'frontier', title: 'Frontier Detection' },
+  { id: 'trend', title: 'Publication Trend', subtitle: 'Growth of scholarly output over time' },
+  { id: 'mirroring', title: 'Citation Mirroring', subtitle: 'Self-citation vs. External impact mapping' },
+  { id: 'evolution', title: 'Topic Evolution', subtitle: 'Shifting research focuses across domains' },
+  { id: 'frontier', title: 'Frontier Detection', subtitle: 'Emerging topics by velocity and impact' },
 ];
 
 /**
@@ -24,10 +24,13 @@ export default function AnalyticsDashboard() {
       {MOCK_CARDS.map(card => (
         <div key={card.id} className="analytics-card">
           <div className="analytics-card-header">
-            <h3 className="analytics-card-title">
-              {card.title}
-              {card.id === 'trend' && <span className="yoy-badge">+18.4% YoY</span>}
-            </h3>
+            <div className="analytics-card-title-group">
+              <h3 className="analytics-card-title">
+                {card.title}
+                {card.id === 'trend' && <span className="yoy-badge">+14.2% YoY</span>}
+              </h3>
+              <p className="analytics-card-subtitle">{card.subtitle}</p>
+            </div>
           </div>
           <div className="analytics-card-body">
             {card.id === 'trend' ? (

@@ -11,14 +11,7 @@ import {
 } from 'recharts';
 import './CitationMirroringChart.css';
 
-const MOCK_DATA = [
-  { year: '2019', external: 240, self: 80 },
-  { year: '2020', external: 310, self: 110 },
-  { year: '2021', external: 420, self: 150 },
-  { year: '2022', external: 580, self: 190 },
-  { year: '2023', external: 720, self: 230 },
-  { year: '2024', external: 860, self: 280 }
-];
+import { useDashboardContext } from '../../contexts/DashboardContext';
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
@@ -40,52 +33,55 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 export default function CitationMirroringChart() {
+  const { dashboardData } = useDashboardContext();
+  const data = dashboardData?.citationMirroring || [];
+
   return (
     <div className="citation-mirroring-wrapper" aria-label="Citation Mirroring Dual Line Chart">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart
-          data={MOCK_DATA}
+          data={data}
           margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
         >
           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--color-neutral-200)" />
           <XAxis 
-            dataKey="year" 
+            dataKey="period" 
             axisLine={false} 
             tickLine={false} 
-            tick={{ fill: 'var(--color-neutral-500)', fontSize: 12 }} 
-            dy={10}
+            tick={false} 
           />
           <YAxis 
             axisLine={false} 
             tickLine={false} 
-            tick={{ fill: 'var(--color-neutral-500)', fontSize: 12 }}
+            tick={false}
           />
           <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'var(--color-neutral-300)', strokeWidth: 1, strokeDasharray: '4 4' }} />
           <Legend 
             verticalAlign="top" 
+            align="right"
             height={36}
             iconType="circle"
-            wrapperStyle={{ fontSize: '12px', color: 'var(--color-neutral-600)' }}
+            wrapperStyle={{ fontSize: '10px', color: 'var(--color-neutral-600)', top: '-40px' }}
           />
           <Line 
             type="monotone" 
             dataKey="external" 
-            name="External Citations"
+            name="External"
             stroke="var(--color-primary-orange)" 
-            strokeWidth={3}
-            dot={{ r: 4, fill: 'var(--color-surface)', strokeWidth: 2 }}
-            activeDot={{ r: 6 }}
+            strokeWidth={2}
+            dot={false}
+            activeDot={{ r: 4 }}
             animationDuration={1500}
             isAnimationActive={true}
           />
           <Line 
             type="monotone" 
             dataKey="self" 
-            name="Self Citations"
-            stroke="#64748b" 
-            strokeWidth={3}
-            dot={{ r: 4, fill: 'var(--color-surface)', strokeWidth: 2 }}
-            activeDot={{ r: 6 }}
+            name="Self"
+            stroke="#1f2937" 
+            strokeWidth={2}
+            dot={false}
+            activeDot={{ r: 4 }}
             animationDuration={1500}
             isAnimationActive={true}
           />

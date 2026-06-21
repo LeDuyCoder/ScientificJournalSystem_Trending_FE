@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FiFilter, FiRefreshCw } from 'react-icons/fi';
+import { useDashboardContext } from '../../contexts/DashboardContext';
 import './DashboardFilters.css';
 
 const TIMEFRAME_OPTIONS = [
@@ -28,18 +29,10 @@ const REGION_OPTIONS = [
  * Allows timeframe, domain, and region selection with an update action.
  */
 export default function DashboardFilters() {
-  const [timeframe, setTimeframe] = useState(TIMEFRAME_OPTIONS[2]); // Last 5 Years
-  const [domain, setDomain] = useState(DOMAIN_OPTIONS[0]); // Biological Sciences
-  const [region, setRegion] = useState(REGION_OPTIONS[0]); // Global Distribution
-  
-  const [isUpdating, setIsUpdating] = useState(false);
+  const { filters, updateFilter, refreshData, loading } = useDashboardContext();
 
   const handleUpdate = () => {
-    setIsUpdating(true);
-    // Mock timeout for loading state
-    setTimeout(() => {
-      setIsUpdating(false);
-    }, 1500);
+    refreshData();
   };
 
   return (
@@ -56,8 +49,8 @@ export default function DashboardFilters() {
             <select 
               id="timeframe-select"
               className="dashboard-filter-select"
-              value={timeframe}
-              onChange={(e) => setTimeframe(e.target.value)}
+              value={filters.timeframe}
+              onChange={(e) => updateFilter('timeframe', e.target.value)}
             >
               {TIMEFRAME_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
             </select>
@@ -68,8 +61,8 @@ export default function DashboardFilters() {
             <select 
               id="domain-select"
               className="dashboard-filter-select"
-              value={domain}
-              onChange={(e) => setDomain(e.target.value)}
+              value={filters.domain}
+              onChange={(e) => updateFilter('domain', e.target.value)}
             >
               {DOMAIN_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
             </select>
@@ -80,8 +73,8 @@ export default function DashboardFilters() {
             <select 
               id="region-select"
               className="dashboard-filter-select"
-              value={region}
-              onChange={(e) => setRegion(e.target.value)}
+              value={filters.region}
+              onChange={(e) => updateFilter('region', e.target.value)}
             >
               {REGION_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
             </select>
@@ -89,28 +82,28 @@ export default function DashboardFilters() {
         </div>
 
         <button 
-          className={`dashboard-update-btn ${isUpdating ? 'loading' : ''}`}
+          className={`dashboard-update-btn ${loading ? 'loading' : ''}`}
           onClick={handleUpdate}
-          disabled={isUpdating}
+          disabled={loading}
           aria-live="polite"
         >
-          <FiRefreshCw className={`update-icon ${isUpdating ? 'spin' : ''}`} aria-hidden="true" />
-          {isUpdating ? 'Updating...' : 'Update Analysis'}
+          <FiRefreshCw className={`update-icon ${loading ? 'spin' : ''}`} aria-hidden="true" />
+          {loading ? 'Updating...' : 'Update Analysis'}
         </button>
       </div>
 
       <div className="dashboard-filter-chips">
         <div className="dashboard-chip">
           <span className="chip-label">Timeframe:</span>
-          <span className="chip-value">{timeframe}</span>
+          <span className="chip-value">{filters.timeframe}</span>
         </div>
         <div className="dashboard-chip">
           <span className="chip-label">Domain:</span>
-          <span className="chip-value">{domain}</span>
+          <span className="chip-value">{filters.domain}</span>
         </div>
         <div className="dashboard-chip">
           <span className="chip-label">Region:</span>
-          <span className="chip-value">{region}</span>
+          <span className="chip-value">{filters.region}</span>
         </div>
       </div>
     </div>

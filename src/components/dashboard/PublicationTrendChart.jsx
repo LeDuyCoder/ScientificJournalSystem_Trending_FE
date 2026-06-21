@@ -9,15 +9,7 @@ import {
   ResponsiveContainer
 } from 'recharts';
 import './PublicationTrendChart.css';
-
-const MOCK_DATA = [
-  { year: '2019', publications: 320 },
-  { year: '2020', publications: 410 },
-  { year: '2021', publications: 560 },
-  { year: '2022', publications: 720 },
-  { year: '2023', publications: 910 },
-  { year: '2024', publications: 1180 }
-];
+import { useDashboardContext } from '../../contexts/DashboardContext';
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
@@ -34,11 +26,14 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 export default function PublicationTrendChart() {
+  const { dashboardData } = useDashboardContext();
+  const data = dashboardData?.publicationTrend || [];
+
   return (
     <div className="publication-trend-chart-wrapper" aria-label="Publication Trend Line Chart">
       <ResponsiveContainer width="100%" height="100%">
         <AreaChart
-          data={MOCK_DATA}
+          data={data}
           margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
         >
           <defs>
@@ -49,16 +44,15 @@ export default function PublicationTrendChart() {
           </defs>
           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--color-neutral-200)" />
           <XAxis 
-            dataKey="year" 
+            dataKey="period" 
             axisLine={false} 
             tickLine={false} 
-            tick={{ fill: 'var(--color-neutral-500)', fontSize: 12 }} 
-            dy={10}
+            tick={false} 
           />
           <YAxis 
             axisLine={false} 
             tickLine={false} 
-            tick={{ fill: 'var(--color-neutral-500)', fontSize: 12 }}
+            tick={false}
           />
           <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'var(--color-neutral-300)', strokeWidth: 1, strokeDasharray: '4 4' }} />
           <Area 
