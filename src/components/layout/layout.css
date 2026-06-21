@@ -1,54 +1,27 @@
-/* Dashboard Layout Wrapper */
-.dashboard-layout {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-lg);
+/* Container */
+.dashboard-container {
+  width: 100%;
   max-width: 1440px;
   margin: 0 auto;
-  width: 100%;
 }
 
-.dashboard-header-area,
-.dashboard-filters-area,
-.dashboard-footer-area {
-  width: 100%;
-}
-
-.dashboard-content-area {
+/* Layout */
+.dashboard-layout {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xl);
   width: 100%;
 }
 
-/* Dashboard Grid System */
-.dashboard-grid {
-  display: grid;
-  gap: var(--spacing-lg);
-  width: 100%;
-}
-
-.dashboard-grid-cols-2 {
-  grid-template-columns: repeat(2, 1fr);
-}
-
-.dashboard-grid-cols-3 {
-  grid-template-columns: repeat(3, 1fr);
-}
-
-.dashboard-grid-cols-4 {
-  grid-template-columns: repeat(4, 1fr);
-}
-
-/* Layout Section */
-.layout-section {
+/* Section */
+.dashboard-section {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
   width: 100%;
 }
 
-.layout-section-header {
+.dashboard-section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -56,14 +29,30 @@
   gap: var(--spacing-sm);
 }
 
-.layout-section-title {
+.dashboard-section-title {
   font-size: var(--font-size-section-title);
   font-weight: var(--font-weight-semibold);
   color: var(--color-neutral-900);
   margin: 0;
 }
 
-/* Responsive Grid Adjustments */
+.dashboard-section-content {
+  width: 100%;
+}
+
+/* Grid System */
+.dashboard-grid {
+  display: grid;
+  gap: var(--spacing-lg);
+  width: 100%;
+}
+
+.dashboard-grid-cols-1 { grid-template-columns: repeat(1, 1fr); }
+.dashboard-grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+.dashboard-grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+.dashboard-grid-cols-4 { grid-template-columns: repeat(4, 1fr); }
+
+/* Responsive Adjustments */
 @media (max-width: 1024px) {
   /* Tablet / Smaller Desktop */
   .dashboard-grid-cols-3,
@@ -79,10 +68,10 @@
   }
   
   .dashboard-layout {
-    gap: var(--spacing-md);
+    gap: var(--spacing-lg); /* Reduce vertical spacing between sections */
   }
   
-  .dashboard-content-area {
-    gap: var(--spacing-lg);
+  .dashboard-section {
+    gap: var(--spacing-sm);
   }
 }
