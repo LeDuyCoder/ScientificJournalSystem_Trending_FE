@@ -4,6 +4,7 @@ import DashboardLayout from '../components/layout/DashboardLayout';
 import DashboardSection from '../components/layout/DashboardSection';
 import DashboardGrid from '../components/layout/DashboardGrid';
 import DashboardHeader from '../components/layout/DashboardHeader';
+import DashboardFilters from '../components/layout/DashboardFilters';
 
 export default function Dashboard() {
   const placeholderStyle = {
@@ -25,11 +26,7 @@ export default function Dashboard() {
         <DashboardHeader />
 
         {/* 2. Filter Control Section */}
-        <DashboardSection className="dashboard-filter-section">
-          <div style={{ ...placeholderStyle, height: '60px', padding: 'var(--spacing-md)' }}>
-            Filter Control Section Placeholder
-          </div>
-        </DashboardSection>
+        <DashboardFilters />
 
         {/* 3. Analytics Dashboard Section */}
         <DashboardSection title="Analytics Dashboard" className="dashboard-analytics-section">
