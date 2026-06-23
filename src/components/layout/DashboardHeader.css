@@ -1,0 +1,195 @@
+/* DashboardHeader.css */
+
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--spacing-sm) var(--spacing-md);
+  background-color: var(--color-surface);
+  border: var(--border-light);
+  border-radius: var(--radius-md);
+  gap: var(--spacing-md);
+  box-sizing: border-box;
+}
+
+/* Left Side: Search */
+.dashboard-search-container {
+  display: flex;
+  align-items: center;
+  background-color: var(--color-neutral-50);
+  border: 1px solid var(--color-neutral-200);
+  border-radius: var(--radius-md);
+  padding: 0 var(--spacing-sm);
+  width: 100%;
+  max-width: 320px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-search-container:hover {
+  border-color: var(--color-neutral-300);
+}
+
+.dashboard-search-container.focused {
+  border-color: var(--color-primary-orange);
+  box-shadow: 0 0 0 2px var(--color-primary-orange-light);
+  background-color: var(--color-surface);
+}
+
+.dashboard-search-icon {
+  color: var(--color-neutral-500);
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.dashboard-search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: var(--spacing-sm) var(--spacing-sm) var(--spacing-sm) var(--spacing-sm);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-body);
+  color: var(--color-neutral-900);
+  outline: none;
+  min-width: 0; /* Prevents flex blowout on mobile */
+}
+
+.dashboard-search-input::placeholder {
+  color: var(--color-neutral-400);
+}
+
+/* Right Side: Actions and Profile */
+.dashboard-header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  flex-shrink: 0;
+}
+
+.dashboard-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.dashboard-icon-button {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
+  color: var(--color-neutral-600);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.dashboard-icon-button:hover {
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-900);
+}
+
+.dashboard-icon-button:focus-visible {
+  outline: 2px solid var(--color-primary-orange);
+  outline-offset: 2px;
+}
+
+.dashboard-icon-button:active {
+  background-color: var(--color-neutral-200);
+}
+
+.dashboard-icon-button svg {
+  font-size: 20px;
+}
+
+.dashboard-notification-badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 8px;
+  height: 8px;
+  background-color: var(--color-primary-orange);
+  border-radius: 50%;
+  border: 2px solid var(--color-surface);
+}
+
+.dashboard-profile-divider {
+  width: 1px;
+  height: 24px;
+  background-color: var(--color-neutral-200);
+}
+
+.dashboard-profile {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  margin-left: calc(-1 * var(--spacing-sm)); /* offset padding for alignment */
+  border-radius: var(--radius-md);
+  transition: background-color 0.2s ease;
+  text-align: left;
+}
+
+.dashboard-profile:hover {
+  background-color: var(--color-neutral-50);
+}
+
+.dashboard-profile:focus-visible {
+  outline: 2px solid var(--color-primary-orange);
+  outline-offset: 2px;
+}
+
+.dashboard-profile-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--color-neutral-200);
+}
+
+.dashboard-profile-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.dashboard-profile-name {
+  font-size: var(--font-size-body);
+  font-weight: var(--font-weight-medium);
+  color: var(--color-neutral-900);
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dashboard-profile-role {
+  font-size: var(--font-size-caption);
+  color: var(--color-neutral-500);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .dashboard-header {
+    flex-wrap: wrap;
+  }
+
+  .dashboard-search-container {
+    max-width: 100%;
+    order: 2;
+  }
+
+  .dashboard-header-right {
+    width: 100%;
+    justify-content: space-between;
+    order: 1;
+  }
+}

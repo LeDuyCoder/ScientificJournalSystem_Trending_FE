@@ -2,23 +2,13 @@ import React from 'react';
 import './layout.css';
 
 /**
- * DashboardLayout provides the foundational layout wrapper for all dashboard modules.
- * Ensures consistent max-width, spacing, and alignment beside the Sidebar.
+ * DashboardLayout provides the foundational vertical stacking for dashboard sections.
+ * Ensures consistent spacing between Header, Filters, Analytics, etc.
  */
-const DashboardLayout = ({ children, header, filters, footer }) => {
+export default function DashboardLayout({ children }) {
   return (
     <div className="dashboard-layout">
-      {header && <div className="dashboard-header-area">{header}</div>}
-      
-      {filters && <div className="dashboard-filters-area">{filters}</div>}
-      
-      <div className="dashboard-content-area">
-        {children}
-      </div>
-      
-      {footer && <div className="dashboard-footer-area">{footer}</div>}
+      {children}
     </div>
   );
-};
-
-export default DashboardLayout;
+}

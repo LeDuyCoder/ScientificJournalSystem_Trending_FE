@@ -1,0 +1,82 @@
+/* FutureInsightsSection.css */
+
+.future-insights-wrapper {
+  width: 100%;
+}
+
+.insight-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-surface);
+  border: var(--border-light);
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-md);
+  box-shadow: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  height: 100%;
+  box-sizing: border-box;
+}
+
+.insight-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.insight-icon-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: var(--spacing-sm);
+  font-size: 16px;
+}
+
+/* Card Header */
+.insight-card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: var(--spacing-xs);
+}
+
+.insight-card-title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-neutral-900);
+}
+
+/* Card Body */
+.insight-card-body {
+  flex: 1;
+}
+
+.insight-summary {
+  margin: 0;
+  font-size: 11px;
+  color: var(--color-neutral-600);
+  line-height: 1.4;
+}
+
+/* Accents styling */
+/* 1. Growth Accent */
+.insight-accent-growth {
+  border-left: 3px solid #f97316; /* using orange instead of emerald */
+}
+.insight-accent-growth .insight-icon-container {
+  color: #f97316;
+}
+
+/* 2. Warning Accent */
+.insight-accent-warning {
+  border-left: 3px solid #1f2937; /* using dark gray */
+}
+.insight-accent-warning .insight-icon-container {
+  color: #1f2937;
+}
+
+/* 3. Innovation Accent */
+.insight-accent-innovation {
+  border-left: 3px solid #64748b; /* using slate */
+}
+.insight-accent-innovation .insight-icon-container {
+  color: #64748b;
+}
