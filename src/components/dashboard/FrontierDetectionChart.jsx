@@ -14,6 +14,7 @@ import { FiMaximize, FiX } from 'react-icons/fi';
 import './FrontierDetectionChart.css';
 
 import { useDashboardContext } from '../../contexts/DashboardContext';
+
 const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
     const data = payload[0].payload;
@@ -57,7 +58,7 @@ const CustomNode = (props) => {
 
 const ScatterVisualization = ({ data }) => (
   <ResponsiveContainer width="100%" height="100%">
-    <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+    <ScatterChart margin={{ top: 20, right: 30, bottom: 20, left: 20 }}>
       <CartesianGrid strokeDasharray="3 3" stroke="var(--color-neutral-200)" />
       <XAxis 
         type="number" 
@@ -89,7 +90,34 @@ const ScatterVisualization = ({ data }) => (
 export default function FrontierDetectionChart() {
   const [isExpanded, setIsExpanded] = useState(false);
   const { dashboardData } = useDashboardContext();
-  const data = dashboardData?.frontierDetection || [];
+  const rawData = dashboardData?.frontierDetection || [];
+
+  const fixedMapping = {
+    'LEGACY': { topic: 'Legacy', velocity: 55, impact: 65, isFrontier: false },
+    'GEN AI': { topic: 'Gen AI', velocity: 70, impact: 75, isFrontier: false },
+    'IOT 6G': { topic: 'IoT 6G', velocity: 85, impact: 85, isFrontier: false },
+    'CRISPR V3': { topic: 'CRISPR V3', velocity: 98, impact: 95, isFrontier: true }
+  };
+
+  let chartData = rawData
+    .filter(d => fixedMapping[d.topic.toUpperCase()])
+    .map(d => ({
+      ...d,
+      ...fixedMapping[d.topic.toUpperCase()]
+    }));
+
+  if (chartData.length === 0) {
+    chartData = [
+      { topic: 'Legacy', velocity: 55, impact: 65, size: 70, isFrontier: false },
+      { topic: 'Gen AI', velocity: 70, impact: 75, size: 90, isFrontier: false },
+      { topic: 'IoT 6G', velocity: 85, impact: 85, size: 85, isFrontier: false },
+      { topic: 'CRISPR V3', velocity: 98, impact: 95, size: 120, isFrontier: true }
+    ];
+  }
+
+  // Ensure strict ordering: Legacy -> Gen AI -> IoT 6G -> CRISPR V3
+  const order = ['Legacy', 'Gen AI', 'IoT 6G', 'CRISPR V3'];
+  chartData.sort((a, b) => order.indexOf(a.topic) - order.indexOf(b.topic));
 
   return (
     <>
@@ -101,7 +129,7 @@ export default function FrontierDetectionChart() {
         >
           <FiMaximize />
         </button>
-        <ScatterVisualization data={data} />
+        <ScatterVisualization data={chartData} />
       </div>
 
       {isExpanded && (
@@ -118,7 +146,7 @@ export default function FrontierDetectionChart() {
               </button>
             </div>
             <div className="frontier-modal-body">
-              <ScatterVisualization data={data} />
+              <ScatterVisualization data={chartData} />
             </div>
           </div>
         </div>

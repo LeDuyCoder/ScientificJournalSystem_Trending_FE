@@ -1,0 +1,80 @@
+/* DashboardFooter.css */
+
+.dashboard-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 32px 40px;
+  background-color: #FFFFFF;
+  border-top: 1px solid #E5E7EB;
+  box-sizing: border-box;
+}
+
+.dashboard-footer-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dashboard-footer-brand {
+  font-size: 24px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.dashboard-footer-copyright {
+  font-size: 14px;
+  color: #6B7280; /* Muted neutral color */
+}
+
+.dashboard-footer-right {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.dashboard-footer-link {
+  font-size: 14px;
+  font-weight: 500; /* Medium weight */
+  color: #4B5563;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.dashboard-footer-link:hover {
+  color: var(--color-primary-orange, #f97316);
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .dashboard-footer {
+    padding: 24px 32px;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-footer {
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+
+  .dashboard-footer-right {
+    flex-wrap: wrap;
+    gap: 16px 32px;
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboard-footer {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 24px 20px;
+  }
+
+  .dashboard-footer-right {
+    justify-content: center;
+    gap: 12px 24px;
+  }
+}

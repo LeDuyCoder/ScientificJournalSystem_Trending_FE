@@ -7,6 +7,7 @@ import DashboardHeader from '../components/layout/DashboardHeader';
 import DashboardFilters from '../components/layout/DashboardFilters';
 import AnalyticsDashboard from '../components/layout/AnalyticsDashboard';
 import FutureInsightsSection from '../components/dashboard/FutureInsightsSection';
+import DashboardFooter from '../components/layout/DashboardFooter';
 import { DashboardProvider, useDashboardContext } from '../contexts/DashboardContext';
 import { FiAlertCircle, FiInbox } from 'react-icons/fi';
 
@@ -71,25 +72,22 @@ const DashboardContent = () => {
   };
 
   return (
-    <DashboardContainer>
-      <DashboardLayout>
-        {/* 1. Header Section */}
-        <DashboardHeader />
+    <>
+      {/* 1. Header Section */}
+      <DashboardHeader />
 
-        {/* 2. Filter Control Section */}
-        <DashboardFilters />
+      <DashboardContainer>
+        <DashboardLayout>
+          {/* 2. Filter Control Section */}
+          <DashboardFilters />
 
-        {renderContent()}
+          {renderContent()}
+        </DashboardLayout>
+      </DashboardContainer>
 
-        {/* 5. Footer Section */}
-        <DashboardSection className="dashboard-footer-section">
-          <div style={{ ...placeholderStyle, height: '60px', borderStyle: 'solid', background: 'var(--color-neutral-100)' }}>
-            Footer Section Placeholder
-          </div>
-        </DashboardSection>
-
-      </DashboardLayout>
-    </DashboardContainer>
+      {/* 5. Footer Section */}
+      <DashboardFooter />
+    </>
   );
 };
 
