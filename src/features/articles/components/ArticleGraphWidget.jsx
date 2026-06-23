@@ -135,7 +135,7 @@ export default function ArticleGraphWidget({
           source: 'article-graph-widget',
           type: 'NODE_CLICK',
           payload: {
-            id: node.id,
+            id: node.properties.id,
             label: node.label,
             title: node.properties?.title,
             doi: node.properties?.doi,
