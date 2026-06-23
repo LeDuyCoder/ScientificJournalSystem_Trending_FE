@@ -88,14 +88,6 @@ export default function ArticleGraphWidget({
     );
 
     fgRef.current.d3ReheatSimulation?.();
-
-    const timer = setTimeout(() => {
-      fgRef.current?.zoomToFit?.(900, 72);
-    }, 900);
-
-    return () => {
-      clearTimeout(timer);
-    };
   }, [graph.nodes.length, graph.links.length]);
 
   const updateHighlight = useCallback(

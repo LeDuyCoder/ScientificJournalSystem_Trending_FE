@@ -333,9 +333,7 @@ export function buildGraphData(apiResponse) {
     if (targetNode) targetNode.degree += 1;
   }
 
-  const nodes = Array.from(articleMap.values())
-    .filter((node) => node.degree > 0)
-    .map((node) => {
+  const nodes = Array.from(articleMap.values()).map((node) => {
       const citationCount =
         Number(
           node.properties?.citation_count ??
