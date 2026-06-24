@@ -18,7 +18,7 @@ export default function DashboardHeader() {
         <input
           type="text"
           className="dashboard-search-input"
-          placeholder="Search..."
+          placeholder="Search research, journals, or authors..."
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
           onFocus={() => setSearchFocused(true)}
@@ -42,11 +42,9 @@ export default function DashboardHeader() {
         <div className="dashboard-profile-divider" aria-hidden="true"></div>
 
         <button className="dashboard-profile" aria-label="User Profile" onClick={() => {}}>
-          <img
-            className="dashboard-profile-avatar"
-            src="https://ui-avatars.com/api/?name=Dr.+Aris+Thorne&background=F3F4F6&color=111827"
-            alt="Dr. Aris Thorne avatar"
-          />
+          <div className="dashboard-profile-avatar">
+            AT
+          </div>
           <div className="dashboard-profile-info">
             <span className="dashboard-profile-name">Dr. Aris Thorne</span>
             <span className="dashboard-profile-role">Senior Research Analyst</span>
