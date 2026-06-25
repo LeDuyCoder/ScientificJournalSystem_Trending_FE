@@ -29,15 +29,21 @@
 
 .donut-chart-visual {
   position: relative;
-  width: 80px;
-  height: 80px;
+  width: 72px;
+  height: 72px;
   flex-shrink: 0;
   margin-left: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .donut-svg {
   width: 100%;
   height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .donut-bg {
@@ -50,11 +56,8 @@
 }
 
 .donut-chart-label {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -62,9 +65,9 @@
 }
 
 .donut-percentage {
-  font-size: 24px;
+  font-size: 16px;
   font-weight: var(--font-weight-bold);
-  color: var(--color-neutral-800);
+  color: var(--color-primary-orange);
   line-height: 1;
 }
 
@@ -73,12 +76,10 @@
 }
 
 .donut-text {
-  font-size: var(--font-size-card-title);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-neutral-500);
-  text-transform: uppercase;
+  font-size: 10px;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-neutral-800);
   margin-top: 2px;
-  letter-spacing: var(--letter-spacing-card-title);
 }
 
 /* Base styles for all dashboard cards */

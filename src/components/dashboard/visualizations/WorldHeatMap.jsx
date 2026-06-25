@@ -1,19 +1,39 @@
 import React from 'react';
+import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
 import { FiSearch, FiFilter } from 'react-icons/fi';
 import './WorldHeatMap.css';
 
+const geoUrl = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
+
 export default function WorldHeatMap({ data = [] }) {
-  // Hardcoded coordinates for the map projection to match country names
-  const countryCoordinates = {
-    'US': { cx: 200, cy: 150 },
-    'China': { cx: 620, cy: 160 },
-    'Germany': { cx: 420, cy: 110 },
-    'UK': { cx: 390, cy: 100 },
-    'Japan': { cx: 680, cy: 150 },
-    'France': { cx: 400, cy: 120 },
-    'Canada': { cx: 180, cy: 90 },
-    'Australia': { cx: 650, cy: 280 },
-    'India': { cx: 560, cy: 180 }
+  // Convert array to a lookup map for faster access
+  const heatMapData = data.reduce((acc, item) => {
+    // Map full names to ISO alpha-3 or commonly used names if needed
+    // The data provides country names like 'US', 'China', 'Germany'.
+    // world-atlas TopoJSON uses standard names. 
+    // We might need to handle name mapping carefully. 
+    // 'US' -> 'United States of America'
+    // 'UK' -> 'United Kingdom'
+    const nameMap = {
+      'US': 'United States of America',
+      'UK': 'United Kingdom',
+    };
+    
+    const mappedName = nameMap[item.country] || item.country;
+    acc[mappedName] = item.intensity;
+    return acc;
+  }, {});
+
+  // Function to determine fill color based on intensity
+  const getFillColor = (geoName) => {
+    const intensity = heatMapData[geoName];
+    if (!intensity) return '#6B7280'; // Inactive country (light gray / neutral-500)
+    
+    // Calculate orange shade based on intensity (0-100)
+    if (intensity > 80) return '#EA580C'; // Peak
+    if (intensity > 60) return '#F97316'; // High
+    if (intensity > 40) return '#FB923C'; // Medium
+    return '#FDBA74'; // Low
   };
 
   return (
@@ -34,44 +54,39 @@ export default function WorldHeatMap({ data = [] }) {
       </div>
       
       <div className="world-heatmap-content">
-        <div className="mock-map">
-          <div className="map-placeholder">
-            <svg viewBox="0 0 800 400" className="map-svg" preserveAspectRatio="xMidYMid meet">
-              <rect width="100%" height="100%" fill="#4B5563" />
-              {/* Realistic SVG World Map paths would go here. We use a stylized abstract representation for the mockup */}
-              <path d="M 120 40 Q 300 20 400 100 T 700 150 Q 600 300 400 350 T 150 250 Z" fill="#6B7280" opacity="0.4" />
-              <path d="M 100 250 Q 200 300 250 350 T 200 380 Q 150 350 100 300 Z" fill="#6B7280" opacity="0.4" />
-              <path d="M 500 200 Q 600 250 700 350 T 550 380 Q 450 300 400 250 Z" fill="#6B7280" opacity="0.4" />
-
-              {/* Dynamic Heat spots based on data prop */}
-              {data.map((item) => {
-                const coords = countryCoordinates[item.country];
-                if (!coords) return null;
-                // Calculate size and opacity based on intensity
-                const radius = (item.intensity / 100) * 25;
-                const opacity = (item.intensity / 100) * 0.8 + 0.2;
-                
-                return (
-                  <g key={item.country}>
-                    <circle 
-                      cx={coords.cx} 
-                      cy={coords.cy} 
-                      r={radius} 
-                      fill="#F97316" 
-                      opacity={opacity} 
+        <div className="map-wrapper">
+          <ComposableMap 
+            projection="geoEqualEarth"
+            className="react-simple-map"
+            width={800}
+            height={450}
+            projectionConfig={{
+              scale: 160,
+              center: [0, 0]
+            }}
+          >
+            <Geographies geography={geoUrl}>
+              {({ geographies }) =>
+                geographies.map((geo) => {
+                  const geoName = geo.properties.name;
+                  return (
+                    <Geography
+                      key={geo.rsmKey}
+                      geography={geo}
+                      fill={getFillColor(geoName)}
+                      stroke="#4B5563"
+                      strokeWidth={0.5}
+                      style={{
+                        default: { outline: 'none' },
+                        hover: { fill: '#F97316', outline: 'none', cursor: 'pointer' },
+                        pressed: { fill: '#EA580C', outline: 'none' },
+                      }}
                     />
-                    <circle 
-                      cx={coords.cx} 
-                      cy={coords.cy} 
-                      r={radius / 3} 
-                      fill="#FFFFFF" 
-                      opacity="0.8" 
-                    />
-                  </g>
-                );
-              })}
-            </svg>
-          </div>
+                  );
+                })
+              }
+            </Geographies>
+          </ComposableMap>
           
           <div className="activity-density-legend">
             <span className="legend-title">ACTIVITY DENSITY</span>

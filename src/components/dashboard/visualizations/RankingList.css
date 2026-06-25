@@ -37,13 +37,13 @@
 }
 
 .ranking-item-name {
-  font-size: 13px;
+  font-size: var(--font-size-ranking);
   font-weight: var(--font-weight-medium);
   color: var(--color-neutral-800);
 }
 
 .ranking-item-value {
-  font-size: 13px;
+  font-size: var(--font-size-ranking);
   font-weight: var(--font-weight-bold);
   color: var(--color-neutral-800);
 }

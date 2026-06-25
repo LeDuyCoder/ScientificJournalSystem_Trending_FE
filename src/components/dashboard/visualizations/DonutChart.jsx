@@ -3,7 +3,7 @@ import './DonutChart.css';
 
 export default function DonutChart({ title, description, percentage, label }) {
   // Calculate SVG circle properties for the donut chart
-  const radius = 36;
+  const radius = 42;
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (percentage / 100) * circumference;
 
@@ -23,7 +23,7 @@ export default function DonutChart({ title, description, percentage, label }) {
             cy="50"
             r={radius}
             fill="transparent"
-            strokeWidth="12"
+            strokeWidth="8"
           />
           {/* Progress circle */}
           <circle
@@ -32,7 +32,7 @@ export default function DonutChart({ title, description, percentage, label }) {
             cy="50"
             r={radius}
             fill="transparent"
-            strokeWidth="12"
+            strokeWidth="8"
             strokeDasharray={circumference}
             strokeDashoffset={strokeDashoffset}
             strokeLinecap="round"

@@ -15,7 +15,7 @@
   background: none;
   border: none;
   padding: 12px 0;
-  font-size: var(--font-size-body);
+  font-size: var(--font-size-tab);
   font-weight: var(--font-weight-semibold);
   color: var(--color-neutral-500);
   text-transform: uppercase;
