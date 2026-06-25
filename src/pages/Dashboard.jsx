@@ -1,13 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import DashboardContainer from '../components/layout/DashboardContainer';
 import DashboardLayout from '../components/layout/DashboardLayout';
-import DashboardSection from '../components/layout/DashboardSection';
-import DashboardGrid from '../components/layout/DashboardGrid';
 import DashboardHeader from '../components/layout/DashboardHeader';
 import DashboardFilters from '../components/layout/DashboardFilters';
-import AnalyticsDashboard from '../components/layout/AnalyticsDashboard';
-import FutureInsightsSection from '../components/dashboard/FutureInsightsSection';
 import DashboardFooter from '../components/layout/DashboardFooter';
+import DashboardTabs from '../components/dashboard/DashboardTabs';
+import GlobalEcosystemDashboard from '../components/dashboard/GlobalEcosystemDashboard';
+import DevelopmentTrendsDashboard from '../components/dashboard/DevelopmentTrendsDashboard';
 import { DashboardProvider, useDashboardContext } from '../contexts/DashboardContext';
 import { FiAlertCircle, FiInbox } from 'react-icons/fi';
 
@@ -25,6 +24,20 @@ const placeholderStyle = {
 
 const DashboardContent = () => {
   const { loading, error, dashboardData } = useDashboardContext();
+  const [activeTab, setActiveTab] = useState('global-ecosystem');
+
+  const tabs = [
+    {
+      id: 'global-ecosystem',
+      label: 'Global Ecosystem',
+      content: <GlobalEcosystemDashboard />
+    },
+    {
+      id: 'development-trends',
+      label: 'Development & Trends',
+      content: <DevelopmentTrendsDashboard />
+    }
+  ];
 
   const renderContent = () => {
     if (loading && !dashboardData) {
@@ -57,17 +70,11 @@ const DashboardContent = () => {
     }
 
     return (
-      <>
-        {/* 3. Analytics Dashboard Section */}
-        <DashboardSection title="Analytics Dashboard" className="dashboard-analytics-section">
-          <AnalyticsDashboard />
-        </DashboardSection>
-
-        {/* 4. Insights Section */}
-        <DashboardSection title="Future Forecast Insights" className="dashboard-insights-section">
-          <FutureInsightsSection />
-        </DashboardSection>
-      </>
+      <DashboardTabs 
+        tabs={tabs} 
+        activeTab={activeTab} 
+        onTabChange={setActiveTab} 
+      />
     );
   };
 

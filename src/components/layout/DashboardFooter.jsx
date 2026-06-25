@@ -7,7 +7,7 @@ export default function DashboardFooter() {
       <div className="dashboard-footer-left">
         <div className="dashboard-footer-brand">Scientia</div>
         <div className="dashboard-footer-copyright">
-          © 2027 Scientia Bibliometric Analytics. All rights reserved.
+          © 2026 Scientia Bibliometric Analytics. All rights reserved.
         </div>
       </div>
       <div className="dashboard-footer-right">

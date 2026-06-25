@@ -1,0 +1,101 @@
+.research-landscape-container {
+  background-color: var(--color-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.research-landscape-header {
+  margin-bottom: 20px;
+}
+
+.header-title-with-icon {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-icon {
+  color: var(--color-primary-orange);
+  font-size: 16px;
+}
+
+.research-landscape-title {
+  font-size: var(--font-size-section-title);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.research-landscape-grid {
+  display: flex;
+  gap: 12px;
+  flex: 1;
+  min-height: 200px;
+}
+
+.landscape-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.landscape-card {
+  border-radius: var(--radius-sm);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  color: white;
+  min-height: 100px;
+}
+
+.landscape-card.biotech {
+  flex: 1.2;
+  background-color: var(--color-primary-orange);
+}
+
+.landscape-card.biotech .landscape-value {
+  font-size: var(--font-size-kpi-value);
+}
+
+.landscape-column .landscape-value {
+  font-size: 24px;
+}
+
+.landscape-card.ai {
+  flex: 1;
+  background-color: #4B5563; /* Slate 600 */
+}
+
+.landscape-card.materials {
+  flex: 1;
+  background-color: #9CA3AF; /* Gray 400 */
+}
+
+.landscape-card-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.landscape-label {
+  font-size: var(--font-size-card-title);
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: var(--letter-spacing-card-title);
+  margin-bottom: 2px;
+  text-transform: uppercase;
+}
+
+.landscape-value {
+  font-size: var(--font-size-kpi-value);
+  font-weight: var(--font-weight-bold);
+  line-height: 1;
+}
+
+.landscape-value small {
+  font-size: var(--font-size-body);
+  margin-left: 2px;
+}
