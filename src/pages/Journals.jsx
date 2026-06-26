@@ -1,14 +1,17 @@
 import React from 'react';
 import DashboardHeader from '../components/header/DashboardHeader';
 import DashboardContainer from '../components/layout/DashboardContainer';
+import DashboardGrid from '../components/layout/DashboardGrid';
+import TopJournalRankingCard from '../components/dashboard/visualizations/TopJournalRankingCard';
 
 export default function Journals() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}>
       <DashboardHeader />
       <DashboardContainer>
-        <h1>Journals</h1>
-        <p>Journals dashboard will be implemented here.</p>
+        <DashboardGrid columns={1}>
+          <TopJournalRankingCard />
+        </DashboardGrid>
       </DashboardContainer>
     </div>
   );
