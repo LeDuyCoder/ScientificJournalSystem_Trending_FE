@@ -4,6 +4,7 @@ import DashboardContainer from '../components/layout/DashboardContainer';
 import DashboardGrid from '../components/layout/DashboardGrid';
 import TopJournalRankingCard from '../components/dashboard/visualizations/TopJournalRankingCard';
 import QuartileDistributionCard from '../components/dashboard/visualizations/QuartileDistributionCard';
+import ImpactMatrixCard from '../components/dashboard/visualizations/ImpactMatrixCard';
 
 export default function Journals() {
   return (
@@ -13,6 +14,7 @@ export default function Journals() {
         <DashboardGrid columns={2}>
           <QuartileDistributionCard />
           <TopJournalRankingCard />
+          <ImpactMatrixCard />
         </DashboardGrid>
       </DashboardContainer>
     </div>

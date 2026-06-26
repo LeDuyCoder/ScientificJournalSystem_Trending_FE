@@ -15,7 +15,7 @@ const quartileDistribution = {
 
 // Reusable component to render SVG donut chart segments
 const DonutSegment = ({ percentage, offset, colorClass, isMounted }) => {
-  const radius = 80;
+  const radius = 86;
   const circumference = 2 * Math.PI * radius;
   // Calculate dash array and offset for the segment
   const strokeDasharray = `${(percentage / 100) * circumference} ${circumference}`;
@@ -27,7 +27,7 @@ const DonutSegment = ({ percentage, offset, colorClass, isMounted }) => {
       cy="100"
       r={radius}
       fill="transparent"
-      strokeWidth="24"
+      strokeWidth="12"
       className={`qdc-segment ${colorClass}`}
       strokeDasharray={circumference}
       style={{
@@ -64,7 +64,7 @@ const QuartileDistributionCard = () => {
         <div className="qdc-chart-wrapper">
           <div className="qdc-chart-container" aria-label="Quartile Distribution Donut Chart">
             <svg viewBox="0 0 200 200" className="qdc-donut" preserveAspectRatio="xMidYMid meet">
-              <circle cx="100" cy="100" r="80" fill="transparent" strokeWidth="24" className="qdc-track" />
+              <circle cx="100" cy="100" r="86" fill="transparent" strokeWidth="12" className="qdc-track" />
               
               {quartileDistribution.items.map((item, index, arr) => {
                 const currentOffset = arr
