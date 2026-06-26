@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { FiSearch, FiBell, FiSettings } from 'react-icons/fi';
 import './DashboardHeader.css';
 

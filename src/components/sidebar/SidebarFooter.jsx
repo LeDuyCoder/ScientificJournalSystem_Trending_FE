@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { sidebarConfig } from './sidebar.config';
 import './Sidebar.css';
@@ -23,17 +22,18 @@ const SidebarFooter = ({ collapsed }) => {
       {sidebarConfig.footerItems.map((item, index) => {
         const IconComponent = item.icon;
         return (
-          <div 
+          <button 
             key={index} 
             className={`sidebar-footer-item ${collapsed ? 'collapsed' : ''}`}
             onClick={() => handleAction(item.action)}
             title={collapsed ? item.label : undefined}
+            aria-label={item.label}
           >
             <div className="sidebar-item-icon">
               <IconComponent />
             </div>
             {!collapsed && <span className="sidebar-item-label">{item.label}</span>}
-          </div>
+          </button>
         );
       })}
     </div>
