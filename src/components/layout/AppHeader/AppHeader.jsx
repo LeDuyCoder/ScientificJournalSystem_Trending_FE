@@ -6,11 +6,11 @@ import { headerConfig } from './header.config';
 import './Header.css';
 
 /**
- * DashboardHeader component
+ * AppHeader component
  * Orchestrates search input on the left and actions + user profile on the right.
  * Supports sticky header configuration.
  */
-const DashboardHeader = ({
+const AppHeader = ({
   sticky = true,
   onSearch,
 }) => {
@@ -56,4 +56,4 @@ const DashboardHeader = ({
   );
 };
 
-export default DashboardHeader;
+export default AppHeader;

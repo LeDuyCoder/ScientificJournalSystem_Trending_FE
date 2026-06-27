@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import DashboardContainer from '../components/layout/DashboardContainer';
-import DashboardLayout from '../components/layout/DashboardLayout';
-import DashboardHeader from '../components/layout/DashboardHeader';
+import DashboardStack from '../components/layout/DashboardStack';
 import DashboardFilters from '../components/layout/DashboardFilters';
 import DashboardFooter from '../components/layout/DashboardFooter';
 import DashboardTabs from '../components/dashboard/DashboardTabs';
@@ -80,16 +79,13 @@ const DashboardContent = () => {
 
   return (
     <>
-      {/* 1. Header Section */}
-      <DashboardHeader />
-
       <DashboardContainer>
-        <DashboardLayout>
+        <DashboardStack>
           {/* 2. Filter Control Section */}
           <DashboardFilters />
 
           {renderContent()}
-        </DashboardLayout>
+        </DashboardStack>
       </DashboardContainer>
 
       {/* 5. Footer Section */}
