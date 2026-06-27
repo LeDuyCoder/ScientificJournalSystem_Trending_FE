@@ -1,4 +1,3 @@
-import React from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import './Sidebar.css';
 
@@ -16,6 +15,7 @@ const SidebarItem = ({ item, collapsed }) => {
       to={item.path} 
       className={`sidebar-item ${isActive ? 'active' : ''} ${collapsed ? 'collapsed' : ''}`}
       title={collapsed ? item.label : undefined} // Tooltip natively provided by title attribute when collapsed
+      aria-current={isActive ? 'page' : undefined}
     >
       <div className="sidebar-item-icon">
         <IconComponent />

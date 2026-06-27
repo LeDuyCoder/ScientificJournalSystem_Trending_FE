@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import SidebarHeader from './SidebarHeader';
 import SidebarItem from './SidebarItem';
 import SidebarFooter from './SidebarFooter';
@@ -44,26 +44,39 @@ const Sidebar = () => {
   return (
     <>
       {/* Mobile hamburger button */}
-      <button className="sidebar-mobile-toggle" onClick={toggleMobileMenu}>
+      <button 
+        className="sidebar-mobile-toggle" 
+        onClick={toggleMobileMenu}
+        aria-label="Toggle Navigation Menu"
+        aria-expanded={mobileOpen}
+      >
         <FiMenu />
       </button>
 
       {/* Backdrop for mobile menu */}
       {mobileOpen && (
-        <div className="sidebar-mobile-backdrop" onClick={toggleMobileMenu}></div>
+        <div 
+          className="sidebar-mobile-backdrop" 
+          onClick={toggleMobileMenu}
+          aria-hidden="true"
+        ></div>
       )}
 
       <aside className={`sidebar ${collapsed ? 'collapsed' : ''} ${mobileOpen ? 'mobile-open' : ''}`}>
         {/* Mobile close button (only visible inside sidebar on mobile) */}
         {mobileOpen && (
-          <button className="sidebar-mobile-close" onClick={toggleMobileMenu}>
+          <button 
+            className="sidebar-mobile-close" 
+            onClick={toggleMobileMenu}
+            aria-label="Close Navigation Menu"
+          >
             <FiX />
           </button>
         )}
 
         <SidebarHeader collapsed={collapsed} />
         
-        <nav className="sidebar-menu">
+        <nav className="sidebar-menu" aria-label="Main Navigation">
           {sidebarConfig.menuItems.map((item, index) => (
             <SidebarItem key={index} item={item} collapsed={collapsed} />
           ))}

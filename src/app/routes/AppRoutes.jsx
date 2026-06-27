@@ -1,16 +1,18 @@
-import React from 'react';
+
 import { Route, Routes, Navigate } from 'react-router-dom';
 import ArticleGraphEmbedPage from '../../features/articles/pages/ArticleGraphEmbedPage';
 import Dashboard from '../../pages/Dashboard';
-import MainLayout from '../../components/layout/MainLayout';
+import Journals from '../../pages/Journals';
+import DashboardLayout from '../../components/layout/DashboardLayout';
 
 export default function AppRoutes() {
   return (
     <Routes>
-      {/* Routes with main layout (includes sidebar) */}
-      <Route element={<MainLayout />}>
+      {/* Routes with main layout (includes sidebar and header) */}
+      <Route element={<DashboardLayout />}>
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/journals" element={<Journals />} />
       </Route>
 
       {/* Route without any layout for embedding */}
