@@ -1,0 +1,178 @@
+/* src/features/volume/components/keywords-networks/KeywordsNetworks.css */
+
+.kn-page {
+  padding: var(--spacing-lg);
+  background-color: var(--color-background);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.kn-header {
+  margin-bottom: var(--spacing-sm);
+  display: none; /* Hide header text as screenshot does not have Volume Analytics title */
+}
+
+.kn-tabs {
+  display: flex;
+  gap: var(--spacing-md);
+  border-bottom: 2px solid var(--color-neutral-200);
+  margin-bottom: var(--spacing-md);
+}
+
+.kn-tab {
+  padding: var(--spacing-sm) 0;
+  font-size: 12px;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-neutral-500);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  background: none;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  margin-bottom: -2px;
+}
+
+.kn-tab.active {
+  color: var(--color-primary-orange);
+  border-bottom-color: var(--color-primary-orange);
+}
+
+.kn-grid {
+  display: grid;
+  gap: var(--spacing-lg);
+  grid-template-columns: 1fr;
+}
+
+/* Row Layouts for Desktop */
+@media (min-width: 1024px) {
+  .kn-row-1 {
+    display: grid;
+    grid-template-columns: 3fr 7fr;
+    gap: var(--spacing-lg);
+  }
+  
+  .kn-row-2 {
+    display: grid;
+    grid-template-columns: 7fr 3fr;
+    gap: var(--spacing-lg);
+  }
+  
+  .kn-row-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: var(--spacing-lg);
+  }
+}
+
+.kn-card {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--color-neutral-100);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.kn-card.bg-orange {
+  background-color: var(--color-primary-orange);
+  color: white;
+}
+
+.kn-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+}
+
+.kn-card-title {
+  font-size: 16px;
+  font-weight: var(--font-weight-bold);
+  color: inherit;
+  margin: 0;
+}
+
+.kn-card-subtitle {
+  font-size: 12px;
+  color: var(--color-neutral-500);
+  margin-top: 4px;
+}
+
+.kn-card-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* Status variants */
+.kn-status-emerging {
+  color: var(--color-primary-orange);
+  background-color: var(--color-primary-orange-light);
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: var(--font-size-metadata);
+  font-weight: var(--font-weight-medium);
+}
+
+.kn-status-stabilizing {
+  color: var(--color-neutral-600);
+  background-color: var(--color-neutral-200);
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: var(--font-size-metadata);
+  font-weight: var(--font-weight-medium);
+}
+
+.kn-status-hot {
+  color: #DC2626;
+  background-color: #FEE2E2;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: var(--font-size-metadata);
+  font-weight: var(--font-weight-medium);
+}
+
+/* Toggle Button */
+.kn-toggle {
+  display: flex;
+  background: var(--color-neutral-100);
+  border-radius: var(--radius-sm);
+  padding: 2px;
+}
+
+.kn-toggle-btn {
+  padding: 4px 12px;
+  font-size: 10px;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--color-neutral-600);
+  font-weight: var(--font-weight-bold);
+}
+
+.kn-toggle-btn.active {
+  background: var(--color-primary-orange);
+  color: white;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Loading & Error */
+.kn-loading, .kn-error, .kn-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 400px;
+  font-size: var(--font-size-body);
+  color: var(--color-neutral-500);
+}
+
+.kn-error {
+  color: #DC2626;
+}

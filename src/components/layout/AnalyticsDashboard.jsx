@@ -1,4 +1,3 @@
-import React from 'react';
 import DashboardGrid from './DashboardGrid';
 import './AnalyticsDashboard.css';
 

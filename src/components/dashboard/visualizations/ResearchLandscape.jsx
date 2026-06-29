@@ -1,4 +1,3 @@
-import React from 'react';
 import './ResearchLandscape.css';
 import { FiShare2 } from 'react-icons/fi';
 

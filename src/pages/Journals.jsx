@@ -1,4 +1,3 @@
-import React from 'react';
 import DashboardContainer from '../components/layout/DashboardContainer';
 import DashboardGrid from '../components/layout/DashboardGrid';
 import TopJournalRankingCard from '../components/dashboard/visualizations/TopJournalRankingCard';

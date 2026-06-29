@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import DashboardContainer from '../components/layout/DashboardContainer';
 import DashboardStack from '../components/layout/DashboardStack';
 import DashboardFilters from '../components/layout/DashboardFilters';

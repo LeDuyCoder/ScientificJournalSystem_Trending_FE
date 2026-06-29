@@ -1,4 +1,3 @@
-import React from 'react';
 import './RankingList.css';
 
 export default function RankingList({ title, items }) {

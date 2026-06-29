@@ -32,6 +32,7 @@ export function useArticleGraph({ keyword = 'graph', limit = 50 } = {}) {
   );
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadGraph();
   }, [loadGraph]);
 

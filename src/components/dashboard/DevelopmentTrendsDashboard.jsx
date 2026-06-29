@@ -1,4 +1,3 @@
-import React from 'react';
 import AnalyticsDashboard from '../layout/AnalyticsDashboard';
 import FutureInsightsSection from './FutureInsightsSection';
 import DashboardSection from '../layout/DashboardSection';

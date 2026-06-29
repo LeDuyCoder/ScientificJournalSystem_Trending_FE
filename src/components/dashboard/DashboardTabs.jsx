@@ -1,4 +1,3 @@
-import React from 'react';
 import './DashboardTabs.css';
 
 export default function DashboardTabs({ tabs, activeTab, onTabChange }) {

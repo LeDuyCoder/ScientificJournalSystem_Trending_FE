@@ -1,4 +1,3 @@
-import React from 'react';
 import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
 import { FiSearch, FiFilter } from 'react-icons/fi';
 import './WorldHeatMap.css';

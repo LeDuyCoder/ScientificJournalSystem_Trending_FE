@@ -1,4 +1,3 @@
-import React from 'react';
 import './KPIStatCard.css';
 
 export default function KPIStatCard({ title, value, trend, trendValue, icon: Icon }) {

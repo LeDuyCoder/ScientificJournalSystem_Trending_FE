@@ -1,4 +1,3 @@
-import React from 'react';
 import './DonutChart.css';
 
 export default function DonutChart({ title, description, percentage, label }) {

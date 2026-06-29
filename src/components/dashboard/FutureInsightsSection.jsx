@@ -1,4 +1,3 @@
-import React from 'react';
 import DashboardGrid from '../layout/DashboardGrid';
 import { FiTrendingUp, FiAlertTriangle, FiShare2 } from 'react-icons/fi';
 import { useDashboardContext } from '../../contexts/DashboardContext';

@@ -1,4 +1,3 @@
-import React from 'react';
 import { FiFilter, FiRefreshCw } from 'react-icons/fi';
 import { useDashboardContext } from '../../contexts/DashboardContext';
 import './DashboardFilters.css';

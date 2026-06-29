@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   ScatterChart,
   Scatter,
@@ -7,8 +7,7 @@ import {
   ZAxis,
   CartesianGrid,
   Tooltip,
-  ResponsiveContainer,
-  Cell
+  ResponsiveContainer
 } from 'recharts';
 import { FiMaximize, FiX } from 'react-icons/fi';
 import './FrontierDetectionChart.css';

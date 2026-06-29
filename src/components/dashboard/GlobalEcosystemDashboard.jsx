@@ -1,4 +1,3 @@
-import React from 'react';
 import KPIStatCard from './visualizations/KPIStatCard';
 import WorldHeatMap from './visualizations/WorldHeatMap';
 import ResearchLandscape from './visualizations/ResearchLandscape';

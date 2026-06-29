@@ -1,7 +1,7 @@
-import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Sidebar from '../sidebar/Sidebar';
 import AppHeader from './AppHeader/AppHeader';
+import DashboardFooter from './DashboardFooter';
 import '../../App.css';
 
 /**
@@ -16,6 +16,7 @@ const DashboardLayout = () => {
         <AppHeader />
         <main className="app-main-content" style={{ overflow: 'auto', display: 'flex', flexDirection: 'column' }}>
           <Outlet /> 
+          <DashboardFooter />
         </main>
       </div>
     </div>

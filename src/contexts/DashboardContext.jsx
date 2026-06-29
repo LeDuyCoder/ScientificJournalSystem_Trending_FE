@@ -1,8 +1,10 @@
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { fetchDashboardData } from '../services/dashboardDataService';
 
-const DashboardContext = createContext();
+// eslint-disable-next-line react-refresh/only-export-components
+export const DashboardContext = createContext(null);
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useDashboardContext = () => {
   const context = useContext(DashboardContext);
   if (!context) {
@@ -39,6 +41,7 @@ export const DashboardProvider = ({ children }) => {
 
   // Initial load
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     refreshData();
   }, [refreshData]);
 

@@ -21,10 +21,9 @@
   -webkit-backdrop-filter: blur(12px);
 }
 
-/* Left Section - Search Input Container */
 .header-left {
   flex: 1;
-  max-width: 480px;
+  max-width: 600px;
 }
 
 .header-search-container {
