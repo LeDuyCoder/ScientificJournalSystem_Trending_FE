@@ -1,0 +1,227 @@
+.kn-page {
+  padding: 24px;
+  background-color: var(--color-background);
+  min-height: 100%;
+}
+
+.kn-tabs {
+  display: flex;
+  gap: 24px;
+  border-bottom: 1px solid var(--color-neutral-300);
+  margin-bottom: 24px;
+}
+
+.kn-tab {
+  padding: 12px 16px;
+  font-weight: 600;
+  color: var(--color-neutral-500);
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.kn-tab:hover {
+  color: var(--color-primary-600);
+}
+
+.kn-tab.active {
+  color: var(--color-primary-600);
+  border-bottom-color: var(--color-primary-600);
+}
+
+.kn-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.kn-row {
+  display: grid;
+  gap: 24px;
+}
+
+.kn-row-1 {
+  grid-template-columns: 3fr 7fr;
+}
+
+.kn-row-2 {
+  grid-template-columns: 7fr 3fr;
+}
+
+.kn-row-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.kn-card {
+  background-color: var(--color-white);
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+}
+
+.kn-card.orange-bg {
+  background-color: var(--color-primary-500);
+  color: var(--color-white);
+}
+
+.kn-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.kn-card-title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--color-neutral-800);
+}
+
+.kn-card.orange-bg .kn-card-title {
+  color: var(--color-white);
+}
+
+.kn-card-subtitle {
+  font-size: 0.875rem;
+  color: var(--color-neutral-500);
+  margin-top: 4px;
+}
+
+.kn-toggle-group {
+  display: flex;
+  background-color: var(--color-neutral-100);
+  border-radius: 4px;
+  padding: 4px;
+  gap: 4px;
+}
+
+.kn-toggle-btn {
+  padding: 4px 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: 4px;
+  border: none;
+  background: transparent;
+  color: var(--color-neutral-600);
+  cursor: pointer;
+}
+
+.kn-toggle-btn.active {
+  background-color: var(--color-primary-orange);
+  color: var(--color-white);
+}
+
+.kn-stat-huge {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--color-primary-600);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.kn-stat-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.kn-stat-desc {
+  font-size: 0.875rem;
+  color: var(--color-neutral-500);
+  line-height: 1.5;
+}
+
+.kn-insight-box {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  padding: 12px;
+  margin-top: 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.kn-insight-icon {
+  background-color: var(--color-white);
+  color: var(--color-primary-600);
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.kn-btn-primary {
+  background-color: var(--color-neutral-900);
+  color: var(--color-white);
+  border: none;
+  border-radius: 4px;
+  padding: 12px 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: auto;
+  width: 100%;
+}
+
+.kn-btn-primary:hover {
+  background-color: var(--color-neutral-800);
+}
+
+/* SVG Chart containers */
+.kn-svg-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  min-height: 200px;
+}
+
+.kn-grid-heatmap {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 4px;
+  width: 100%;
+}
+
+.kn-grid-cell {
+  aspect-ratio: 1;
+  border-radius: 2px;
+  background-color: var(--color-primary-100);
+}
+
+.kn-loading, .kn-error, .kn-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 400px;
+  color: var(--color-neutral-500);
+}
+
+@media (max-width: 1024px) {
+  .kn-row-1, .kn-row-2 {
+    grid-template-columns: 1fr;
+  }
+  
+  .kn-row-3 {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .kn-row-3 {
+    grid-template-columns: 1fr;
+  }
+}

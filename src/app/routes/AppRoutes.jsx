@@ -4,6 +4,8 @@ import ArticleGraphEmbedPage from '../../features/articles/pages/ArticleGraphEmb
 import Dashboard from '../../pages/Dashboard';
 import Journals from '../../pages/Journals';
 import DashboardLayout from '../../components/layout/DashboardLayout';
+import CollaborationAnalyticsPage from '../../features/volume/pages/CollaborationAnalyticsPage';
+import KeywordsNetworksPage from '../../features/volume/pages/KeywordsNetworksPage';
 
 export default function AppRoutes() {
   return (
@@ -13,6 +15,13 @@ export default function AppRoutes() {
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/journals" element={<Journals />} />
+        
+        {/* Volumes Feature Routes */}
+        <Route path="/volumes">
+          <Route index element={<Navigate to="journal-metrics" replace />} />
+          <Route path="journal-metrics" element={<CollaborationAnalyticsPage />} />
+          <Route path="keywords-networks" element={<KeywordsNetworksPage />} />
+        </Route>
       </Route>
 
       {/* Route without any layout for embedding */}
