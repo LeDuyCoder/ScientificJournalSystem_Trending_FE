@@ -45,8 +45,8 @@ const KeywordTrendVectorsChart = ({ data }) => {
           </button>
         </div>
       </div>
-      <div className="kn-card-content" style={{ height: '300px', minWidth: 0, marginTop: '24px' }}>
-        <ResponsiveContainer width="100%" height="100%">
+      <div className="kn-card-content" style={{ height: '300px', width: '100%', minWidth: 0, marginTop: '24px' }}>
+        <ResponsiveContainer width="99%" height="100%">
           <BarChart data={chartData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }} barSize={60}>
             <XAxis 
               dataKey="name" 

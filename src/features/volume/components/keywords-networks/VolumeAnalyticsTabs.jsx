@@ -1,18 +1,26 @@
+import { Link, useLocation } from 'react-router-dom';
 import './KeywordsNetworks.css';
 
 const VolumeAnalyticsTabs = () => {
-  const tabs = ['JOURNAL METRICS', 'KEYWORDS & NETWORKS'];
-  
+  const location = useLocation();
+  const currentPath = location.pathname;
+
   return (
     <div className="kn-tabs">
-      {tabs.map((tab) => (
-        <button
-          key={tab}
-          className={`kn-tab ${tab === 'KEYWORDS & NETWORKS' ? 'active' : ''}`}
-        >
-          {tab}
-        </button>
-      ))}
+      <Link 
+        to="/volumes/journal-metrics" 
+        className={`kn-tab ${currentPath === '/volumes/journal-metrics' ? 'active' : ''}`}
+        style={{ textDecoration: 'none' }}
+      >
+        JOURNAL METRICS
+      </Link>
+      <Link 
+        to="/volumes/keywords-networks" 
+        className={`kn-tab ${currentPath === '/volumes/keywords-networks' ? 'active' : ''}`}
+        style={{ textDecoration: 'none' }}
+      >
+        KEYWORDS & NETWORKS
+      </Link>
     </div>
   );
 };

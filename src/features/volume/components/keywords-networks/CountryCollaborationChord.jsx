@@ -13,8 +13,8 @@ const CountryCollaborationChord = ({ data }) => {
           <div className="kn-card-subtitle">Cross-border co-authorship & knowledge exchange</div>
         </div>
       </div>
-      <div className="kn-card-content" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '300px' }}>
-        <svg width="400" height="400" viewBox="-200 -200 400 400" style={{ maxWidth: '100%', height: 'auto' }}>
+      <div className="kn-card-content" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '300px', flex: 1, overflow: 'hidden' }}>
+        <svg viewBox="-200 -200 400 400" style={{ width: '100%', height: '100%', maxHeight: '400px', maxWidth: '400px' }}>
           {/* Static rendering mimicking the chord diagram */}
           
           {/* Background/Base circle (optional) */}

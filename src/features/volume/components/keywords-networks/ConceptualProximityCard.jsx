@@ -23,7 +23,7 @@ const ConceptualProximityCard = ({ data }) => {
           marginBottom: '16px',
           border: '1px solid var(--color-neutral-100)'
         }}>
-          <svg width="200" height="150" viewBox="0 0 200 150">
+          <svg viewBox="0 0 200 150" style={{ width: '100%', height: '100%', maxWidth: '200px', maxHeight: '150px' }}>
             {/* Lines */}
             <line x1="100" y1="80" x2="60" y2="40" stroke="#EA580C" strokeWidth="2" />
             <line x1="100" y1="80" x2="140" y2="40" stroke="#EA580C" strokeWidth="2" />
