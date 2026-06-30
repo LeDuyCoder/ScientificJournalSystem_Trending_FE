@@ -12,9 +12,9 @@ export default function AppRoutes() {
       {/* Routes with main layout (includes sidebar and header) */}
       <Route element={<DashboardLayout />}>
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/dashboard/:id" element={<DashboardPage />} />
         <Route path="/journals" element={<JournalsPage />} />
-        
+
         {/* Volumes Feature Routes */}
         <Route path="/volumes">
           <Route index element={<Navigate to="journal-metrics" replace />} />
