@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchQuartiles } from '../services/dashboard.service';
-import { transformQuartilesData } from '../../global-ecosystem/services/globalEcosystem.service';
+import { fetchQuartiles, transformQuartilesData } from '../services/globalEcosystem.service';
 
 export const useQuartiles = (projectId) => {
     return useQuery({

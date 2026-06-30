@@ -1,3 +1,5 @@
+import apiClient from '../../../shared/api/axios';
+
 const getTrend = (growthRate) => {
   if (growthRate > 0) return 'up';
   if (growthRate < 0) return 'down';
@@ -165,4 +167,61 @@ export const transformQuartilesData = (data) => {
     highestGroup: highestQ,
     totalJournals: data.totalJournals || 0,
   };
+};
+
+/**
+ * Fetch dashboard statistics from the real API.
+ * @param {number|string} projectId - The project ID (from URL param :id)
+ * @returns {Promise<object>}
+ */
+export const fetchDashboardStats = (projectId) => {
+  return apiClient.get('/dashboard/stats', {
+    params: { project_id: projectId },
+  });
+};
+
+/**
+ * Fetch geographical distribution data from the real API.
+ * @param {number|string} projectId - The project ID (from URL param :id)
+ * @returns {Promise<object>}
+ */
+export const fetchGeoDistribution = (projectId) => {
+  return apiClient.get('/analytics/geo-distribution', {
+    params: { project_id: projectId },
+  });
+};
+
+/**
+ * Fetch research landscape distribution data from the real API.
+ * @param {number|string} projectId - The project ID (from URL param :id)
+ * @returns {Promise<object>}
+ */
+export const fetchDistribution = (projectId) => {
+  return apiClient.get('/analytics/distribution', {
+    params: { project_id: projectId },
+  });
+};
+
+/**
+ * Fetch top entities ranking data from the real API.
+ * @param {number|string} projectId - The project ID (from URL param :id)
+ * @param {object} options - Optional parameters
+ * @returns {Promise<object>}
+ */
+export const fetchTopEntities = (projectId, options = {}) => {
+  const { limit = 4 } = options;
+  return apiClient.get('/analytics/top-entities', {
+    params: { project_id: projectId, limit },
+  });
+};
+
+/**
+ * Fetch journal quartile distribution data from the real API.
+ * @param {number|string} projectId - The project ID (from URL param :id)
+ * @returns {Promise<object>}
+ */
+export const fetchQuartiles = (projectId) => {
+  return apiClient.get('/analytics/journals/quartiles', {
+    params: { project_id: projectId },
+  });
 };

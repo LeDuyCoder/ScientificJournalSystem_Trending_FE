@@ -5,11 +5,11 @@ import ResearchLandscapeCard from '../components/ResearchLandscapeCard';
 import TopEntitiesCard from '../components/TopEntitiesCard';
 import ImpactQuartilesCard from '../components/ImpactQuartilesCard';
 import { useDashboardContext } from '../../dashboard/contexts/DashboardContext';
-import { useDashboardStatsQuery } from '../../dashboard/hook/useDashboardStatsQuery';
-import { useGeoDistribution } from '../../dashboard/hook/useGeoDistribution';
-import { useDistribution } from '../../dashboard/hook/useDistribution';
-import { useTopEntities } from '../../dashboard/hook/useTopEntities';
-import { useQuartiles } from '../../dashboard/hook/useQuartiles';
+import { useDashboardStatsQuery } from '../hooks/useDashboardStatsQuery';
+import { useGeoDistribution } from '../hooks/useGeoDistribution';
+import { useDistribution } from '../hooks/useDistribution';
+import { useTopEntities } from '../hooks/useTopEntities';
+import { useQuartiles } from '../hooks/useQuartiles';
 import '../styles/GlobalEcosystemPage.css';
 
 const placeholderStyle = {
