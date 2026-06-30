@@ -1,0 +1,32 @@
+import { FiTrendingUp } from 'react-icons/fi';
+
+const CoreClustersCard = () => {
+  return (
+    <div className="kn-card" style={{ justifyContent: 'space-between' }}>
+      <div>
+        <h3 className="kn-card-subtitle" style={{ color: 'var(--color-neutral-400)', textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.75rem', fontWeight: 700, marginBottom: '24px' }}>CORE CLUSTERS</h3>
+        
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div>
+            <div className="kn-stat-huge" style={{ color: 'var(--color-primary-orange)' }}>
+              4.2k
+            </div>
+            <div className="kn-stat-label" style={{ color: 'var(--color-neutral-600)' }}>Neural Architectures</div>
+          </div>
+          <FiTrendingUp style={{ color: 'var(--color-primary-orange)', fontSize: '24px' }} />
+        </div>
+        
+        <div style={{ position: 'relative', margin: '24px 0 16px 0' }}>
+          <div style={{ width: '100%', height: '4px', backgroundColor: 'var(--color-neutral-100)', borderRadius: '2px' }} />
+          <div style={{ position: 'absolute', top: 0, left: 0, width: '60%', height: '4px', backgroundColor: 'var(--color-primary-orange)', borderRadius: '2px' }} />
+        </div>
+      </div>
+      
+      <p className="kn-stat-desc" style={{ color: 'var(--color-neutral-500)', fontSize: '0.875rem' }}>
+        Central nodes show high density in deep learning paradigms with a <strong style={{ color: 'var(--color-primary-orange)' }}>12.4%</strong> growth vector.
+      </p>
+    </div>
+  );
+};
+
+export default CoreClustersCard;

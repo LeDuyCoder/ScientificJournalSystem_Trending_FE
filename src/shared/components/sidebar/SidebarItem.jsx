@@ -6,7 +6,7 @@ const SidebarItem = ({ item, collapsed }) => {
   const location = useLocation();
 
   // Determine whether current route matches menu item to apply active styling
-  const isActive = location.pathname === item.path;
+  const isActive = location.pathname === item.path || (item.path !== '/' && location.pathname.startsWith(`${item.path}/`));
 
   const IconComponent = item.icon;
 
