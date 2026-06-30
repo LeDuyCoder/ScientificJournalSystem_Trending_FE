@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchGeoDistribution } from '../services/dashboard.service';
-import { transformGeoData } from '../../global-ecosystem/services/globalEcosystem.service';
+import { fetchGeoDistribution, transformGeoData } from '../services/globalEcosystem.service';
 
 export const useGeoDistribution = (projectId) => {
     return useQuery({
