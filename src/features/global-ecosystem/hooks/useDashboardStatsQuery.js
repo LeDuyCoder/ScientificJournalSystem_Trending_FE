@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { fetchDashboardStats, transformToKpiStats } from '../services/globalEcosystem.service';
 
-export const useDashboardStatsQuery = (projectId) => {
+export const useDashboardStatsQuery = (projectId, refreshTrigger) => {
     return useQuery({
-        queryKey: ['dashboard-stats', projectId],
+        queryKey: ['dashboard-stats', projectId, refreshTrigger],
         queryFn: () => fetchDashboardStats(projectId),
         staleTime: 1 * 60 * 1000, // cache 1 phút
         gcTime: 5 * 60 * 1000,    // cache 5 phút

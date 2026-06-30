@@ -11,6 +11,7 @@ const TIMEFRAME_OPTIONS = [
 ];
 
 const DOMAIN_OPTIONS = [
+  'All Domains',
   'Biological Sciences',
   'Medical Research',
   'Computer Science',

@@ -10,6 +10,7 @@ import { useGeoDistribution } from '../hooks/useGeoDistribution';
 import { useDistribution } from '../hooks/useDistribution';
 import { useTopEntities } from '../hooks/useTopEntities';
 import { useQuartiles } from '../hooks/useQuartiles';
+import { mapFiltersToQueryParams } from '../services/globalEcosystem.service';
 import '../styles/GlobalEcosystemPage.css';
 
 const placeholderStyle = {
@@ -25,12 +26,14 @@ const placeholderStyle = {
 };
 
 export default function GlobalEcosystemPage() {
-  const { projectId } = useDashboardContext();
-  const { data: kpiStats, isLoading: isStatsLoading, error: statsError } = useDashboardStatsQuery(projectId);
-  const { data: heatMapData, isLoading: isGeoLoading, error: geoError } = useGeoDistribution(projectId);
-  const { data: landscapeData, isLoading: isLandscapeLoading, error: landscapeError } = useDistribution(projectId);
-  const { data: topEntitiesData, isLoading: isTopEntitiesLoading, error: topEntitiesError } = useTopEntities(projectId);
-  const { data: quartilesData, isLoading: isQuartilesLoading, error: quartilesError } = useQuartiles(projectId);
+  const { projectId, filters, refreshTrigger } = useDashboardContext();
+  const queryParams = mapFiltersToQueryParams(filters);
+
+  const { data: kpiStats, isLoading: isStatsLoading, error: statsError } = useDashboardStatsQuery(projectId, refreshTrigger);
+  const { data: heatMapData, isLoading: isGeoLoading, error: geoError } = useGeoDistribution(projectId, queryParams, refreshTrigger);
+  const { data: landscapeData, isLoading: isLandscapeLoading, error: landscapeError } = useDistribution(projectId, queryParams, refreshTrigger);
+  const { data: topEntitiesData, isLoading: isTopEntitiesLoading, error: topEntitiesError } = useTopEntities(projectId, { limit: 4, filters: queryParams, refreshTrigger });
+  const { data: quartilesData, isLoading: isQuartilesLoading, error: quartilesError } = useQuartiles(projectId, queryParams, refreshTrigger);
 
   const isLoading = isStatsLoading || isGeoLoading || isLandscapeLoading || isTopEntitiesLoading || isQuartilesLoading;
   const hasError = statsError || geoError || landscapeError || topEntitiesError || quartilesError;
