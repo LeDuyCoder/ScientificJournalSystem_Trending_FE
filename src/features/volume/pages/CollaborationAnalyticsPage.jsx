@@ -1,5 +1,5 @@
 import React from 'react';
-import DashboardFooter from '../../../components/layout/DashboardFooter';
+import DashboardFooter from '../../../shared/components/layout/DashboardFooter';
 import CollaborationTabs from '../components/collaboration-analytics/CollaborationTabs';
 import CollaborationHeader from '../components/collaboration-analytics/CollaborationHeader';
 import TopInfluentialAuthorsCard from '../components/collaboration-analytics/TopInfluentialAuthorsCard';

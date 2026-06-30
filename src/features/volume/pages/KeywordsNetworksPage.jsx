@@ -1,4 +1,4 @@
-import DashboardFooter from '../../../components/layout/DashboardFooter';
+import DashboardFooter from '../../../shared/components/layout/DashboardFooter';
 import VolumeAnalyticsTabs from '../components/keywords-networks/VolumeAnalyticsTabs';
 import CoreClustersCard from '../components/keywords-networks/CoreClustersCard';
 import KeywordTrendVectorsChart from '../components/keywords-networks/KeywordTrendVectorsChart';
