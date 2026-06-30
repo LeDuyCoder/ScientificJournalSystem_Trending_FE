@@ -13,7 +13,7 @@ export const useDashboardContext = () => {
 export const DashboardProvider = ({ children, projectId }) => {
   const [filters, setFilters] = useState({
     timeframe: 'Last 5 Years',
-    domain: 'Biological Sciences',
+    domain: 'All Domains',
     region: 'Global Distribution'
   });
 

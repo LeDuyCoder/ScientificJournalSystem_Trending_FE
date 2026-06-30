@@ -170,6 +170,47 @@ export const transformQuartilesData = (data) => {
 };
 
 /**
+ * Maps frontend context filters into backend query parameters
+ * @param {object} filters - Frontend filters (timeframe, domain, region)
+ * @returns {object} Query parameters (from_year, to_year, subject_area)
+ */
+export const mapFiltersToQueryParams = (filters) => {
+  if (!filters) return {};
+
+  const queryParams = {};
+
+  if (filters.domain && filters.domain !== 'All Domains') {
+    queryParams.subject_area = filters.domain;
+  }
+
+  const currentYear = new Date().getFullYear();
+  if (filters.timeframe) {
+    switch (filters.timeframe) {
+      case 'Last Year':
+        queryParams.from_year = currentYear - 1;
+        queryParams.to_year = currentYear;
+        break;
+      case 'Last 3 Years':
+        queryParams.from_year = currentYear - 3;
+        queryParams.to_year = currentYear;
+        break;
+      case 'Last 5 Years':
+        queryParams.from_year = currentYear - 5;
+        queryParams.to_year = currentYear;
+        break;
+      case 'Last 10 Years':
+        queryParams.from_year = currentYear - 10;
+        queryParams.to_year = currentYear;
+        break;
+      default:
+        break;
+    }
+  }
+
+  return queryParams;
+};
+
+/**
  * Fetch dashboard statistics from the real API.
  * @param {number|string} projectId - The project ID (from URL param :id)
  * @returns {Promise<object>}
@@ -183,45 +224,48 @@ export const fetchDashboardStats = (projectId) => {
 /**
  * Fetch geographical distribution data from the real API.
  * @param {number|string} projectId - The project ID (from URL param :id)
+ * @param {object} filters - Mapped query filters (e.g. from_year, subject_area)
  * @returns {Promise<object>}
  */
-export const fetchGeoDistribution = (projectId) => {
+export const fetchGeoDistribution = (projectId, filters = {}) => {
   return apiClient.get('/analytics/geo-distribution', {
-    params: { project_id: projectId },
+    params: { project_id: projectId, ...filters },
   });
 };
 
 /**
  * Fetch research landscape distribution data from the real API.
  * @param {number|string} projectId - The project ID (from URL param :id)
+ * @param {object} filters - Mapped query filters (e.g. from_year, subject_area)
  * @returns {Promise<object>}
  */
-export const fetchDistribution = (projectId) => {
+export const fetchDistribution = (projectId, filters = {}) => {
   return apiClient.get('/analytics/distribution', {
-    params: { project_id: projectId },
+    params: { project_id: projectId, ...filters },
   });
 };
 
 /**
  * Fetch top entities ranking data from the real API.
  * @param {number|string} projectId - The project ID (from URL param :id)
- * @param {object} options - Optional parameters
+ * @param {object} options - Optional parameters including limit and mapped query filters
  * @returns {Promise<object>}
  */
 export const fetchTopEntities = (projectId, options = {}) => {
-  const { limit = 4 } = options;
+  const { limit = 4, ...filters } = options;
   return apiClient.get('/analytics/top-entities', {
-    params: { project_id: projectId, limit },
+    params: { project_id: projectId, limit, ...filters },
   });
 };
 
 /**
  * Fetch journal quartile distribution data from the real API.
  * @param {number|string} projectId - The project ID (from URL param :id)
+ * @param {object} filters - Mapped query filters (e.g. from_year, subject_area)
  * @returns {Promise<object>}
  */
-export const fetchQuartiles = (projectId) => {
+export const fetchQuartiles = (projectId, filters = {}) => {
   return apiClient.get('/analytics/journals/quartiles', {
-    params: { project_id: projectId },
+    params: { project_id: projectId, ...filters },
   });
 };
