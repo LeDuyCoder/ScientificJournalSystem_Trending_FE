@@ -21,6 +21,8 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 export default function CitationMirroringCard({ data }) {
+  const chartData = data?.data || [];
+
   return (
     <div className="analytics-card">
       <div className="analytics-card-header">
@@ -30,45 +32,60 @@ export default function CitationMirroringCard({ data }) {
         </div>
       </div>
       <div className="analytics-card-body">
-        <div className="citation-mirroring-wrapper" aria-label="Citation Mirroring Dual Line Chart">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--color-neutral-200)" />
-              <XAxis dataKey="period" axisLine={false} tickLine={false} tick={false} />
-              <YAxis axisLine={false} tickLine={false} tick={false} />
-              <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'var(--color-neutral-300)', strokeWidth: 1, strokeDasharray: '4 4' }} />
-              <Legend 
-                verticalAlign="top" 
-                align="right"
-                height={36}
-                iconType="circle"
-                wrapperStyle={{ fontSize: '10px', color: 'var(--color-neutral-600)', top: '-40px' }}
-              />
-              <Line 
-                type="monotone" 
-                dataKey="external" 
-                name="External"
-                stroke="var(--color-primary-orange)" 
-                strokeWidth={2}
-                dot={false}
-                activeDot={{ r: 4 }}
-                animationDuration={1500}
-                isAnimationActive={true}
-              />
-              <Line 
-                type="monotone" 
-                dataKey="self" 
-                name="Self"
-                stroke="#1f2937" 
-                strokeWidth={2}
-                dot={false}
-                activeDot={{ r: 4 }}
-                animationDuration={1500}
-                isAnimationActive={true}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
+        {chartData.length === 0 ? (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--color-neutral-500)', fontSize: 'var(--font-size-body)' }}>
+            Không có dữ liệu phù hợp với bộ lọc hiện tại.
+          </div>
+        ) : (
+          <div className="citation-mirroring-wrapper" aria-label="Citation Mirroring Dual Line Chart">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--color-neutral-200)" />
+                <XAxis 
+                  dataKey="year" 
+                  axisLine={false} 
+                  tickLine={false} 
+                  tick={{ fill: 'var(--color-neutral-500)', fontSize: 10 }} 
+                />
+                <YAxis 
+                  axisLine={false} 
+                  tickLine={false} 
+                  tick={{ fill: 'var(--color-neutral-500)', fontSize: 10 }} 
+                />
+                <Tooltip content={<CustomTooltip />} cursor={{ stroke: 'var(--color-neutral-300)', strokeWidth: 1, strokeDasharray: '4 4' }} />
+                <Legend 
+                  verticalAlign="top" 
+                  align="right"
+                  height={36}
+                  iconType="circle"
+                  wrapperStyle={{ fontSize: '10px', color: 'var(--color-neutral-600)', top: '-40px' }}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="external" 
+                  name="External"
+                  stroke="var(--color-primary-orange)" 
+                  strokeWidth={2}
+                  dot={false}
+                  activeDot={{ r: 4 }}
+                  animationDuration={1500}
+                  isAnimationActive={true}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="self" 
+                  name="Self"
+                  stroke="#1f2937" 
+                  strokeWidth={2}
+                  dot={false}
+                  activeDot={{ r: 4 }}
+                  animationDuration={1500}
+                  isAnimationActive={true}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        )}
       </div>
     </div>
   );

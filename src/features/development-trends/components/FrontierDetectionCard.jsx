@@ -17,19 +17,26 @@ const CustomTooltip = ({ active, payload }) => {
   return null;
 };
 
+const truncateText = (text, maxLength = 12) => {
+  const str = String(text || '').trim();
+  if (str.length <= maxLength) return str;
+  return str.slice(0, maxLength) + '...';
+};
+
 const CustomNode = (props) => {
   const { cx, cy, payload } = props;
   const isFrontier = payload.isFrontier;
   
-  const width = isFrontier ? 90 : 60;
-  const height = isFrontier ? 60 : 40;
+  const width = isFrontier ? 100 : 80;
+  const height = isFrontier ? 50 : 36;
+  const label = truncateText(payload.topic, isFrontier ? 15 : 12);
   
   if (isFrontier) {
     return (
       <g transform={`translate(${cx - width/2}, ${cy - height/2})`}>
         <rect width={width} height={height} rx={8} fill="#ffedd5" stroke="#f97316" strokeWidth={2} />
-        <text x={width/2} y={height/2 - 5} textAnchor="middle" fill="#9a3412" fontSize={11} fontWeight={700}>{payload.topic}</text>
-        <text x={width/2} y={height/2 + 10} textAnchor="middle" fill="#c2410c" fontSize={9} fontWeight={600}>FRONTIER</text>
+        <text x={width/2} y={height/2 - 4} textAnchor="middle" fill="#9a3412" fontSize={10} fontWeight={700}>{label}</text>
+        <text x={width/2} y={height/2 + 10} textAnchor="middle" fill="#c2410c" fontSize={8} fontWeight={600}>FRONTIER</text>
       </g>
     );
   }
@@ -37,7 +44,7 @@ const CustomNode = (props) => {
   return (
     <g transform={`translate(${cx - width/2}, ${cy - height/2})`}>
       <rect width={width} height={height} rx={8} fill="#f8fafc" stroke="#94a3b8" strokeWidth={1} />
-      <text x={width/2} y={height/2 + 4} textAnchor="middle" fill="#475569" fontSize={10} fontWeight={600}>{payload.topic}</text>
+      <text x={width/2} y={height/2 + 4} textAnchor="middle" fill="#475569" fontSize={9} fontWeight={600}>{label}</text>
     </g>
   );
 };
@@ -50,7 +57,7 @@ const ScatterVisualization = ({ data }) => (
         type="number" 
         dataKey="velocity" 
         name="Velocity Score" 
-        domain={[50, 100]}
+        domain={[0, 10]}
         tick={false}
         tickLine={false}
         axisLine={false}
@@ -60,7 +67,7 @@ const ScatterVisualization = ({ data }) => (
         type="number" 
         dataKey="impact" 
         name="Impact Score" 
-        domain={[60, 100]}
+        domain={[0, 10]}
         tick={false}
         tickLine={false}
         axisLine={false}
@@ -75,33 +82,34 @@ const ScatterVisualization = ({ data }) => (
 
 export default function FrontierDetectionCard({ data }) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const rawData = data || [];
+  const rawData = data?.items || [];
 
-  const fixedMapping = {
-    'LEGACY': { topic: 'Legacy', velocity: 55, impact: 65, isFrontier: false },
-    'GEN AI': { topic: 'Gen AI', velocity: 70, impact: 75, isFrontier: false },
-    'IOT 6G': { topic: 'IoT 6G', velocity: 85, impact: 85, isFrontier: false },
-    'CRISPR V3': { topic: 'CRISPR V3', velocity: 98, impact: 95, isFrontier: true }
-  };
-
-  let chartData = rawData
-    .filter(d => fixedMapping[d.topic.toUpperCase()])
-    .map(d => ({
-      ...d,
-      ...fixedMapping[d.topic.toUpperCase()]
-    }));
-
-  if (chartData.length === 0) {
-    chartData = [
-      { topic: 'Legacy', velocity: 55, impact: 65, size: 70, isFrontier: false },
-      { topic: 'Gen AI', velocity: 70, impact: 75, size: 90, isFrontier: false },
-      { topic: 'IoT 6G', velocity: 85, impact: 85, size: 85, isFrontier: false },
-      { topic: 'CRISPR V3', velocity: 98, impact: 95, size: 120, isFrontier: true }
-    ];
+  if (rawData.length === 0) {
+    return (
+      <div className="analytics-card">
+        <div className="analytics-card-header">
+          <div className="analytics-card-title-group">
+            <h3 className="analytics-card-title">Frontier Detection</h3>
+            <p className="analytics-card-subtitle">Emerging topics by velocity and impact</p>
+          </div>
+        </div>
+        <div className="analytics-card-body" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--color-neutral-500)', fontSize: 'var(--font-size-body)' }}>
+          Không có dữ liệu phù hợp với bộ lọc hiện tại.
+        </div>
+      </div>
+    );
   }
 
-  const order = ['Legacy', 'Gen AI', 'IoT 6G', 'CRISPR V3'];
-  chartData.sort((a, b) => order.indexOf(a.topic) - order.indexOf(b.topic));
+  const chartData = rawData.map(d => ({
+    topic: d.label,
+    velocity: d.citationVelocity || 50,
+    impact: d.impactVelocity || 60,
+    size: 100,
+    isFrontier: String(d.status).toLowerCase() === 'frontier'
+  }));
+
+  // Sort by velocity to ensure rendering flow is consistent
+  chartData.sort((a, b) => a.velocity - b.velocity);
 
   return (
     <div className="analytics-card">

@@ -1,25 +1,12 @@
-import {
-  publicationTrend,
-  citationMirroring,
-  topicEvolution,
-  frontierDetection,
-  futureInsights
-} from '../constants/developmentTrends.mock';
+import apiClient from '../../../shared/api/axios';
 
-export const fetchDevelopmentTrendsData = (filters) => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      if (filters?.timeframe === 'error') {
-        reject(new Error('Failed to fetch development trends data'));
-        return;
-      }
-      resolve({
-        publicationTrend,
-        citationMirroring,
-        topicEvolution,
-        frontierDetection,
-        futureInsights
-      });
-    }, 1000);
+export const fetchDevelopmentTrendsData = async (filters) => {
+  const response = await apiClient.get('/analytics/development-trends', {
+    params: {
+      timeframe: filters?.timeframe,
+      domain: filters?.domain,
+      region: filters?.region
+    }
   });
+  return response.data;
 };
