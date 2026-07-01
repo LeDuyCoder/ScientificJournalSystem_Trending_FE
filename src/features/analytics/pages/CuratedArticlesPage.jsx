@@ -36,26 +36,46 @@ const CuratedArticlesPage = () => {
           <h2 className={styles.pageTitle}>Curated Articles</h2>
         </div>
 
+        <div className={styles.toolbar}>
+          <button className={`${styles.toolbarBtn} ${styles.filterBtn}`}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+            </svg>
+            Filter
+          </button>
+          <button className={`${styles.toolbarBtn} ${styles.newCurationBtn}`}>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            New Curation
+          </button>
+        </div>
+
         <div className={styles.layoutGrid}>
           {/* Left Column - Article Cards */}
-          <div className={styles.leftColumn}>
-            {loading ? (
-              <p>Loading articles...</p>
-            ) : error ? (
-              <p>Error: {error}</p>
-            ) : (
-              articles.map(article => (
-                <CuratedArticleCard key={article.id} article={article} />
-              ))
-            )}
+          <div className={styles.articlesWrapper}>
+            <div className={styles.leftColumn}>
+              {loading ? (
+                <p>Loading articles...</p>
+              ) : error ? (
+                <p>Error: {error}</p>
+              ) : (
+                articles.map(article => (
+                  <CuratedArticleCard key={article.id} article={article} />
+                ))
+              )}
+            </div>
             
             {!loading && !error && (
-              <Pagination 
-                currentPage={1} 
-                totalPages={1} 
-                totalItems={articles.length} 
-                itemsPerPage={articles.length} 
-              />
+              <div className={styles.paginationWrapper}>
+                <Pagination 
+                  currentPage={1} 
+                  totalPages={5} 
+                  totalItems={articles.length} 
+                  itemsPerPage={articles.length} 
+                />
+              </div>
             )}
           </div>
 

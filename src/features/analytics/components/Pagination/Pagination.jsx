@@ -18,6 +18,18 @@ export const Pagination = ({ currentPage = 1, totalPages = 1, totalItems = 0, it
       </span>
       <div className={layoutStyles.paginationControls}>
         <button className={`${layoutStyles.btn} ${layoutStyles.btnOutline}`} disabled={currentPage <= 1}>Previous</button>
+        
+        {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => i + 1).map(page => (
+          <button 
+            key={page} 
+            className={`${layoutStyles.btn} ${currentPage === page ? layoutStyles.btnPrimary : layoutStyles.btnOutline}`}
+          >
+            {page}
+          </button>
+        ))}
+        
+        {totalPages > 5 && <span style={{ padding: '8px', color: '#666' }}>...</span>}
+        
         <button className={`${layoutStyles.btn} ${layoutStyles.btnOutline}`} disabled={currentPage >= totalPages}>Next</button>
       </div>
     </div>
