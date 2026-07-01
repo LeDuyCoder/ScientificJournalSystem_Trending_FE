@@ -1,0 +1,22 @@
+*   [33me64dbc5[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mthuy/feature/issue-53-analytics-dashboard[m[33m, [m[1;31morigin/thuy/feature/issue-53-analytics-dashboard[m[33m, [m[1;31morigin/dev[m[33m, [m[1;32mdev[m[33m)[m Merge pull request #52 from LeDuyCoder/duy/refactor/project-scoped-routes
+[31m|[m[32m\[m  
+[31m|[m * [33m6922cb8[m[33m ([m[1;31morigin/duy/refactor/project-scoped-routes[m[33m)[m [refactor] restructure routes to project-scoped paths and update sidebar/tabs navigation
+[31m|[m[31m/[m  
+*   [33md3146ac[m Merge pull request #51 from LeDuyCoder/duy/feature/integrate-global-ecosystem-filters
+[33m|[m[34m\[m  
+[33m|[m * [33m41aec8f[m[33m ([m[1;31morigin/duy/feature/integrate-global-ecosystem-filters[m[33m)[m [feat] connect dashboard filters to TanStack Query hooks and fix empty data issue
+[33m|[m[33m/[m  
+*   [33m822baa0[m Merge pull request #49 from LeDuyCoder/duy/refactor/global-ecosystem-folder-structure
+[35m|[m[36m\[m  
+[35m|[m * [33mcbbcd35[m[33m ([m[1;31morigin/duy/refactor/global-ecosystem-folder-structure[m[33m)[m [refactor] move api and query hooks to corresponding feature folder
+[35m|[m[35m/[m  
+*   [33m204a24b[m Merge pull request #48 from LeDuyCoder/duy/feature/global_ecosystem_dashboard
+[1;31m|[m[1;32m\[m  
+[1;31m|[m * [33m5e8eaf1[m[33m ([m[1;31morigin/duy/feature/global_ecosystem_dashboard[m[33m)[m [feat] Integrate api dashboard global ecosystem
+[1;31m|[m[1;31m/[m  
+*   [33m4b36e8a[m Merge pull request #43 from LeDuyCoder/thuy/feature/collaboration-analytics-page
+[1;33m|[m[1;34m\[m  
+[1;33m|[m *   [33mad44c02[m[33m ([m[1;31morigin/thuy/feature/collaboration-analytics-page[m[33m)[m [fix] solved conflic and refactor structure
+[1;33m|[m [1;35m|[m[1;33m\[m  
+[1;33m|[m [1;35m|[m[1;33m/[m  
+[1;33m|[m[1;33m/[m[1;35m|[m   

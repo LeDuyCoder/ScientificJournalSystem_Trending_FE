@@ -1,0 +1,305 @@
+/* Analytics Module CSS */
+
+.analyticsPage {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.pageContent {
+  padding: 32px;
+  background-color: var(--color-neutral-50, #f8f9fa);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.pageHeader {
+  margin-bottom: 24px;
+  flex-shrink: 0;
+}
+
+.pageTitle {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--color-neutral-900, #1a1a1a);
+  line-height: 1.2;
+}
+
+.pageDescription {
+  margin: 8px 0 0;
+  color: var(--color-neutral-500, #666666);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+/* Tabs */
+.tabsContainer {
+  background-color: var(--color-primary-orange, #ff6b00);
+  padding: 0 32px;
+  display: flex;
+  gap: 32px;
+  height: 48px;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
+.tabItem {
+  color: rgba(255, 255, 255, 0.7);
+  padding-bottom: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.tabItem:hover {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.tabItemActive {
+  color: #ffffff;
+}
+
+.tabItemActive::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background-color: #ffffff;
+  border-radius: 4px 4px 0 0;
+}
+
+/* Table Card */
+.tableCardContainer {
+  margin-bottom: 24px;
+  width: 100%;
+  overflow-x: auto;
+  height: auto;
+  flex-shrink: 0;
+  
+  /* Card visual styles */
+  background-color: var(--color-surface, #ffffff);
+  border-radius: var(--radius-lg, 12px);
+  box-shadow: var(--shadow-sm, 0 1px 2px rgba(0,0,0,0.05));
+  border: 1px solid var(--border-light, #eaebed);
+}
+
+.journalTable {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 800px;
+}
+
+.journalTable th {
+  text-align: left;
+  padding: 16px 24px;
+  color: var(--color-neutral-400, #999999);
+  font-size: 11px;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--border-light, #eaebed);
+}
+
+.journalTable td {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border-light, #eaebed);
+  vertical-align: middle;
+}
+
+.journalInfo {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.journalCover {
+  width: 48px;
+  height: 64px;
+  background-color: var(--border-light, #eaebed);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-light, #eaebed);
+  flex-shrink: 0;
+}
+
+.journalTitle {
+  margin: 0;
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--color-neutral-900, #1a1a1a);
+}
+
+.journalPublisher {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: var(--color-neutral-500, #666666);
+}
+
+.issn {
+  color: var(--color-neutral-500, #666666);
+  font-size: 14px;
+}
+
+.impactFactor {
+  color: var(--color-primary-orange, #ff6b00);
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.sjrBadge {
+  background-color: var(--color-neutral-100, #f1f5f9);
+  color: var(--color-neutral-500, #666666);
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.trendSparkline {
+  height: 30px;
+  width: 100px;
+  color: var(--color-primary-orange, #ff6b00);
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+}
+
+.paginationText {
+  font-size: 14px;
+  color: var(--color-neutral-500, #666666);
+}
+
+.paginationControls {
+  display: flex;
+  gap: 8px;
+}
+
+.btn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.btnPrimary {
+  background-color: var(--color-primary-orange, #ff6b00);
+  color: white;
+}
+
+.btnPrimary:hover {
+  background-color: var(--color-primary-orange-hover, #e66000);
+}
+
+.btnOutline {
+  background-color: transparent;
+  border: 1px solid var(--border-light, #eaebed);
+  color: var(--color-neutral-900, #1a1a1a);
+}
+
+.btnOutline:hover {
+  background-color: var(--color-neutral-50, #f8f9fa);
+}
+
+/* Summary Cards */
+.summaryCardsContainer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  flex-shrink: 0;
+}
+
+.summaryCard {
+  /* Inherits padding and flex from Card component */
+  height: 100%;
+}
+
+.summaryCardHeader {
+  display: flex;
+  justify-content: space-between;
+  color: var(--color-neutral-500, #666666);
+  font-size: 12px;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  margin-bottom: 16px;
+}
+
+.summaryCardValue {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--color-neutral-900, #1a1a1a);
+  margin: 0 0 8px 0;
+  line-height: 1;
+}
+
+.summaryCardSubtext {
+  font-size: 13px;
+  color: var(--color-neutral-500, #666666);
+}
+
+.progressBarBg {
+  height: 8px;
+  background-color: var(--border-light, #eaebed);
+  border-radius: 4px;
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+
+.progressBarFill {
+  height: 100%;
+  background-color: var(--color-primary-orange, #ff6b00);
+  border-radius: 4px;
+}
+
+.autoRefreshIcon {
+  width: 48px;
+  height: 48px;
+  background-color: var(--color-primary-orange-light, #fff0e6);
+  color: var(--color-primary-orange, #ff6b00);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin-bottom: 16px;
+}
+
+.autoRefreshContent h3 {
+  margin: 0 0 4px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-neutral-900, #1a1a1a);
+}
+
+@media (max-width: 1024px) {
+  .summaryCardsContainer {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .summaryCardsContainer {
+    grid-template-columns: 1fr;
+  }
+}

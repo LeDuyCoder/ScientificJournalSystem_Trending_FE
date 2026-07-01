@@ -9,7 +9,8 @@ export const sidebarConfig = {
   menuItems: [
     { label: "Dashboard", segment: "dashboard", icon: FiGrid },
     { label: "Journals", segment: "journals", icon: FiBook },
-    { label: "Volumes", segment: "volumes", icon: FiLayers }
+    { label: "Volumes", segment: "volumes", icon: FiLayers },
+    { label: "Projects", segment: "analytics", icon: FiLayers }
   ],
   footerItems: [
     { label: "Support", action: "support", icon: FiHelpCircle },

@@ -11,9 +11,9 @@ const DashboardLayout = () => {
   return (
     <div className="app-container">
       <Sidebar />
-      <div className="app-main-content-wrapper" style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+      <div className="app-main-content-wrapper" style={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0 }}>
         <AppHeader />
-        <main className="app-main-content" style={{ display: 'flex', flexDirection: 'column' }}>
+        <main className="app-main-content">
           <Outlet /> 
         </main>
       </div>

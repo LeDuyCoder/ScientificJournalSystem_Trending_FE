@@ -66,6 +66,32 @@
   box-shadow: 0 0 0 3px var(--color-primary-orange-light);
 }
 
+/* Center Section - Navigation */
+.header-center-nav {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.header-nav-item {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-neutral-500);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  padding: 8px 0;
+  transition: color 0.2s ease;
+}
+
+.header-nav-item:hover {
+  color: var(--color-neutral-800);
+}
+
+.header-nav-item.active {
+  color: var(--color-primary-orange);
+}
+
 /* Right Section - Action Buttons and Profile */
 .header-right {
   display: flex;

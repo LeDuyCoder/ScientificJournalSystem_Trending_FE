@@ -5,6 +5,7 @@ import JournalsPage from '../../features/journals/pages/JournalsPage';
 import DashboardLayout from '../../shared/components/layout/DashboardLayout';
 import CollaborationAnalyticsPage from '../../features/volume/pages/CollaborationAnalyticsPage';
 import KeywordsNetworksPage from '../../features/volume/pages/KeywordsNetworksPage';
+import { AnalyticsDashboard } from '../../features/analytics/pages/AnalyticsDashboard';
 
 export default function AppRoutes() {
   return (
@@ -23,6 +24,8 @@ export default function AppRoutes() {
           <Route path="journal-metrics" element={<CollaborationAnalyticsPage />} />
           <Route path="keywords-networks" element={<KeywordsNetworksPage />} />
         </Route>
+        
+        <Route path="analytics" element={<AnalyticsDashboard />} />
       </Route>
 
       <Route path="/embed/article-graph" element={<ArticleGraphEmbedPage />} />
