@@ -9,21 +9,22 @@ import KeywordsNetworksPage from '../../features/volume/pages/KeywordsNetworksPa
 export default function AppRoutes() {
   return (
     <Routes>
-      {/* Routes with main layout (includes sidebar and header) */}
-      <Route element={<DashboardLayout />}>
-        <Route path="/" element={<Navigate to="/dashboard" replace />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/journals" element={<JournalsPage />} />
-        
-        {/* Volumes Feature Routes */}
-        <Route path="/volumes">
+      <Route path="/" element={<Navigate to="/project/default-id/dashboard" replace />} />
+
+      <Route path="/project/:id" element={<DashboardLayout />}>
+
+        <Route index element={<Navigate to="dashboard" replace />} />
+
+        <Route path="dashboard" element={<DashboardPage />} />
+        <Route path="journals" element={<JournalsPage />} />
+
+        <Route path="volumes">
           <Route index element={<Navigate to="journal-metrics" replace />} />
           <Route path="journal-metrics" element={<CollaborationAnalyticsPage />} />
           <Route path="keywords-networks" element={<KeywordsNetworksPage />} />
         </Route>
       </Route>
 
-      {/* Route without any layout for embedding */}
       <Route path="/embed/article-graph" element={<ArticleGraphEmbedPage />} />
     </Routes>
   );

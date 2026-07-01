@@ -10,10 +10,10 @@ export const useDashboardContext = () => {
   return context;
 };
 
-export const DashboardProvider = ({ children }) => {
+export const DashboardProvider = ({ children, projectId }) => {
   const [filters, setFilters] = useState({
     timeframe: 'Last 5 Years',
-    domain: 'Biological Sciences',
+    domain: 'All Domains',
     region: 'Global Distribution'
   });
 
@@ -32,6 +32,7 @@ export const DashboardProvider = ({ children }) => {
   };
 
   const value = {
+    projectId,
     filters,
     updateFilter,
     refreshTrigger,

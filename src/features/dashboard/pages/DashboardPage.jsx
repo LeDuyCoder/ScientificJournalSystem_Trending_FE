@@ -8,6 +8,7 @@ import GlobalEcosystemPage from '../../global-ecosystem/pages/GlobalEcosystemPag
 import DevelopmentTrendsPage from '../../development-trends/pages/DevelopmentTrendsPage';
 import { DashboardProvider, useDashboardContext } from '../contexts/DashboardContext';
 import { FiAlertCircle } from 'react-icons/fi';
+import { useParams } from 'react-router-dom';
 
 const placeholderStyle = {
   background: 'var(--color-surface)',
@@ -49,10 +50,10 @@ const DashboardContent = () => {
     }
 
     return (
-      <DashboardTabs 
-        tabs={tabs} 
-        activeTab={activeTab} 
-        onTabChange={setActiveTab} 
+      <DashboardTabs
+        tabs={tabs}
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
       />
     );
   };
@@ -72,8 +73,10 @@ const DashboardContent = () => {
 };
 
 export default function DashboardPage() {
+  const { id } = useParams();
+  
   return (
-    <DashboardProvider>
+    <DashboardProvider projectId={id}>
       <DashboardContent />
     </DashboardProvider>
   );
