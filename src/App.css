@@ -6,9 +6,10 @@
 
 .app-main-content {
   flex: 1;
-  /* Removed padding to allow full-width headers and footers */
   display: flex;
   flex-direction: column;
+  overflow: auto;
+  min-height: 0;
 }
 
 /* Responsive main padding no longer applied here */

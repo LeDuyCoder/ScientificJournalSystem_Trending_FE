@@ -44,13 +44,15 @@
 
 .header-search-input {
   width: 100%;
-  padding: 10px 14px 10px 42px;
+  padding: 0 14px 0 42px;
+  height: 40px;
+  box-sizing: border-box;
   font-size: var(--font-size-body);
   font-family: inherit;
   color: var(--color-neutral-900);
-  background-color: var(--color-neutral-50);
-  border: 1px solid transparent;
-  border-radius: var(--radius-md);
+  background-color: var(--color-surface, #ffffff);
+  border: 1px solid var(--border-light, #e5e7eb);
+  border-radius: 10px;
   outline: none;
   transition: all 0.2s ease;
 }
@@ -65,6 +67,8 @@
   border-color: var(--color-primary-orange);
   box-shadow: 0 0 0 3px var(--color-primary-orange-light);
 }
+
+
 
 /* Right Section - Action Buttons and Profile */
 .header-right {
@@ -84,28 +88,27 @@
   background: transparent;
   border: none;
   padding: 8px;
-  border-radius: var(--radius-md);
+  border-radius: 8px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-neutral-600);
+  color: var(--color-primary-orange, #ff6b00);
   transition: all 0.2s ease;
   position: relative;
   outline: none;
 }
 
 .header-icon-button:hover {
-  background-color: var(--color-neutral-100);
-  color: var(--color-neutral-900);
+  background-color: var(--color-primary-orange-light, #fff7f2);
 }
 
 .header-icon-button:active {
-  background-color: var(--color-neutral-200);
+  background-color: rgba(255, 107, 0, 0.1);
 }
 
 .header-icon-button:focus-visible {
-  box-shadow: 0 0 0 2px var(--color-primary-orange);
+  box-shadow: 0 0 0 2px var(--color-primary-orange, #ff6b00);
 }
 
 .header-icon-wrapper {
