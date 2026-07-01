@@ -1,4 +1,4 @@
-import { FiGrid, FiBook, FiFileText, FiLayers, FiUser, FiHelpCircle, FiLogOut } from 'react-icons/fi';
+import { FiGrid, FiBook, FiLayers, FiHelpCircle, FiLogOut } from 'react-icons/fi';
 
 // Configuration file for the Sidebar component defining menu items, footer items, and logo assets.
 export const sidebarConfig = {
@@ -7,11 +7,9 @@ export const sidebarConfig = {
     subtitle: "Bibliometric Excellence",
   },
   menuItems: [
-    { label: "Dashboard", path: "/dashboard", icon: FiGrid },
-    { label: "Journals", path: "/journals", icon: FiBook },
-    { label: "Articles", path: "/embed/article-graph", icon: FiFileText },
-    { label: "Volumes", path: "/volumes", icon: FiLayers },
-    { label: "Account", path: "/account", icon: FiUser }
+    { label: "Dashboard", segment: "dashboard", icon: FiGrid },
+    { label: "Journals", segment: "journals", icon: FiBook },
+    { label: "Volumes", segment: "volumes", icon: FiLayers }
   ],
   footerItems: [
     { label: "Support", action: "support", icon: FiHelpCircle },
