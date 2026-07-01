@@ -9,6 +9,7 @@ export const fetchDevelopmentTrendsData = async (filters) => {
       project_id: projectId || undefined,
       timeframe: filters?.timeframe,
       domain: filters?.domain,
+      subject_category: filters?.subject_category,
       region: filters?.region
     }
   });
