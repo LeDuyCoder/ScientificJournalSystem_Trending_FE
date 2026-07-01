@@ -33,13 +33,6 @@ const AppHeader = ({
           placeholder={headerConfig.searchPlaceholder}
         />
       </div>
-      <nav className="header-center-nav">
-        <div className="header-nav-item">OVERVIEW</div>
-        <div className="header-nav-item">DEVELOPMENT</div>
-        <div className="header-nav-item active">ANALYTICS</div>
-        <div className="header-nav-item">STATISTICS</div>
-        <div className="header-nav-item">ANALYSIS</div>
-      </nav>
       <div className="header-right">
         <div className="header-actions">
           {headerConfig.icons.map((iconConfig) => (

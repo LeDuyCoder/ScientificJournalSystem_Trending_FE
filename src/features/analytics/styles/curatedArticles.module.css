@@ -255,30 +255,73 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  width: 100%;
 }
 
 .exportBtn {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 10px;
-  background-color: transparent;
+  justify-content: flex-start;
+  gap: 12px;
+  padding: 0 16px;
+  height: 52px;
+  width: 100%;
+  background-color: var(--color-surface, #ffffff);
   color: var(--color-neutral-900, #1a1a1a);
   border: 1px solid var(--border-light, #eaebed);
-  border-radius: 6px;
+  border-radius: 12px;
+  font-family: inherit;
   font-weight: 600;
   font-size: 14px;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
 }
 
 .exportBtn:hover {
-  background-color: var(--color-neutral-50, #f8f9fa);
+  background-color: #FFF7F2;
+  border-color: var(--color-primary-orange, #ff6b00);
+  color: var(--color-primary-orange, #ff6b00);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 107, 0, 0.08);
+}
+
+.exportBtn:active {
+  background-color: #FEEFE6;
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.exportBtn:focus-visible {
+  outline: 2px solid var(--color-primary-orange, #ff6b00);
+  outline-offset: 2px;
+}
+
+.exportText {
+  flex-grow: 1;
+  text-align: left;
 }
 
 .exportIcon {
   color: var(--color-neutral-500, #666666);
+  transition: color 0.2s ease;
+}
+
+.chevronIcon {
+  color: var(--color-neutral-400, #999999);
+  transition: all 0.2s ease;
+}
+
+.exportBtn:hover .exportIcon,
+.exportBtn:focus-visible .exportIcon,
+.exportBtn:active .exportIcon,
+.exportBtn:hover .chevronIcon,
+.exportBtn:focus-visible .chevronIcon,
+.exportBtn:active .chevronIcon {
+  color: var(--color-primary-orange, #ff6b00);
+}
+
+.exportBtn:hover .chevronIcon {
+  transform: translateX(2px);
 }
 
 /* Responsive */
