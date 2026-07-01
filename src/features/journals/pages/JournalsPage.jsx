@@ -21,9 +21,9 @@ const placeholderStyle = {
 };
 
 export default function JournalsPage() {
-  const { data, loading, error } = useJournalsData();
+  const { data, loading, error, topRanking, quartile, impactMatrix, migration, refetch } = useJournalsData();
 
-  if (loading) {
+  if (loading && !data) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%', padding: '24px' }}>
         <div style={{ ...placeholderStyle, height: '400px', flexDirection: 'column', gap: '16px' }}>
@@ -34,7 +34,7 @@ export default function JournalsPage() {
     );
   }
 
-  if (error) {
+  if (error && !data) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%', padding: '24px' }}>
         <div style={{ ...placeholderStyle, height: '400px', flexDirection: 'column', gap: '16px', color: '#dc2626', borderColor: '#fca5a5' }}>
@@ -48,10 +48,27 @@ export default function JournalsPage() {
     <div className="journals-page" style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}>
       <DashboardContainer>
         <DashboardGrid columns={2}>
-          <QuartileDistributionCard data={data?.quartileDistribution} />
-          <TopJournalRankingCard data={data?.topJournals} />
-          <ImpactMatrixCard data={data?.impactMatrixData} />
-          <MigrationAnalysisCard data={data?.migrationAnalysis} />
+          <QuartileDistributionCard 
+            data={quartile.data} 
+            loading={quartile.loading} 
+            error={quartile.error} 
+          />
+          <TopJournalRankingCard 
+            data={topRanking.data} 
+            loading={topRanking.loading} 
+            error={topRanking.error} 
+          />
+          <ImpactMatrixCard 
+            data={impactMatrix.data} 
+            loading={impactMatrix.loading} 
+            error={impactMatrix.error} 
+          />
+          <MigrationAnalysisCard 
+            data={migration.data}
+            isLoading={migration.loading}
+            error={migration.error}
+            onRetry={refetch}
+          />
         </DashboardGrid>
       </DashboardContainer>
     </div>

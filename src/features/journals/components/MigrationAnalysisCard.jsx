@@ -1,66 +1,184 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { Sankey, ResponsiveContainer, Tooltip } from 'recharts';
 import Card from '../../../shared/components/common/Card';
 
 const PeriodBadge = () => (
   <div className="mac-badge">
-    2024–<br/>2026
+    2024–2026
   </div>
 );
 
-const MigrationAnalysisCard = ({ data }) => {
-  if (!data) return null;
+const NODE_NAMES = {
+  SUBSCRIPTION: "SUBSCRIPTION",
+  HYBRID: "HYBRID",
+  FULL_OPEN_ACCESS: "FULL OPEN ACCESS",
+  LEGACY_MODEL: "LEGACY MODEL"
+};
+
+const MigrationAnalysisCard = ({ data, isLoading, error, onRetry }) => {
+  const isDataEmpty = !data || (data.totalCount === 0 && !data.flows?.length);
+
+  const sankeyData = useMemo(() => {
+    if (isDataEmpty) return { nodes: [], links: [] };
+    
+    // Filter flows with value > 0
+    const activeFlows = (data.flows || []).filter(flow => flow.value > 0);
+    
+    // Find all unique source and target names
+    const activeNodeNames = new Set();
+    activeFlows.forEach(flow => {
+      activeNodeNames.add(flow.source);
+      activeNodeNames.add(flow.target);
+    });
+
+    const ALL_NODES = [
+      { id: 'SUBSCRIPTION', name: NODE_NAMES.SUBSCRIPTION, fill: 'var(--color-neutral-800)', textColor: '#fff' },
+      { id: 'HYBRID', name: NODE_NAMES.HYBRID, fill: 'var(--color-neutral-500)', textColor: '#fff' },
+      { id: 'FULL_OPEN_ACCESS', name: NODE_NAMES.FULL_OPEN_ACCESS, fill: 'var(--color-primary-orange)', textColor: '#fff' },
+      { id: 'LEGACY_MODEL', name: NODE_NAMES.LEGACY_MODEL, fill: 'var(--color-neutral-200)', textColor: 'var(--color-neutral-800)' }
+    ];
+
+    const nodes = ALL_NODES.filter(node => activeNodeNames.has(node.id));
+
+    const nodeIndexMap = {};
+    nodes.forEach((node, index) => {
+      nodeIndexMap[node.id] = index;
+    });
+
+    const links = activeFlows.map(flow => ({
+      source: nodeIndexMap[flow.source],
+      target: nodeIndexMap[flow.target],
+      value: flow.value
+    }));
+
+    return { nodes, links };
+  }, [data, isDataEmpty]);
+
+  const CustomNode = ({ x, y, width, height, payload }) => {
+    // Đảm bảo khối màu không bao giờ bị quá lùn (tối thiểu 24px để nhét vừa chữ)
+    const rectHeight = Math.max(height, 24);
+    // Nếu khối bị đẩy cao lên, ta cũng điều chỉnh y một chút để nó vẫn nằm giữa luồng chảy
+    const rectY = height < 24 ? y - (24 - height) / 2 : y;
+
+    return (
+      <g>
+        <rect x={x} y={rectY} width={width} height={rectHeight} fill={payload.fill} rx="2" />
+        <foreignObject x={x} y={rectY - 20} width={width} height={rectHeight + 40}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', padding: '0 4px', textAlign: 'center' }}>
+             <span style={{ color: payload.textColor, fontSize: '10px', fontWeight: 'bold', letterSpacing: '0.05em', lineHeight: 1.2 }}>
+               {payload.name}
+             </span>
+          </div>
+        </foreignObject>
+      </g>
+    );
+  };
+
+  const CustomLink = (props) => {
+    const { sourceX, targetX, sourceY, targetY, sourceControlX, targetControlX, linkWidth, target } = props;
+    const isTargetFOA = target?.name === NODE_NAMES.FULL_OPEN_ACCESS;
+    const stroke = isTargetFOA ? 'var(--color-primary-orange)' : 'var(--color-neutral-400)';
+    
+    return (
+      <path
+        d={`
+          M${sourceX},${sourceY}
+          C${sourceControlX},${sourceY} ${targetControlX},${targetY} ${targetX},${targetY}
+        `}
+        stroke={stroke}
+        strokeWidth={Math.max(linkWidth, 1)}
+        fill="none"
+        strokeOpacity={isTargetFOA ? 0.3 : 0.25}
+        className="mac-link-anim"
+      />
+    );
+  };
+
+  const CustomTooltip = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      const data = payload[0].payload;
+      
+      return (
+        <div style={{ background: '#fff', border: '1px solid var(--color-neutral-200)', padding: '10px', borderRadius: '4px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}>
+          <p style={{ margin: 0, fontSize: '12px', color: 'var(--color-neutral-600)' }}>
+            Journals: <strong style={{ color: 'var(--color-neutral-900)' }}>{data.value}</strong>
+          </p>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  const renderContent = () => {
+    if (isLoading) {
+      return (
+        <div style={{ padding: '20px', textAlign: 'center', color: 'var(--color-neutral-500)', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%', minHeight: '350px' }}>
+          <div className="update-icon spin" style={{ width: '24px', height: '24px', border: '3px solid var(--color-primary-orange)', borderTopColor: 'transparent', borderRadius: '50%', margin: '0 auto 10px' }}></div>
+          Loading migration analysis...
+        </div>
+      );
+    }
+
+    if (error) {
+      const isNotFoundError = error.toLowerCase().includes('not found') || error.toLowerCase().includes('404');
+      if (isNotFoundError) {
+        return (
+          <div style={{ padding: '20px', textAlign: 'center', color: 'var(--color-neutral-500)', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%', minHeight: '350px' }}>
+            No migration data available for this project (Project ID not found).
+          </div>
+        );
+      }
+      return (
+        <div style={{ padding: '20px', textAlign: 'center', color: '#dc2626', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%', minHeight: '350px' }}>
+          <p>{error}</p>
+          <button onClick={onRetry || (() => window.location.reload())} style={{ marginTop: '10px', padding: '5px 10px', background: 'var(--color-primary-orange)', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', alignSelf: 'center' }}>Retry</button>
+        </div>
+      );
+    }
+
+    if (isDataEmpty || sankeyData.links.length === 0) {
+      return (
+        <div style={{ padding: '20px', textAlign: 'center', color: 'var(--color-neutral-500)', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%', minHeight: '350px' }}>
+          No migration data available for this project.
+        </div>
+      );
+    }
+
+    return (
+      <div className="mac-content">
+        <div className="mac-chart-container" aria-label="Migration Analysis Flow Chart">
+          <ResponsiveContainer width="100%" height="100%">
+            <Sankey
+              data={sankeyData}
+              node={<CustomNode />}
+              link={<CustomLink />}
+              nodePadding={50}
+              margin={{ left: 20, right: 20, top: 20, bottom: 20 }}
+              nodeWidth={110}
+            >
+              <Tooltip content={<CustomTooltip />} />
+            </Sankey>
+          </ResponsiveContainer>
+        </div>
+        <div className="mac-footer">
+          <span className="mac-footer-metric">TOTAL: {data.totalCount}</span>
+          <span className="mac-footer-metric">TRANSITION RATE: +{data.transitionRate}%</span>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <Card 
       title="Migration Analysis" 
       subtitle="Subscription to Open Access Transition" 
       actions={<PeriodBadge />}
-      className="mac-card"
+      className="mac-card flex flex-col h-full"
     >
-      <div className="mac-content">
-        <div className="mac-chart-container" aria-label="Migration Analysis Flow Chart">
-          <svg viewBox="0 0 400 300" className="mac-svg" preserveAspectRatio="xMidYMid meet">
-            <path className="mac-link-orange" d="M 100 30 C 200 30, 200 30, 300 30 L 300 100 C 200 100, 200 100, 100 100 Z" />
-            <path className="mac-link-gray" d="M 100 100 C 200 100, 200 180, 300 180 L 300 220 C 200 220, 200 140, 100 140 Z" />
-            <path className="mac-link-orange" d="M 100 160 C 200 160, 200 100, 300 100 L 300 150 C 200 150, 200 185, 100 185 Z" />
-            <path className="mac-link-gray" d="M 100 185 C 200 185, 200 220, 300 220 L 300 240 C 200 240, 200 205, 100 205 Z" />
-
-            <rect x="20" y="30" width="80" height="110" className="mac-node mac-node-sub" />
-            <foreignObject x="20" y="30" width="80" height="110">
-              <div className="mac-node-html">
-                <span className="mac-node-text mac-text-light">SUBSCRIPTION</span>
-              </div>
-            </foreignObject>
-
-            <rect x="20" y="160" width="80" height="45" className="mac-node mac-node-hyb" />
-            <foreignObject x="20" y="160" width="80" height="45">
-              <div className="mac-node-html">
-                <span className="mac-node-text mac-text-light">HYBRID</span>
-              </div>
-            </foreignObject>
-
-            <rect x="300" y="30" width="80" height="120" className="mac-node mac-node-foa" />
-            <foreignObject x="300" y="30" width="80" height="120">
-              <div className="mac-node-html">
-                <span className="mac-node-text mac-text-light">FULL OPEN ACCESS</span>
-              </div>
-            </foreignObject>
-
-            <rect x="300" y="180" width="80" height="60" className="mac-node mac-node-leg" />
-            <foreignObject x="300" y="180" width="80" height="60">
-              <div className="mac-node-html">
-                <span className="mac-node-text mac-text-dark">LEGACY MODEL</span>
-              </div>
-            </foreignObject>
-          </svg>
-        </div>
-        <div className="mac-footer">
-          <span className="mac-footer-metric">TOTAL: {data.total}</span>
-          <span className="mac-footer-metric">TRANSITION RATE: +{data.transitionRate}%</span>
-        </div>
-      </div>
+      {renderContent()}
     </Card>
   );
 };
+
 
 export default MigrationAnalysisCard;
