@@ -14,6 +14,7 @@ export const DashboardProvider = ({ children, projectId }) => {
   const [filters, setFilters] = useState({
     timeframe: 'Last 5 Years',
     domain: 'All Domains',
+    subject_category: 'All Categories',
     region: 'Global Distribution'
   });
 

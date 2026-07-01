@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { FiFilter, FiRefreshCw } from 'react-icons/fi';
 import { useDashboardContext } from '../contexts/DashboardContext';
+import apiClient from '../../../shared/api/axios';
 import '../styles/DashboardFilters.css';
 
 const TIMEFRAME_OPTIONS = [
@@ -10,14 +11,6 @@ const TIMEFRAME_OPTIONS = [
   'Last 10 Years'
 ];
 
-const DOMAIN_OPTIONS = [
-  'All Domains',
-  'Biological Sciences',
-  'Medical Research',
-  'Computer Science',
-  'Environmental Science'
-];
-
 const REGION_OPTIONS = [
   'Global Distribution',
   'North America',
@@ -25,12 +18,57 @@ const REGION_OPTIONS = [
   'Asia-Pacific'
 ];
 
-/**
- * DashboardFilters implements the filter control system.
- * Allows timeframe, domain, and region selection with an update action.
- */
 export default function DashboardFilters() {
-  const { filters, updateFilter, refreshData, loading } = useDashboardContext();
+  const { filters, updateFilter, refreshData, loading, projectId } = useDashboardContext();
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const queryProjectId = searchParams.get('project_id') || searchParams.get('projectId');
+    const rawProjectId = (projectId && projectId !== 'default-id')
+      ? projectId
+      : (queryProjectId && queryProjectId !== 'default-id' ? queryProjectId : undefined);
+
+    const cleanProjectId = rawProjectId && !isNaN(Number(rawProjectId))
+      ? Number(rawProjectId)
+      : undefined;
+
+    const loadCategories = async () => {
+      try {
+        const res = await apiClient.get(`/analytics/subject-categories`, {
+          params: { project_id: cleanProjectId }
+        });
+        if (res) {
+          let items = [];
+          if (Array.isArray(res.data)) {
+            items = res.data;
+          } else if (res.data && Array.isArray(res.data.items)) {
+            items = res.data.items;
+          } else if (Array.isArray(res.data?.data)) {
+            items = res.data.data;
+          } else if (Array.isArray(res.data?.data?.items)) {
+            items = res.data.data.items;
+          } else if (Array.isArray(res)) {
+            items = res;
+          } else if (Array.isArray(res.items)) {
+            items = res.items;
+          }
+
+          const mapped = items.map(item => ({
+            id: item.id || item.subject_category_id,
+            name: item.name || item.display_name
+          }));
+          setCategories(mapped);
+        } else {
+          setCategories([]);
+        }
+      } catch (err) {
+        console.error('Failed to fetch project subject categories:', err);
+        setCategories([]);
+      }
+    };
+    loadCategories();
+  }, [projectId, window.location.search]);
 
   const handleUpdate = () => {
     refreshData();
@@ -44,10 +82,10 @@ export default function DashboardFilters() {
             <FiFilter aria-hidden="true" />
             <span>Filters</span>
           </div>
-          
+
           <div className="dashboard-filter-group">
             <label htmlFor="timeframe-select" className="visually-hidden">Timeframe</label>
-            <select 
+            <select
               id="timeframe-select"
               className="dashboard-filter-select"
               value={filters.timeframe}
@@ -58,20 +96,23 @@ export default function DashboardFilters() {
           </div>
 
           <div className="dashboard-filter-group">
-            <label htmlFor="domain-select" className="visually-hidden">Domain</label>
-            <select 
-              id="domain-select"
+            <label htmlFor="category-select" className="visually-hidden">Subject Category</label>
+            <select
+              id="category-select"
               className="dashboard-filter-select"
-              value={filters.domain}
-              onChange={(e) => updateFilter('domain', e.target.value)}
+              value={filters.subject_category}
+              onChange={(e) => updateFilter('subject_category', e.target.value)}
             >
-              {DOMAIN_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+              <option value="All Categories">All Categories</option>
+              {Array.isArray(categories) && categories.map(cat => (
+                <option key={cat.id} value={cat.name}>{cat.name}</option>
+              ))}
             </select>
           </div>
 
           <div className="dashboard-filter-group">
             <label htmlFor="region-select" className="visually-hidden">Region</label>
-            <select 
+            <select
               id="region-select"
               className="dashboard-filter-select"
               value={filters.region}
@@ -82,7 +123,7 @@ export default function DashboardFilters() {
           </div>
         </div>
 
-        <button 
+        <button
           className={`dashboard-update-btn ${loading ? 'loading' : ''}`}
           onClick={handleUpdate}
           disabled={loading}
@@ -99,8 +140,8 @@ export default function DashboardFilters() {
           <span className="chip-value">{filters.timeframe}</span>
         </div>
         <div className="dashboard-chip">
-          <span className="chip-label">Domain:</span>
-          <span className="chip-value">{filters.domain}</span>
+          <span className="chip-label">Subject Category:</span>
+          <span className="chip-value">{filters.subject_category}</span>
         </div>
         <div className="dashboard-chip">
           <span className="chip-label">Region:</span>

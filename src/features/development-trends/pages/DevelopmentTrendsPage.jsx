@@ -24,7 +24,7 @@ const placeholderStyle = {
 
 export default function DevelopmentTrendsPage() {
   const { filters } = useDashboardContext();
-  const { data, loading, error } = useDevelopmentTrendsData(filters);
+  const { data, loading, error, refetch } = useDevelopmentTrendsData(filters);
 
   if (loading && !data) {
     return (
@@ -37,8 +37,14 @@ export default function DevelopmentTrendsPage() {
 
   if (error) {
     return (
-      <div style={{ ...placeholderStyle, height: '400px', flexDirection: 'column', gap: '16px', color: '#dc2626', borderColor: '#fca5a5' }}>
-        <div>Unable to load development trends data. Try again later.</div>
+      <div style={{ ...placeholderStyle, height: '400px', flexDirection: 'column', gap: '16px', color: '#dc2626', borderColor: '#fca5a5', padding: '20px', textAlign: 'center' }}>
+        <div>Không thể tải dữ liệu phân tích. Vui lòng thử lại.</div>
+        <button 
+          onClick={refetch} 
+          style={{ marginTop: '8px', padding: '8px 16px', background: 'var(--color-primary-orange)', color: '#fff', border: 'none', borderRadius: 'var(--radius-md)', cursor: 'pointer', fontWeight: 600 }}
+        >
+          Thử lại
+        </button>
       </div>
     );
   }
@@ -49,13 +55,13 @@ export default function DevelopmentTrendsPage() {
         <DashboardGrid columns={2}>
           <PublicationTrendCard data={data?.publicationTrend} />
           <CitationMirroringCard data={data?.citationMirroring} />
-          <TopicEvolutionCard data={data?.topicEvolution?.data} meta={data?.topicEvolution?.meta} />
+          <TopicEvolutionCard topicEvolution={data?.topicEvolution} />
           <FrontierDetectionCard data={data?.frontierDetection} />
         </DashboardGrid>
       </DashboardSection>
 
       <DashboardSection title="Future Forecast Insights" className="dashboard-insights-section">
-        <FutureForecastInsights data={data?.futureInsights} />
+        <FutureForecastInsights data={data?.forecastInsights} />
       </DashboardSection>
     </>
   );
