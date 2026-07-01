@@ -25,12 +25,12 @@ export default function DashboardFilters() {
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
     const queryProjectId = searchParams.get('project_id') || searchParams.get('projectId');
-    const rawProjectId = (projectId && projectId !== 'default-id') 
-      ? projectId 
+    const rawProjectId = (projectId && projectId !== 'default-id')
+      ? projectId
       : (queryProjectId && queryProjectId !== 'default-id' ? queryProjectId : undefined);
 
-    const cleanProjectId = rawProjectId && !isNaN(Number(rawProjectId)) 
-      ? Number(rawProjectId) 
+    const cleanProjectId = rawProjectId && !isNaN(Number(rawProjectId))
+      ? Number(rawProjectId)
       : undefined;
 
     const loadCategories = async () => {
@@ -39,10 +39,17 @@ export default function DashboardFilters() {
           params: { project_id: cleanProjectId }
         });
         if (res && res.data) {
-          setCategories(res.data);
+          if (Array.isArray(res.data)) {
+            setCategories(res.data);
+          } else if (Array.isArray(res.data.data)) {
+            setCategories(res.data.data);
+          } else {
+            setCategories([]);
+          }
         }
       } catch (err) {
         console.error('Failed to fetch project subject categories:', err);
+        setCategories([]);
       }
     };
     loadCategories();
@@ -60,10 +67,10 @@ export default function DashboardFilters() {
             <FiFilter aria-hidden="true" />
             <span>Filters</span>
           </div>
-          
+
           <div className="dashboard-filter-group">
             <label htmlFor="timeframe-select" className="visually-hidden">Timeframe</label>
-            <select 
+            <select
               id="timeframe-select"
               className="dashboard-filter-select"
               value={filters.timeframe}
@@ -75,14 +82,14 @@ export default function DashboardFilters() {
 
           <div className="dashboard-filter-group">
             <label htmlFor="category-select" className="visually-hidden">Subject Category</label>
-            <select 
+            <select
               id="category-select"
               className="dashboard-filter-select"
               value={filters.subject_category}
               onChange={(e) => updateFilter('subject_category', e.target.value)}
             >
               <option value="All Categories">All Categories</option>
-              {categories.map(cat => (
+              {Array.isArray(categories) && categories.map(cat => (
                 <option key={cat.id} value={cat.name}>{cat.name}</option>
               ))}
             </select>
@@ -90,7 +97,7 @@ export default function DashboardFilters() {
 
           <div className="dashboard-filter-group">
             <label htmlFor="region-select" className="visually-hidden">Region</label>
-            <select 
+            <select
               id="region-select"
               className="dashboard-filter-select"
               value={filters.region}
@@ -101,7 +108,7 @@ export default function DashboardFilters() {
           </div>
         </div>
 
-        <button 
+        <button
           className={`dashboard-update-btn ${loading ? 'loading' : ''}`}
           onClick={handleUpdate}
           disabled={loading}
