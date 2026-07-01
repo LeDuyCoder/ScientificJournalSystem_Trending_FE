@@ -38,14 +38,29 @@ export default function DashboardFilters() {
         const res = await apiClient.get(`/analytics/subject-categories`, {
           params: { project_id: cleanProjectId }
         });
-        if (res && res.data) {
+        if (res) {
+          let items = [];
           if (Array.isArray(res.data)) {
-            setCategories(res.data);
-          } else if (Array.isArray(res.data.data)) {
-            setCategories(res.data.data);
-          } else {
-            setCategories([]);
+            items = res.data;
+          } else if (res.data && Array.isArray(res.data.items)) {
+            items = res.data.items;
+          } else if (Array.isArray(res.data?.data)) {
+            items = res.data.data;
+          } else if (Array.isArray(res.data?.data?.items)) {
+            items = res.data.data.items;
+          } else if (Array.isArray(res)) {
+            items = res;
+          } else if (Array.isArray(res.items)) {
+            items = res.items;
           }
+
+          const mapped = items.map(item => ({
+            id: item.id || item.subject_category_id,
+            name: item.name || item.display_name
+          }));
+          setCategories(mapped);
+        } else {
+          setCategories([]);
         }
       } catch (err) {
         console.error('Failed to fetch project subject categories:', err);

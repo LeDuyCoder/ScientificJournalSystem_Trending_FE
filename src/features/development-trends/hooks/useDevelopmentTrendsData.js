@@ -3,7 +3,7 @@ import { useDashboardContext } from '../../dashboard/contexts/DashboardContext';
 import { fetchDevelopmentTrendsData } from '../services/developmentTrends.service';
 
 export function useDevelopmentTrendsData() {
-  const { filters, refreshTrigger, setLoading: setDashboardLoading } = useDashboardContext();
+  const { projectId, filters, refreshTrigger, setLoading: setDashboardLoading } = useDashboardContext();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -12,8 +12,9 @@ export function useDevelopmentTrendsData() {
     setLoading(true);
     setDashboardLoading(true);
     setError(null);
+    setData(null);
     try {
-      const result = await fetchDevelopmentTrendsData(filters);
+      const result = await fetchDevelopmentTrendsData(projectId, filters);
       setData(result);
     } catch (err) {
       setError(err?.message || 'Failed to load development trends data');
@@ -21,7 +22,7 @@ export function useDevelopmentTrendsData() {
       setLoading(false);
       setDashboardLoading(false);
     }
-  }, [filters, setDashboardLoading]);
+  }, [projectId, filters, setDashboardLoading]);
 
   useEffect(() => {
     loadData();
