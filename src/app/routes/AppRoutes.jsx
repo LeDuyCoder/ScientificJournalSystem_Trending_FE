@@ -7,11 +7,18 @@ import CollaborationAnalyticsPage from '../../features/volume/pages/Collaboratio
 import KeywordsNetworksPage from '../../features/volume/pages/KeywordsNetworksPage';
 import { AnalyticsDashboard } from '../../features/analytics/pages/AnalyticsDashboard';
 import CuratedArticlesPage from '../../features/analytics/pages/CuratedArticlesPage';
+import NotFoundPage from '../../pages/NotFoundPage';
+import ProjectsPage from '../../features/projects/pages/ProjectsPage';
 
 export default function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/project/default-id/dashboard" replace />} />
+      <Route path="/" element={<Navigate to="/projects" replace />} />
+
+      <Route path="/projects" element={<DashboardLayout />}>
+        <Route index element={<ProjectsPage />} />
+      </Route>
+
 
       <Route path="/project/:id" element={<DashboardLayout />}>
 
@@ -25,14 +32,17 @@ export default function AppRoutes() {
           <Route path="journal-metrics" element={<CollaborationAnalyticsPage />} />
           <Route path="keywords-networks" element={<KeywordsNetworksPage />} />
         </Route>
-        
+
         <Route path="analytics">
           <Route index element={<AnalyticsDashboard />} />
           <Route path="curated-articles" element={<CuratedArticlesPage />} />
         </Route>
+
+        <Route path="*" element={<NotFoundPage />} />
       </Route>
 
       <Route path="/embed/article-graph" element={<ArticleGraphEmbedPage />} />
+      <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );
 }
