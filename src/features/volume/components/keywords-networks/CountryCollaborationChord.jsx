@@ -1,13 +1,48 @@
 import React from 'react';
 import { FiTrendingUp } from 'react-icons/fi';
 
-const CountryCollaborationChord = () => {
-  const links = [
+const CountryCollaborationChord = ({ data }) => {
+  const COLORS = [
+    'var(--color-neutral-700)',
+    'var(--color-neutral-800)',
+    'var(--color-primary-orange)',
+    'var(--color-neutral-500)',
+    'var(--color-neutral-600)'
+  ];
+
+  const defaultLinks = [
     { source: 'US', target: 'China', papers: '4.8k', pct: '42%', growth: '+12%', color: 'var(--color-neutral-700)' },
     { source: 'EU', target: 'US', papers: '3.2k', pct: '28%', growth: '+8%', color: 'var(--color-neutral-800)' },
     { source: 'Japan', target: 'EU', papers: '1.5k', pct: '13%', growth: '+18%', color: 'var(--color-primary-orange)' },
     { source: 'China', target: 'Japan', papers: '2.1k', pct: '17%', growth: '+5%', color: 'var(--color-neutral-500)' },
   ];
+
+  let links = defaultLinks;
+
+  if (Array.isArray(data) && data.length > 0) {
+    const total = data.reduce((sum, item) => sum + (item.coAuthorshipValue || 0), 0);
+    links = data.map((item, idx) => {
+      const formatName = (c) => {
+        const lower = c.toLowerCase();
+        if (lower === 'united states') return 'US';
+        if (lower === 'european union') return 'EU';
+        return c.charAt(0).toUpperCase() + lower.slice(1);
+      };
+
+      const rawPapers = item.coAuthorshipValue || 0;
+      const papers = rawPapers >= 1000 ? `${(rawPapers / 1000).toFixed(1)}k` : String(rawPapers);
+      const pct = total > 0 ? `${Math.round((rawPapers / total) * 100)}%` : '0%';
+
+      return {
+        source: formatName(item.source),
+        target: formatName(item.target),
+        papers,
+        pct,
+        growth: item.growth || '+0%',
+        color: COLORS[idx % COLORS.length]
+      };
+    }).slice(0, 5);
+  }
 
   return (
     <div className="kn-card">
@@ -25,7 +60,7 @@ const CountryCollaborationChord = () => {
             <g transform="translate(200, 200)">
               {/* Outer Arcs */}
               <path d="M -70,-133 A 150,150 0 0,1 125,-82" fill="none" stroke="var(--color-neutral-700)" strokeWidth="8" strokeLinecap="round" />
-              <path d="M 135,-65 A 150,150 0 0,1 145,35" fill="none" stroke="var(--color-neutral-500)" strokeWidth="8" strokeLinecap="round" />
+              <path d="M 135,-65 A 150,150 0 0,1 145,35" fill="none" stroke="var(--color-neutral-50)" strokeWidth="8" strokeLinecap="round" />
               <path d="M 135,65 A 150,150 0 0,1 -10,149" fill="none" stroke="var(--color-primary-orange)" strokeWidth="8" strokeLinecap="round" />
               <path d="M -30,147 A 150,150 0 0,1 -100,111" fill="none" stroke="var(--color-neutral-800)" strokeWidth="8" strokeLinecap="round" />
               <path d="M -115,95 A 150,150 0 0,1 -149,-10" fill="none" stroke="var(--color-primary-orange)" strokeWidth="8" strokeLinecap="round" />
@@ -36,10 +71,10 @@ const CountryCollaborationChord = () => {
               <path d="M 120,-75 Q 0,0 -20,140" fill="none" stroke="var(--color-neutral-400)" strokeWidth="1.5" opacity="0.5" />
               <path d="M 140,-50 Q 0,0 -120,-10" fill="none" stroke="var(--color-primary-orange)" strokeWidth="1.5" opacity="0.4" />
               <path d="M 140,20 Q 0,0 -80,110" fill="none" stroke="var(--color-neutral-400)" strokeWidth="1.5" opacity="0.5" />
-              <path d="M 125,75 Q 0,0 -80,-115" fill="none" stroke="var(--color-primary-orange)" strokeWidth="1.5" opacity="0.6" />
+              <path d="M 125,75 Q 0,0 -80,-115" fill="none" stroke="var(--color-primary-orange)" strokeWidth="1.6" opacity="0.6" />
               <path d="M 80,125 Q 0,0 -115,90" fill="none" stroke="var(--color-neutral-400)" strokeWidth="1.5" opacity="0.4" />
               <path d="M 10,145 Q 0,0 -50,-135" fill="none" stroke="var(--color-primary-orange)" strokeWidth="1.5" opacity="0.5" />
-              <path d="M -135,45 Q 0,0 -10,-140" fill="none" stroke="var(--color-neutral-400)" strokeWidth="1.5" opacity="0.6" />
+              <path d="M -135,45 Q 0,0 -10,-140" fill="none" stroke="var(--color-neutral-400)" strokeWidth="1.6" opacity="0.6" />
               
               {/* Labels */}
               <g transform="translate(0, -170)">
@@ -47,7 +82,7 @@ const CountryCollaborationChord = () => {
                 <text x="4" y="0" textAnchor="start" fontSize="9" fill="var(--color-neutral-800)" fontWeight="700">UNITED STATES</text>
               </g>
               <g transform="translate(170, 0)">
-                <rect x="-10" y="-8" width="8" height="4" fill="var(--color-neutral-500)" rx="1" />
+                <rect x="-10" y="-8" width="8" height="4" fill="var(--color-neutral-50)" rx="1" />
                 <text x="4" y="0" textAnchor="start" fontSize="9" fill="var(--color-neutral-800)" fontWeight="700">CHINA</text>
               </g>
               <g transform="translate(-30, 180)">

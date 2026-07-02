@@ -1,6 +1,9 @@
 import { FiExternalLink } from 'react-icons/fi';
 
-const ConceptualProximityCard = () => {
+const ConceptualProximityCard = ({ data }) => {
+  const nodeDensity = data?.nodeDensity ?? 0.82;
+  const description = data?.description || 'Strong thematic correlation between LLMs and Ethical Alignment paradigms.';
+
   return (
     <div className="kn-card">
       <div className="kn-card-header">
@@ -24,10 +27,10 @@ const ConceptualProximityCard = () => {
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '8px' }}>
         <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-neutral-600)' }}>Node Density</div>
-        <div style={{ fontSize: '1.25rem', fontWeight: 700 }}>0.82</div>
+        <div style={{ fontSize: '1.25rem', fontWeight: 700 }}>{nodeDensity}</div>
       </div>
       <p className="kn-stat-desc" style={{ fontSize: '0.75rem' }}>
-        Strong thematic correlation between LLMs and Ethical Alignment paradigms.
+        {description}
       </p>
     </div>
   );

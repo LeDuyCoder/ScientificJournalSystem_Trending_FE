@@ -2,6 +2,7 @@ import React from 'react';
 import { Outlet, useParams, Navigate } from 'react-router-dom';
 import Sidebar from '../sidebar/Sidebar';
 import AppHeader from './AppHeader/AppHeader';
+import { DashboardProvider } from '../../../features/dashboard/contexts/DashboardContext';
 
 /**
  * DashboardLayout - Shared layout component.
@@ -15,15 +16,17 @@ const DashboardLayout = () => {
   }
 
   return (
-    <div className="app-container">
-      <Sidebar />
-      <div className="app-main-content-wrapper" style={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0 }}>
-        <AppHeader />
-        <main className="app-main-content">
-          <Outlet /> 
-        </main>
+    <DashboardProvider projectId={id}>
+      <div className="app-container">
+        <Sidebar />
+        <div className="app-main-content-wrapper" style={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: 0 }}>
+          <AppHeader />
+          <main className="app-main-content">
+            <Outlet /> 
+          </main>
+        </div>
       </div>
-    </div>
+    </DashboardProvider>
   );
 };
 
