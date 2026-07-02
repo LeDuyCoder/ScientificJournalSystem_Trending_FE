@@ -1,70 +1,40 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiPlus, FiFilter, FiTrendingUp, FiCheck, FiX, FiChevronDown } from 'react-icons/fi';
+import { FiFilter, FiTrendingUp, FiCheck, FiChevronDown } from 'react-icons/fi';
 import { BiSortAlt2 } from 'react-icons/bi';
+import { coreApiClient } from '../../../shared/api/axios';
+import ErrorStateSection from '../../../shared/components/common/ErrorStateSection';
 import '../styles/ProjectsPage.css';
 
-const INITIAL_PROJECTS = [
-  {
-    id: 'neural-network-mapping',
-    title: 'Neural Network Mapping',
-    domain: 'ARTIFICIAL INTELLIGENCE',
-    tags: ['DEEP LEARNING', 'CNN', 'RNN', 'TOPOLOGY'],
+const mapProjectFromApi = (project) => {
+  const projectId = project.project_id ?? project.id;
+  const title = project.title || project.project_name || 'Untitled Project';
+  const subjectArea = project.subject_area || project.domain || 'GENERAL';
+  const createdAt = project.created_at || project.updated_at || new Date().toISOString();
+
+  return {
+    id: String(projectId),
+    title,
+    domain: String(subjectArea).toUpperCase(),
+    tags: [
+      `JOURNALS: ${project.journal_count ?? 0}`,
+      `KEYWORDS: ${project.keyword_count ?? 0}`,
+      `ARTICLES: ${project.article_count ?? 0}`,
+    ],
     creator: {
-      name: 'Julian Vane',
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80',
+      name: 'ResearchPulse',
+      avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(title)}&background=F97316&color=fff`,
     },
-    modifiedAt: '2023-10-20',
-  },
-  {
-    id: 'quantum-computing-algorithms',
-    title: 'Quantum Computing Algorithms',
-    domain: 'QUANTUM PHYSICS',
-    tags: ['ALGORITHMS', 'SIMULATION', 'CRYPTOGRAPHY', 'QUBIT'],
-    creator: {
-      name: 'Sarah Connor',
-      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=100&q=80',
-    },
-    modifiedAt: '2023-11-12',
-  },
-  {
-    id: 'biomedical-text-mining',
-    title: 'Biomedical Text Mining',
-    domain: 'BIOINFORMATICS',
-    tags: ['NLP', 'PUBMED', 'GENOMICS', 'BERT'],
-    creator: {
-      name: 'David Chen',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80',
-    },
-    modifiedAt: '2023-09-05',
-  },
-  {
-    id: 'climate-change-trend-analysis',
-    title: 'Climate Change Trend Analysis',
-    domain: 'ENVIRONMENTAL SCIENCE',
-    tags: ['METEOROLOGY', 'TIME-SERIES', 'GLOBAL-WARMING', 'TRENDS'],
-    creator: {
-      name: 'Emma Watson',
-      avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=100&q=80',
-    },
-    modifiedAt: '2023-12-01',
-  },
-  {
-    id: 'blockchain-consensus-protocols',
-    title: 'Blockchain Consensus Protocols',
-    domain: 'COMPUTER NETWORKS',
-    tags: ['DISTRIBUTED-SYSTEMS', 'PROOF-OF-STAKE', 'SECURITY'],
-    creator: {
-      name: 'Alex Wright',
-      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=100&q=80',
-    },
-    modifiedAt: '2023-08-18',
-  }
-];
+    modifiedAt: createdAt,
+  };
+};
 
 export default function ProjectsPage() {
   const navigate = useNavigate();
-  const [projects, setProjects] = useState(INITIAL_PROJECTS);
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
   const [selectedDomain, setSelectedDomain] = useState('ALL');
   const [sortOrder, setSortOrder] = useState('NEWEST'); // NEWEST, OLDEST, A-Z
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
@@ -79,6 +49,29 @@ export default function ProjectsPage() {
   });
 
   const domains = ['ALL', 'ARTIFICIAL INTELLIGENCE', 'QUANTUM PHYSICS', 'BIOINFORMATICS', 'ENVIRONMENTAL SCIENCE', 'COMPUTER NETWORKS'];
+
+  const fetchProjects = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await coreApiClient.get('/api/v1/projects');
+      const items = Array.isArray(response?.data) 
+        ? response.data 
+        : (Array.isArray(response?.data?.data) ? response.data.data : []);
+      
+      const mapped = items.map(mapProjectFromApi);
+      setProjects(mapped);
+    } catch (err) {
+      console.error('Failed to fetch projects:', err);
+      setError(err.message || 'Không thể tải danh sách dự án');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProjects();
+  }, []);
 
   const handleProjectClick = (projectId) => {
     navigate(`/project/${projectId}/dashboard`);
@@ -229,17 +222,27 @@ export default function ProjectsPage() {
 
       {/* Projects Grid */}
       <div className="projects-grid">
-        {/* New Project Card */}
-        <div className="project-card new-project-card" onClick={() => setShowCreateModal(true)}>
-          <div className="new-project-icon-wrapper">
-            <FiPlus className="plus-icon" />
+        {loading ? (
+          <div style={{ gridColumn: '1 / -1', padding: '40px', textAlign: 'center', color: 'var(--color-neutral-500)' }}>
+            <div className="update-icon spin" style={{ width: '32px', height: '32px', border: '3px solid var(--color-primary-orange)', borderTopColor: 'transparent', borderRadius: '50%', margin: '0 auto 16px' }}></div>
+            <div>Đang tải danh sách dự án...</div>
           </div>
-          <h3 className="new-project-title">New Project</h3>
-          <p className="new-project-subtitle">Start fresh volume</p>
-        </div>
-
-        {/* Regular Project Cards */}
-        {sortedProjects.map(project => (
+        ) : error ? (
+          <div style={{ gridColumn: '1 / -1' }}>
+            <ErrorStateSection 
+              title="Lỗi tải dữ liệu"
+              message={error}
+              onRetry={fetchProjects}
+              minHeight={300}
+            />
+          </div>
+        ) : projects.length === 0 ? (
+          <div style={{ gridColumn: '1 / -1', padding: '60px', textAlign: 'center', color: 'var(--color-neutral-500)', backgroundColor: 'var(--color-surface)', borderRadius: 'var(--radius-lg)', border: '1px dashed var(--color-neutral-300)' }}>
+            <h3>Chưa có dự án nào</h3>
+            <p>Bạn chưa tạo dự án nghiên cứu nào. Vui lòng tạo dự án mới để bắt đầu.</p>
+          </div>
+        ) : (
+          sortedProjects.map(project => (
           <div 
             key={project.id} 
             className="project-card real-project-card"
@@ -279,7 +282,7 @@ export default function ProjectsPage() {
               </span>
             </div>
           </div>
-        ))}
+        )))}
       </div>
 
       {/* Create Modal */}
