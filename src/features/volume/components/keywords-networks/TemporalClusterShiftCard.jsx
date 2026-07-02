@@ -1,7 +1,15 @@
 import { FiClock } from 'react-icons/fi';
 
 const TemporalClusterShiftCard = ({ data }) => {
-  if (!data) return null;
+  const heatmap = data?.heatmap || [];
+  const driftEntropy = data?.driftEntropy || 'LOW';
+  const description = data?.description || 'Clusters are stabilizing around Green Hydrogen and Carbon Capture techs.';
+
+  // If no heatmap data, render a fallback preview grid
+  const renderHeatmap = heatmap.length > 0 ? heatmap : Array.from({ length: 56 }, (_, i) => ({
+    id: i,
+    intensity: Math.round((0.1 + Math.random() * 0.9) * 100) / 100
+  }));
 
   return (
     <div className="kn-card">
@@ -12,7 +20,7 @@ const TemporalClusterShiftCard = ({ data }) => {
 
       <div style={{ position: 'relative', margin: '16px 0', padding: '24px', backgroundColor: 'var(--color-neutral-50)', borderRadius: '4px' }}>
         <div className="kn-grid-heatmap">
-          {data.map((cell) => {
+          {renderHeatmap.map((cell) => {
             const opacity = 0.1 + cell.intensity * 0.9;
             const color = `rgba(249, 115, 22, ${opacity})`; // primary-orange with opacity
             return (
@@ -31,10 +39,10 @@ const TemporalClusterShiftCard = ({ data }) => {
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '8px' }}>
         <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-neutral-600)' }}>Drift Entropy</div>
-        <div style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--color-neutral-900)' }}>LOW</div>
+        <div style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--color-neutral-900)' }}>{driftEntropy}</div>
       </div>
       <p className="kn-stat-desc" style={{ fontSize: '0.75rem' }}>
-        Clusters are stabilizing around Green Hydrogen and Carbon Capture techs.
+        {description}
       </p>
     </div>
   );

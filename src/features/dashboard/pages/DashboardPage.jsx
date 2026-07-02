@@ -73,11 +73,5 @@ const DashboardContent = () => {
 };
 
 export default function DashboardPage() {
-  const { id } = useParams();
-  
-  return (
-    <DashboardProvider projectId={id}>
-      <DashboardContent />
-    </DashboardProvider>
-  );
+  return <DashboardContent />;
 }
