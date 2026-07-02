@@ -1,9 +1,9 @@
 import { FiShuffle } from 'react-icons/fi';
 
 const DomainCrossLinksCard = ({ data }) => {
-  const interDisciplinaryLinkage = data?.interDisciplinaryLinkage ?? 74;
-  const transferRate = data?.transferRate || '+12%';
-  const description = data?.description || 'Physics methodologies rapidly colonizing Financial Engineering domains.';
+  const interDisciplinaryLinkage = data?.interDisciplinaryLinkage ?? 0;
+  const transferRate = data?.transferRate || '0%';
+  const description = data?.description || 'No inter-disciplinary linkage data available for this timeframe.';
 
   return (
     <div className="kn-card">
