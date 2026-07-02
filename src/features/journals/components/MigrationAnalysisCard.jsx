@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { Sankey, ResponsiveContainer, Tooltip } from 'recharts';
 import Card from '../../../shared/components/common/Card';
+import InlineErrorState from '../../../shared/components/common/InlineErrorState';
 
 const PeriodBadge = () => (
   <div className="mac-badge">
@@ -129,10 +130,12 @@ const MigrationAnalysisCard = ({ data, isLoading, error, onRetry }) => {
         );
       }
       return (
-        <div style={{ padding: '20px', textAlign: 'center', color: '#dc2626', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%', minHeight: '350px' }}>
-          <p>{error}</p>
-          <button onClick={onRetry || (() => window.location.reload())} style={{ marginTop: '10px', padding: '5px 10px', background: 'var(--color-primary-orange)', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', alignSelf: 'center' }}>Retry</button>
-        </div>
+        <InlineErrorState 
+          title="Network Error"
+          message={error}
+          onRetry={onRetry || (() => window.location.reload())}
+          minHeight={350}
+        />
       );
     }
 

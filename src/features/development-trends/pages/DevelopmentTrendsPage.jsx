@@ -12,6 +12,7 @@ import { useTopicEvolutionQuery } from '../hooks/useTopicEvolutionQuery';
 import { useFrontierDetectionQuery } from '../hooks/useFrontierDetectionQuery';
 import { useForecastInsightsQuery } from '../hooks/useForecastInsightsQuery';
 import { useDashboardContext } from '../../dashboard/contexts/DashboardContext';
+import ErrorStateSection from '../../../shared/components/common/ErrorStateSection';
 import '../styles/DevelopmentTrendsPage.css';
 
 const placeholderStyle = {
@@ -49,15 +50,12 @@ export default function DevelopmentTrendsPage() {
 
   if (hasError) {
     return (
-      <div style={{ ...placeholderStyle, height: '400px', flexDirection: 'column', gap: '16px', color: '#dc2626', borderColor: '#fca5a5', padding: '20px', textAlign: 'center' }}>
-        <div>Không thể tải dữ liệu phân tích. Vui lòng thử lại.</div>
-        <button 
-          onClick={refreshData} 
-          style={{ marginTop: '8px', padding: '8px 16px', background: 'var(--color-primary-orange)', color: '#fff', border: 'none', borderRadius: 'var(--radius-md)', cursor: 'pointer', fontWeight: 600 }}
-        >
-          Thử lại
-        </button>
-      </div>
+      <ErrorStateSection 
+        title="Không thể tải dữ liệu"
+        message="Không thể tải dữ liệu phân tích phát triển và xu hướng. Vui lòng kiểm tra lại kết nối hoặc thử lại."
+        onRetry={refreshData}
+        minHeight={400}
+      />
     );
   }
 

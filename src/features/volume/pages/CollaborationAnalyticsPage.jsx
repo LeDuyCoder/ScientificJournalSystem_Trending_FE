@@ -10,10 +10,11 @@ import GlobalCollaborationNetwork from '../components/collaboration-analytics/Gl
 import TopicIntensityMatrix from '../components/collaboration-analytics/TopicIntensityMatrix';
 import CollaborationAnalyticsSkeleton from '../components/collaboration-analytics/CollaborationAnalyticsSkeleton';
 import { useCollaborationAnalytics } from '../hooks/useCollaborationAnalytics';
+import ErrorStateSection from '../../../shared/components/common/ErrorStateSection';
 import '../components/collaboration-analytics/CollaborationAnalytics.css';
 
 const CollaborationAnalyticsPage = () => {
-  const { data, isLoading, error } = useCollaborationAnalytics();
+  const { data, isLoading, error, refetch } = useCollaborationAnalytics();
 
   return (
     <>
@@ -23,10 +24,12 @@ const CollaborationAnalyticsPage = () => {
         {isLoading ? (
           <CollaborationAnalyticsSkeleton />
         ) : error ? (
-          <div className="kn-error">
-            <h2>Error</h2>
-            <p>{error}</p>
-          </div>
+          <ErrorStateSection 
+            title="Collaboration Analytics Failed"
+            message={error}
+            onRetry={refetch}
+            minHeight={400}
+          />
         ) : !data ? (
           <div className="kn-empty">
             <h2>No Data</h2>

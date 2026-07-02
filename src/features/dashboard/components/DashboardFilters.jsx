@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FiFilter, FiRefreshCw } from 'react-icons/fi';
 import { useDashboardContext } from '../contexts/DashboardContext';
+import FilterDropdown from './FilterDropdown';
 import apiClient from '../../../shared/api/axios';
 import '../styles/DashboardFilters.css';
 
@@ -84,42 +85,36 @@ export default function DashboardFilters() {
           </div>
 
           <div className="dashboard-filter-group">
-            <label htmlFor="timeframe-select" className="visually-hidden">Timeframe</label>
-            <select
-              id="timeframe-select"
-              className="dashboard-filter-select"
+            <FilterDropdown
+              title="Timeframe"
               value={filters.timeframe}
-              onChange={(e) => updateFilter('timeframe', e.target.value)}
-            >
-              {TIMEFRAME_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-            </select>
+              options={TIMEFRAME_OPTIONS}
+              onChange={(val) => updateFilter('timeframe', val)}
+              defaultValue="Last 5 Years"
+              searchable={false}
+            />
           </div>
 
           <div className="dashboard-filter-group">
-            <label htmlFor="category-select" className="visually-hidden">Subject Category</label>
-            <select
-              id="category-select"
-              className="dashboard-filter-select"
+            <FilterDropdown
+              title="Subject Area"
               value={filters.subject_category}
-              onChange={(e) => updateFilter('subject_category', e.target.value)}
-            >
-              <option value="All Categories">All Categories</option>
-              {Array.isArray(categories) && categories.map(cat => (
-                <option key={cat.id} value={cat.name}>{cat.name}</option>
-              ))}
-            </select>
+              options={['All Categories', ...(categories ? categories.map(c => c.name) : [])]}
+              onChange={(val) => updateFilter('subject_category', val)}
+              defaultValue="All Categories"
+              searchable={true}
+            />
           </div>
 
           <div className="dashboard-filter-group">
-            <label htmlFor="region-select" className="visually-hidden">Region</label>
-            <select
-              id="region-select"
-              className="dashboard-filter-select"
+            <FilterDropdown
+              title="Zone"
               value={filters.region}
-              onChange={(e) => updateFilter('region', e.target.value)}
-            >
-              {REGION_OPTIONS.map(opt => <option key={opt} value={opt}>{opt}</option>)}
-            </select>
+              options={REGION_OPTIONS}
+              onChange={(val) => updateFilter('region', val)}
+              defaultValue="Global Distribution"
+              searchable={false}
+            />
           </div>
         </div>
 

@@ -1,0 +1,9 @@
+.modern-error-section {
+  width: 100%;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.modern-error-section .modern-error-state-container {
+  min-height: var(--error-section-min-height, 300px);
+}

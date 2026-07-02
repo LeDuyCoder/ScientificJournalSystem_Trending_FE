@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Card from '../../../shared/components/common/Card';
+import InlineErrorState from '../../../shared/components/common/InlineErrorState';
 
-const TopJournalRankingCard = ({ data, loading, error }) => {
+const TopJournalRankingCard = ({ data, loading, error, onRetry }) => {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -34,16 +35,12 @@ const TopJournalRankingCard = ({ data, loading, error }) => {
           Loading ranking data...
         </div>
       ) : error ? (
-        (error.toLowerCase().includes('not found') || error.toLowerCase().includes('404')) ? (
-          <div style={{ padding: '20px', textAlign: 'center', color: 'var(--color-neutral-500)' }}>
-            No ranking data available for this project.
-          </div>
-        ) : (
-          <div style={{ padding: '20px', textAlign: 'center', color: '#dc2626' }}>
-            <p>{error}</p>
-            <button onClick={() => window.location.reload()} style={{ marginTop: '10px', padding: '5px 10px', background: 'var(--color-primary-orange)', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>Retry</button>
-          </div>
-        )
+        <InlineErrorState 
+          title="Network Error"
+          message={error.toLowerCase().includes('not found') || error.toLowerCase().includes('404') ? 'No ranking data available for this project.' : error}
+          onRetry={error.toLowerCase().includes('not found') || error.toLowerCase().includes('404') ? null : onRetry}
+          minHeight={200}
+        />
       ) : !data || data.length === 0 ? (
         <div style={{ padding: '20px', textAlign: 'center', color: 'var(--color-neutral-500)' }}>
           No journal data available for the selected filters.

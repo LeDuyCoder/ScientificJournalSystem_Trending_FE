@@ -51,8 +51,8 @@
   font-family: inherit;
   color: var(--color-neutral-900);
   background-color: var(--color-surface, #ffffff);
-  border: 1px solid var(--border-light, #e5e7eb);
-  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 9999px;
   outline: none;
   transition: all 0.2s ease;
 }
@@ -93,7 +93,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--color-primary-orange, #ff6b00);
+  color: #111827;
   transition: all 0.2s ease;
   position: relative;
   outline: none;
@@ -118,7 +118,9 @@
   justify-content: center;
 }
 
-.header-icon {
+.header-icon-button .header-icon {
+  color: #111827;
+  stroke: #111827;
   font-size: 20px;
 }
 
