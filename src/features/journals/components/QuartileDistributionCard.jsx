@@ -25,7 +25,7 @@ const DonutSegment = ({ percentage, offset, colorClass, isMounted }) => {
   );
 };
 
-const QuartileDistributionCard = ({ data }) => {
+const QuartileDistributionCard = ({ data, loading, error }) => {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -35,7 +35,21 @@ const QuartileDistributionCard = ({ data }) => {
     return () => clearTimeout(timer);
   }, []);
 
-  if (!data) return null;
+  const formatTotal = (num) => {
+    if (!num) return '0';
+    if (num >= 1000) return (num / 1000).toFixed(1) + 'k';
+    return num.toString();
+  };
+
+  const getColorToken = (quartile) => {
+    switch (quartile) {
+      case 'Q1': return 'orange';
+      case 'Q2': return 'dark';
+      case 'Q3': return 'gray';
+      case 'Q4': return 'lightGray';
+      default: return 'gray';
+    }
+  };
 
   return (
     <Card 
@@ -43,48 +57,74 @@ const QuartileDistributionCard = ({ data }) => {
       subtitle="Portfolio concentration by Scimago Quartile" 
       className="qdc-card"
     >
-      <div className="qdc-content">
-        <div className="qdc-chart-wrapper">
-          <div className="qdc-chart-container" aria-label="Quartile Distribution Donut Chart">
-            <svg viewBox="0 0 200 200" className="qdc-donut" preserveAspectRatio="xMidYMid meet">
-              <circle cx="100" cy="100" r="86" fill="transparent" strokeWidth="12" className="qdc-track" />
-              {data.items.map((item, index, arr) => {
-                const currentOffset = arr
-                  .slice(0, index)
-                  .reduce((sum, prevItem) => sum + prevItem.percentage, 0);
+      {loading ? (
+        <div style={{ padding: '20px', textAlign: 'center', color: 'var(--color-neutral-500)', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
+          <div className="update-icon spin" style={{ width: '24px', height: '24px', border: '3px solid var(--color-primary-orange)', borderTopColor: 'transparent', borderRadius: '50%', margin: '0 auto 10px' }}></div>
+          Loading quartile data...
+        </div>
+      ) : error ? (
+        (error.toLowerCase().includes('not found') || error.toLowerCase().includes('404')) ? (
+          <div style={{ padding: '20px', textAlign: 'center', color: 'var(--color-neutral-500)', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
+            No quartile data available for this project.
+          </div>
+        ) : (
+          <div style={{ padding: '20px', textAlign: 'center', color: '#dc2626', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
+            <p>{error}</p>
+            <button onClick={() => window.location.reload()} style={{ marginTop: '10px', padding: '5px 10px', background: 'var(--color-primary-orange)', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', alignSelf: 'center' }}>Retry</button>
+          </div>
+        )
+      ) : !data || !data.distribution || data.totalJournals === 0 ? (
+        <div style={{ padding: '20px', textAlign: 'center', color: 'var(--color-neutral-500)', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
+          No journal data available for the selected filters.
+        </div>
+      ) : (
+        <div className="qdc-content">
+          <div className="qdc-chart-wrapper">
+            <div className="qdc-chart-container" aria-label="Quartile Distribution Donut Chart">
+              <svg viewBox="0 0 200 200" className="qdc-donut" preserveAspectRatio="xMidYMid meet">
+                <circle cx="100" cy="100" r="86" fill="transparent" strokeWidth="12" className="qdc-track" />
+                {data.distribution.map((item, index, arr) => {
+                  const currentOffset = arr
+                    .slice(0, index)
+                    .reduce((sum, prevItem) => sum + prevItem.percentage, 0);
+                  const quartileCode = item.group.substring(0, 2);
 
+                  return (
+                    <DonutSegment 
+                      key={item.group}
+                      percentage={item.percentage}
+                      offset={currentOffset}
+                      colorClass={`qdc-color-${getColorToken(quartileCode)}`}
+                      isMounted={isMounted}
+                    />
+                  );
+                })}
+              </svg>
+              <div className="qdc-center">
+                <span className="qdc-center-value">{formatTotal(data.totalJournals)}</span>
+                <span className="qdc-center-label">TOTAL JOURNALS</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="qdc-legend-wrapper">
+            <div className="qdc-legend" role="list" aria-label="Quartile distribution legend">
+              {data.distribution.map((item) => {
+                const quartileCode = item.group.substring(0, 2);
                 return (
-                  <DonutSegment 
-                    key={item.quartile}
-                    percentage={item.percentage}
-                    offset={currentOffset}
-                    colorClass={`qdc-color-${item.colorToken}`}
-                    isMounted={isMounted}
-                  />
+                  <div className="qdc-legend-item" key={item.group} role="listitem">
+                    <div className={`qdc-legend-color qdc-bg-${getColorToken(quartileCode)}`} aria-hidden="true"></div>
+                    <div className="qdc-legend-text">
+                      <span className="qdc-legend-title">{item.group}</span>
+                      <span className="qdc-legend-percentage">{item.percentage}% of Portfolio</span>
+                    </div>
+                  </div>
                 );
               })}
-            </svg>
-            <div className="qdc-center">
-              <span className="qdc-center-value">2.4k</span>
-              <span className="qdc-center-label">TOTAL JOURNALS</span>
             </div>
           </div>
         </div>
-
-        <div className="qdc-legend-wrapper">
-          <div className="qdc-legend" role="list" aria-label="Quartile distribution legend">
-            {data.items.map((item) => (
-              <div className="qdc-legend-item" key={item.quartile} role="listitem">
-                <div className={`qdc-legend-color qdc-bg-${item.colorToken}`} aria-hidden="true"></div>
-                <div className="qdc-legend-text">
-                  <span className="qdc-legend-title">{item.quartile} ({item.label})</span>
-                  <span className="qdc-legend-percentage">{item.percentage}% of Portfolio</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      )}
     </Card>
   );
 };
