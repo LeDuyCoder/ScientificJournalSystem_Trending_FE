@@ -11,6 +11,7 @@ import { useDistribution } from '../hooks/useDistribution';
 import { useTopEntities } from '../hooks/useTopEntities';
 import { useQuartiles } from '../hooks/useQuartiles';
 import { mapFiltersToQueryParams } from '../services/globalEcosystem.service';
+import ErrorStateSection from '../../../shared/components/common/ErrorStateSection';
 import '../styles/GlobalEcosystemPage.css';
 
 const placeholderStyle = {
@@ -26,7 +27,7 @@ const placeholderStyle = {
 };
 
 export default function GlobalEcosystemPage() {
-  const { projectId, filters, refreshTrigger } = useDashboardContext();
+  const { projectId, filters, refreshTrigger, refreshData } = useDashboardContext();
   const queryParams = mapFiltersToQueryParams(filters);
 
   const { data: kpiStats, isLoading: isStatsLoading, error: statsError } = useDashboardStatsQuery(projectId, refreshTrigger);
@@ -49,9 +50,12 @@ export default function GlobalEcosystemPage() {
 
   if (hasError) {
     return (
-      <div style={{ ...placeholderStyle, height: '400px', flexDirection: 'column', gap: '16px', color: '#dc2626', borderColor: '#fca5a5' }}>
-        <div>Unable to load global ecosystem data. Try again later.</div>
-      </div>
+      <ErrorStateSection 
+        title="Data Loading Failed"
+        message="Unable to load global ecosystem data. Please check your connection or try again."
+        onRetry={refreshData}
+        minHeight={400}
+      />
     );
   }
 

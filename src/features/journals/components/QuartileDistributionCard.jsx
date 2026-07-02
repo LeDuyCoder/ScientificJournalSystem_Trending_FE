@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Card from '../../../shared/components/common/Card';
+import InlineErrorState from '../../../shared/components/common/InlineErrorState';
 
 const DonutSegment = ({ percentage, offset, colorClass, isMounted }) => {
   const radius = 86;
@@ -25,7 +26,7 @@ const DonutSegment = ({ percentage, offset, colorClass, isMounted }) => {
   );
 };
 
-const QuartileDistributionCard = ({ data, loading, error }) => {
+const QuartileDistributionCard = ({ data, loading, error, onRetry }) => {
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -63,16 +64,12 @@ const QuartileDistributionCard = ({ data, loading, error }) => {
           Loading quartile data...
         </div>
       ) : error ? (
-        (error.toLowerCase().includes('not found') || error.toLowerCase().includes('404')) ? (
-          <div style={{ padding: '20px', textAlign: 'center', color: 'var(--color-neutral-500)', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
-            No quartile data available for this project.
-          </div>
-        ) : (
-          <div style={{ padding: '20px', textAlign: 'center', color: '#dc2626', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
-            <p>{error}</p>
-            <button onClick={() => window.location.reload()} style={{ marginTop: '10px', padding: '5px 10px', background: 'var(--color-primary-orange)', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', alignSelf: 'center' }}>Retry</button>
-          </div>
-        )
+        <InlineErrorState 
+          title="Network Error"
+          message={error.toLowerCase().includes('not found') || error.toLowerCase().includes('404') ? 'No quartile data available for this project.' : error}
+          onRetry={error.toLowerCase().includes('not found') || error.toLowerCase().includes('404') ? null : onRetry}
+          minHeight={200}
+        />
       ) : !data || !data.distribution || data.totalJournals === 0 ? (
         <div style={{ padding: '20px', textAlign: 'center', color: 'var(--color-neutral-500)', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
           No journal data available for the selected filters.

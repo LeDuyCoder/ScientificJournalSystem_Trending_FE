@@ -7,7 +7,7 @@ import DashboardTabs from '../components/DashboardTabs';
 import GlobalEcosystemPage from '../../global-ecosystem/pages/GlobalEcosystemPage';
 import DevelopmentTrendsPage from '../../development-trends/pages/DevelopmentTrendsPage';
 import { DashboardProvider, useDashboardContext } from '../contexts/DashboardContext';
-import { FiAlertCircle } from 'react-icons/fi';
+import ErrorStateSection from '../../../shared/components/common/ErrorStateSection';
 import { useParams } from 'react-router-dom';
 
 const placeholderStyle = {
@@ -23,7 +23,7 @@ const placeholderStyle = {
 };
 
 const DashboardContent = () => {
-  const { error } = useDashboardContext();
+  const { error, refreshData } = useDashboardContext();
   const [activeTab, setActiveTab] = useState('global-ecosystem');
 
   const tabs = [
@@ -42,10 +42,12 @@ const DashboardContent = () => {
   const renderContent = () => {
     if (error) {
       return (
-        <div style={{ ...placeholderStyle, height: '400px', flexDirection: 'column', gap: '16px', color: '#dc2626', borderColor: '#fca5a5' }}>
-          <FiAlertCircle size={32} />
-          <div>Unable to load dashboard data. Try again later.</div>
-        </div>
+        <ErrorStateSection 
+          title="Dashboard Loading Failed"
+          message="Unable to load dashboard data. Please check your connection or try again."
+          onRetry={refreshData}
+          minHeight={400}
+        />
       );
     }
 

@@ -1,7 +1,7 @@
 import { FiBell, FiSettings, FiHelpCircle } from 'react-icons/fi';
 
 export const headerConfig = {
-  searchPlaceholder: "Search research, authors, or institutions...",
+  searchPlaceholder: "Tìm kiếm danh mục, bài báo...",
   userProfile: {
     initials: "JV",
     name: "Dr. Julian Voss",
