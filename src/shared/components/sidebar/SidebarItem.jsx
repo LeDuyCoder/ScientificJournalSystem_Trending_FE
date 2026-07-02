@@ -6,8 +6,10 @@ const SidebarItem = ({ item, collapsed }) => {
   const location = useLocation();
   const { id } = useParams();
 
-  // Build full path based on current project id from URL params
-  const basePath = id ? `/project/${id}/${item.segment}` : `/${item.segment}`;
+  // Build full path based on current project id from URL params or global flag
+  const basePath = item.isGlobal 
+    ? `/${item.segment}` 
+    : `/project/${id || 'default-id'}/${item.segment}`;
 
   // Determine whether current route matches menu item to apply active styling
   const isActive = location.pathname === basePath || location.pathname.startsWith(`${basePath}/`);

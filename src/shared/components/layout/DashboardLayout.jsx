@@ -1,5 +1,5 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useParams, Navigate } from 'react-router-dom';
 import Sidebar from '../sidebar/Sidebar';
 import AppHeader from './AppHeader/AppHeader';
 
@@ -8,6 +8,12 @@ import AppHeader from './AppHeader/AppHeader';
  * Includes the Sidebar, Header, and Main Content area.
  */
 const DashboardLayout = () => {
+  const { id } = useParams();
+
+  if (id === 'default-id') {
+    return <Navigate to="/projects" replace />;
+  }
+
   return (
     <div className="app-container">
       <Sidebar />
