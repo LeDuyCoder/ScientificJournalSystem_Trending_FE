@@ -10,14 +10,7 @@ const CountryCollaborationChord = ({ data }) => {
     'var(--color-neutral-600)'
   ];
 
-  const defaultLinks = [
-    { source: 'US', target: 'China', papers: '4.8k', pct: '42%', growth: '+12%', color: 'var(--color-neutral-700)' },
-    { source: 'EU', target: 'US', papers: '3.2k', pct: '28%', growth: '+8%', color: 'var(--color-neutral-800)' },
-    { source: 'Japan', target: 'EU', papers: '1.5k', pct: '13%', growth: '+18%', color: 'var(--color-primary-orange)' },
-    { source: 'China', target: 'Japan', papers: '2.1k', pct: '17%', growth: '+5%', color: 'var(--color-neutral-500)' },
-  ];
-
-  let links = defaultLinks;
+  let links = [];
 
   if (Array.isArray(data) && data.length > 0) {
     const total = data.reduce((sum, item) => sum + (item.coAuthorshipValue || 0), 0);
@@ -44,6 +37,86 @@ const CountryCollaborationChord = ({ data }) => {
     }).slice(0, 5);
   }
 
+  const uniqueCountries = Array.from(new Set(links.flatMap(l => [l.source, l.target])));
+  const countryColorMap = new Map();
+  uniqueCountries.forEach((c, idx) => {
+    countryColorMap.set(c, COLORS[idx % COLORS.length]);
+  });
+
+  const R = 120;
+  const countryAngles = new Map();
+  uniqueCountries.forEach((c, idx) => {
+    const angle = (idx / uniqueCountries.length) * 2 * Math.PI - Math.PI / 2;
+    countryAngles.set(c, angle);
+  });
+
+  const arcSize = uniqueCountries.length > 0 ? (Math.PI / uniqueCountries.length) * 0.45 : 0.2;
+
+  const arcs = uniqueCountries.map((c) => {
+    const angle = countryAngles.get(c);
+    const startAngle = angle - arcSize;
+    const endAngle = angle + arcSize;
+    const x1 = R * Math.cos(startAngle);
+    const y1 = R * Math.sin(startAngle);
+    const x2 = R * Math.cos(endAngle);
+    const y2 = R * Math.sin(endAngle);
+    
+    const color = countryColorMap.get(c);
+    
+    // Label placement
+    const lx = (R + 25) * Math.cos(angle);
+    const ly = (R + 25) * Math.sin(angle);
+    
+    let textAnchor = 'middle';
+    const cosVal = Math.cos(angle);
+    if (cosVal > 0.3) textAnchor = 'start';
+    else if (cosVal < -0.3) textAnchor = 'end';
+    
+    return (
+      <g key={c}>
+        <path 
+          d={`M ${x1} ${y1} A ${R} ${R} 0 0 1 ${x2} ${y2}`} 
+          fill="none" 
+          stroke={color} 
+          strokeWidth="8" 
+          strokeLinecap="round" 
+        />
+        <text 
+          x={lx} 
+          y={ly + 3} 
+          textAnchor={textAnchor} 
+          fontSize="9" 
+          fill="var(--color-neutral-800)" 
+          fontWeight="700"
+        >
+          {c.toUpperCase()}
+        </text>
+      </g>
+    );
+  });
+
+  const chords = links.map((link, idx) => {
+    const angle1 = countryAngles.get(link.source);
+    const angle2 = countryAngles.get(link.target);
+    if (angle1 === undefined || angle2 === undefined) return null;
+    
+    const x1 = (R - 6) * Math.cos(angle1);
+    const y1 = (R - 6) * Math.sin(angle1);
+    const x2 = (R - 6) * Math.cos(angle2);
+    const y2 = (R - 6) * Math.sin(angle2);
+    
+    return (
+      <path 
+        key={idx} 
+        d={`M ${x1} ${y1} Q 0 0 ${x2} ${y2}`} 
+        fill="none" 
+        stroke={link.color} 
+        strokeWidth="2.5" 
+        opacity="0.55" 
+      />
+    );
+  });
+
   return (
     <div className="kn-card">
       <div className="kn-card-header">
@@ -56,45 +129,26 @@ const CountryCollaborationChord = ({ data }) => {
       <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', gap: '32px', flexWrap: 'wrap', marginTop: '16px' }}>
         {/* Left side: Chord Diagram */}
         <div style={{ flex: '1 1 330px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <svg style={{ width: '100%', maxWidth: '330px', height: 'auto', display: 'block' }} viewBox="0 0 400 400" preserveAspectRatio="xMidYMid meet">
-            <g transform="translate(200, 200)">
-              {/* Outer Arcs */}
-              <path d="M -70,-133 A 150,150 0 0,1 125,-82" fill="none" stroke="var(--color-neutral-700)" strokeWidth="8" strokeLinecap="round" />
-              <path d="M 135,-65 A 150,150 0 0,1 145,35" fill="none" stroke="var(--color-neutral-50)" strokeWidth="8" strokeLinecap="round" />
-              <path d="M 135,65 A 150,150 0 0,1 -10,149" fill="none" stroke="var(--color-primary-orange)" strokeWidth="8" strokeLinecap="round" />
-              <path d="M -30,147 A 150,150 0 0,1 -100,111" fill="none" stroke="var(--color-neutral-800)" strokeWidth="8" strokeLinecap="round" />
-              <path d="M -115,95 A 150,150 0 0,1 -149,-10" fill="none" stroke="var(--color-primary-orange)" strokeWidth="8" strokeLinecap="round" />
-              <path d="M -145,-30 A 150,150 0 0,1 -90,-119" fill="none" stroke="var(--color-primary-orange)" strokeWidth="8" strokeLinecap="round" />
+          {links.length > 0 ? (
+            <svg style={{ width: '100%', maxWidth: '330px', height: 'auto', display: 'block' }} viewBox="0 0 400 400" preserveAspectRatio="xMidYMid meet">
+              <g transform="translate(200, 200)">
+                {/* Outer Arcs */}
+                {arcs}
 
-              {/* Chords (Connections) */}
-              <path d="M -60,-125 Q 0,0 -135,-20" fill="none" stroke="var(--color-primary-orange)" strokeWidth="1.5" opacity="0.6" />
-              <path d="M 120,-75 Q 0,0 -20,140" fill="none" stroke="var(--color-neutral-400)" strokeWidth="1.5" opacity="0.5" />
-              <path d="M 140,-50 Q 0,0 -120,-10" fill="none" stroke="var(--color-primary-orange)" strokeWidth="1.5" opacity="0.4" />
-              <path d="M 140,20 Q 0,0 -80,110" fill="none" stroke="var(--color-neutral-400)" strokeWidth="1.5" opacity="0.5" />
-              <path d="M 125,75 Q 0,0 -80,-115" fill="none" stroke="var(--color-primary-orange)" strokeWidth="1.6" opacity="0.6" />
-              <path d="M 80,125 Q 0,0 -115,90" fill="none" stroke="var(--color-neutral-400)" strokeWidth="1.5" opacity="0.4" />
-              <path d="M 10,145 Q 0,0 -50,-135" fill="none" stroke="var(--color-primary-orange)" strokeWidth="1.5" opacity="0.5" />
-              <path d="M -135,45 Q 0,0 -10,-140" fill="none" stroke="var(--color-neutral-400)" strokeWidth="1.6" opacity="0.6" />
-              
-              {/* Labels */}
-              <g transform="translate(0, -170)">
-                <rect x="-10" y="-8" width="6" height="6" fill="var(--color-neutral-700)" rx="1" />
-                <text x="4" y="0" textAnchor="start" fontSize="9" fill="var(--color-neutral-800)" fontWeight="700">UNITED STATES</text>
+                {/* Chords (Connections) */}
+                {chords}
               </g>
-              <g transform="translate(170, 0)">
-                <rect x="-10" y="-8" width="8" height="4" fill="var(--color-neutral-50)" rx="1" />
-                <text x="4" y="0" textAnchor="start" fontSize="9" fill="var(--color-neutral-800)" fontWeight="700">CHINA</text>
+            </svg>
+          ) : (
+            <svg style={{ width: '100%', maxWidth: '330px', height: 'auto', display: 'block' }} viewBox="0 0 400 400" preserveAspectRatio="xMidYMid meet">
+              <g transform="translate(200, 200)">
+                <circle cx="0" cy="0" r="120" fill="none" stroke="var(--color-neutral-300)" strokeWidth="3" strokeDasharray="6, 6" />
+                <text x="0" y="5" textAnchor="middle" fill="var(--color-neutral-400)" fontSize="11" fontWeight="700">
+                  No Collaboration Data
+                </text>
               </g>
-              <g transform="translate(-30, 180)">
-                <rect x="-10" y="-12" width="4" height="8" fill="var(--color-neutral-800)" rx="1" />
-                <text x="0" y="0" textAnchor="start" fontSize="9" fill="var(--color-neutral-800)" fontWeight="700">EUROPEAN UNION</text>
-              </g>
-              <g transform="translate(-170, 40)">
-                <rect x="-10" y="-4" width="8" height="2" fill="var(--color-primary-orange)" rx="1" />
-                <text x="-16" y="0" textAnchor="end" fontSize="9" fill="var(--color-neutral-800)" fontWeight="700">JAPAN</text>
-              </g>
-            </g>
-          </svg>
+            </svg>
+          )}
         </div>
 
         {/* Right side: Detailed Stats */}
@@ -104,49 +158,55 @@ const CountryCollaborationChord = ({ data }) => {
           </h4>
           
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            {links.map((link, idx) => (
-              <div 
-                key={idx} 
-                style={{ 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'space-between', 
-                  padding: '10px 14px', 
-                  borderRadius: '6px', 
-                  backgroundColor: 'var(--color-neutral-50)', 
-                  border: '1px solid var(--color-neutral-200)',
-                  transition: 'all 0.2s ease'
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div style={{ width: '4px', height: '16px', backgroundColor: link.color, borderRadius: '2px' }} />
-                  <span style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--color-neutral-800)' }}>
-                    {link.source} ↔ {link.target}
-                  </span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--color-neutral-900)' }}>{link.papers}</div>
-                    <div style={{ fontSize: '0.6875rem', color: 'var(--color-neutral-500)' }}>{link.pct} of total</div>
+            {links.length > 0 ? (
+              links.map((link, idx) => (
+                <div 
+                  key={idx} 
+                  style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'space-between', 
+                    padding: '10px 14px', 
+                    borderRadius: '6px', 
+                    backgroundColor: 'var(--color-neutral-50)', 
+                    border: '1px solid var(--color-neutral-200)',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div style={{ width: '4px', height: '16px', backgroundColor: link.color, borderRadius: '2px' }} />
+                    <span style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--color-neutral-800)' }}>
+                      {link.source} ↔ {link.target}
+                    </span>
                   </div>
-                  <span 
-                    style={{ 
-                      fontSize: '0.75rem', 
-                      fontWeight: 700, 
-                      color: 'var(--color-chart-2)',
-                      backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                      padding: '2px 6px',
-                      borderRadius: '4px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '2px'
-                    }}
-                  >
-                    <FiTrendingUp size={10} /> {link.growth}
-                  </span>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--color-neutral-900)' }}>{link.papers}</div>
+                      <div style={{ fontSize: '0.6875rem', color: 'var(--color-neutral-500)' }}>{link.pct} of total</div>
+                    </div>
+                    <span 
+                      style={{ 
+                        fontSize: '0.75rem', 
+                        fontWeight: 700, 
+                        color: 'var(--color-chart-2)',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        padding: '2px 6px',
+                        borderRadius: '4px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '2px'
+                      }}
+                    >
+                      <FiTrendingUp size={10} /> {link.growth}
+                    </span>
+                  </div>
                 </div>
+              ))
+            ) : (
+              <div style={{ color: 'var(--color-neutral-400)', fontSize: '0.8125rem', padding: '24px 12px', textAlign: 'center', border: '1px dashed var(--color-neutral-200)', borderRadius: '6px' }}>
+                No country collaboration links found for this timeframe.
               </div>
-            ))}
+            )}
           </div>
         </div>
       </div>
