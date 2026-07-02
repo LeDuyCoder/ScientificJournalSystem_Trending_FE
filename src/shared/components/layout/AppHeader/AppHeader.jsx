@@ -3,6 +3,7 @@ import SearchInput from './SearchInput';
 import IconButton from './IconButton';
 import UserProfile from './UserProfile';
 import { headerConfig } from './header.config';
+import { useUserProfileQuery } from '../../../hooks/useUserProfile';
 import './Header.css';
 
 /**
@@ -15,6 +16,7 @@ const AppHeader = ({
   onSearch,
 }) => {
   const [searchValue, setSearchValue] = useState('');
+  const { data: userProfile } = useUserProfileQuery();
 
   const handleSearchChange = (e) => {
     const value = e.target.value;
@@ -47,9 +49,10 @@ const AppHeader = ({
         </div>
         <div className="header-divider" aria-hidden="true"></div>
         <UserProfile 
-          initials={headerConfig.userProfile.initials} 
-          name={headerConfig.userProfile.name} 
-          role={headerConfig.userProfile.role} 
+          initials={userProfile?.initials || headerConfig.userProfile.initials} 
+          name={userProfile?.displayName || headerConfig.userProfile.name} 
+          role={userProfile?.displayRole || headerConfig.userProfile.role} 
+          avatar={userProfile?.avatar || null}
         />
       </div>
     </header>
