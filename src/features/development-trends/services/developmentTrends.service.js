@@ -1,9 +1,15 @@
 import apiClient from '../../../shared/api/axios';
 
-export const fetchDevelopmentTrendsData = async (projectId, filters) => {
+/**
+ * Fetch development trends data from the API.
+ * @param {string|number} projectId - The project ID
+ * @param {object} filters - Frontend filters (timeframe, domain, subject_category, region)
+ * @returns {Promise<object>} The server response containing development trends data
+ */
+export const fetchDevelopmentTrendsData = (projectId, filters = {}) => {
   const cleanProjectId = projectId && projectId !== 'default-id' ? projectId : undefined;
   
-  const response = await apiClient.get('/analytics/development-trends', {
+  return apiClient.get('/analytics/development-trends', {
     params: {
       project_id: cleanProjectId,
       timeframe: filters?.timeframe,
@@ -12,5 +18,4 @@ export const fetchDevelopmentTrendsData = async (projectId, filters) => {
       region: filters?.region
     }
   });
-  return response.data;
 };
