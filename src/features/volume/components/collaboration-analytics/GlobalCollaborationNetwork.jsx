@@ -7,6 +7,35 @@ const GlobalCollaborationNetwork = ({ data }) => {
   const fgRef = useRef();
   const [containerDimensions, setContainerDimensions] = useState({ width: 0, height: 0 });
   const containerRef = useRef(null);
+  
+  const [hoverNode, setHoverNode] = useState(null);
+  const [highlightNodes, setHighlightNodes] = useState(new Set());
+  const [highlightLinks, setHighlightLinks] = useState(new Set());
+
+  const handleNodeHover = (node) => {
+    setHoverNode(node);
+    const newHighlightNodes = new Set();
+    const newHighlightLinks = new Set();
+    
+    if (node) {
+      newHighlightNodes.add(node.id);
+      data.links.forEach(link => {
+        const sourceId = typeof link.source === 'object' ? link.source.id : link.source;
+        const targetId = typeof link.target === 'object' ? link.target.id : link.target;
+        
+        if (sourceId === node.id) {
+          newHighlightNodes.add(targetId);
+          newHighlightLinks.add(link);
+        } else if (targetId === node.id) {
+          newHighlightNodes.add(sourceId);
+          newHighlightLinks.add(link);
+        }
+      });
+    }
+    
+    setHighlightNodes(newHighlightNodes);
+    setHighlightLinks(newHighlightLinks);
+  };
 
   // Quan sát kích thước container để responsive biểu đồ
   useEffect(() => {
@@ -28,23 +57,28 @@ const GlobalCollaborationNetwork = ({ data }) => {
       const timer = setTimeout(() => {
         if (!fgRef.current) return;
         
-        // Giảm lực đẩy xuống thấp để các cụm gần nhau hơn
-        fgRef.current.d3Force('charge').strength(-30);
+        // Lực đẩy giữa các node vừa phải để các cụm không liên quan không bị văng xa nhau quá
+        fgRef.current.d3Force('charge').strength(-150);
         
-        // Giảm độ dài đường nối + tăng sức kéo để các chấm trong cùng 1 cụm đứng sát nhau
+        // Điều chỉnh khoảng cách và sức kéo liên kết ở mức hợp lý
         const linkForce = fgRef.current.d3Force('link');
         if (linkForce) {
-          linkForce.distance(20);
-          linkForce.strength(0.8); 
+          linkForce.distance(90);
+          // Giảm nhẹ sức kéo của liên kết cùng loại để chúng thoáng hơn
+          linkForce.strength(link => {
+            const isCrossType = (link.source?.type === 'author' && link.target?.type === 'institution') || 
+                                (link.source?.type === 'institution' && link.target?.type === 'author');
+            return isCrossType ? 0.3 : 0.08;
+          });
         }
 
-        // Giữ bán kính va chạm nhỏ hơn để node có thể đứng gần nhau hơn
-        fgRef.current.d3Force('collide', forceCollide(node => (node.val || 5) * 1.2 + 4));
+        // Bán kính va chạm để ngăn trùng lặp
+        fgRef.current.d3Force('collide', forceCollide(node => (node.val || 5) * 2 + 10).iterations(3));
 
         // Bắt buộc engine vật lý "nóng lên" (tính toán lại) với các thông số mới này
         fgRef.current.d3ReheatSimulation();
-        // Zoom fit vừa vặn
-        fgRef.current.zoomToFit(600, 50); 
+        // Zoom fit vừa vặn (padding 80 giúp zoom gần hơn vì các cụm đã gom lại gần)
+        fgRef.current.zoomToFit(600, 80); 
       }, 300); // Tăng thời gian chờ lên 300ms để đảm bảo engine đã init hoàn toàn
 
       return () => clearTimeout(timer);
@@ -78,6 +112,7 @@ const GlobalCollaborationNetwork = ({ data }) => {
               width={containerDimensions.width}
               height={containerDimensions.height}
               graphData={data}
+              onNodeHover={handleNodeHover}
               nodeLabel={node => {
                 const metric = node.metricValue || Math.floor(Math.random() * 20) + 1;
                 // Tạo một vài data giả lập theo yêu cầu để nhìn tooltip chuyên nghiệp hơn
@@ -91,10 +126,10 @@ const GlobalCollaborationNetwork = ({ data }) => {
                     </div>
                     <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px;">
                       <span style="color: #64748b;">Type:</span>
-                      <span style="font-weight: 600; color: ${node.type === 'AUTHOR' ? '#ff6b00' : '#1b2432'}">${node.type === 'AUTHOR' ? 'Author' : 'Institution'}</span>
+                      <span style="font-weight: 600; color: ${node.type === 'author' ? '#ff6b00' : '#1b2432'}">${node.type === 'author' ? 'Author' : 'Institution'}</span>
                     </div>
                     <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px;">
-                      <span style="color: #64748b;">${node.type === 'AUTHOR' ? 'Articles' : 'Affiliated Authors'}:</span>
+                      <span style="color: #64748b;">${node.type === 'author' ? 'Articles' : 'Affiliated Authors'}:</span>
                       <span style="font-weight: 500; color: #334155;">${metric}</span>
                     </div>
                     <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px;">
@@ -109,8 +144,18 @@ const GlobalCollaborationNetwork = ({ data }) => {
                 `;
               }}
               nodeRelSize={2}
-              linkColor={() => 'rgba(255, 107, 0, 0.2)'}
-              linkWidth={link => Math.max(0.5, link.weight * 2)}
+              linkColor={link => {
+                if (hoverNode) {
+                  return highlightLinks.has(link) ? 'rgba(255, 107, 0, 0.8)' : 'rgba(200, 200, 200, 0.05)';
+                }
+                return 'rgba(255, 107, 0, 0.2)';
+              }}
+              linkWidth={link => {
+                if (hoverNode) {
+                  return highlightLinks.has(link) ? Math.max(1.5, link.weight * 2.5) : 0.2;
+                }
+                return Math.max(0.5, link.weight * 2);
+              }}
               enableNodeDrag={true}
               enableZoomPanInteraction={true}
               nodeCanvasObject={(node, ctx, globalScale) => {
@@ -118,17 +163,34 @@ const GlobalCollaborationNetwork = ({ data }) => {
                 const size = node.val || 5;
                 const color = node.type === 'author' ? '#ff6b00' : '#1b2432';
 
-                // Vẽ hiệu ứng phát sáng (Glow/Shadow)
-                ctx.beginPath();
-                ctx.arc(node.x, node.y, size * 1.5, 0, 2 * Math.PI, false);
-                ctx.fillStyle = node.type === 'author' ? 'rgba(255, 107, 0, 0.15)' : 'rgba(27, 36, 50, 0.15)';
-                ctx.fill();
+                // Xác định độ mờ (opacity) dựa trên hover
+                let opacity = 1.0;
+                if (hoverNode) {
+                  opacity = highlightNodes.has(node.id) ? 1.0 : 0.15;
+                }
 
                 // Vẽ Node chính
                 ctx.beginPath();
                 ctx.arc(node.x, node.y, size, 0, 2 * Math.PI, false);
                 ctx.fillStyle = color;
-                ctx.fill();
+                
+                if (opacity < 1.0) {
+                  ctx.save();
+                  ctx.globalAlpha = opacity;
+                  ctx.fill();
+                  ctx.restore();
+                } else {
+                  ctx.fill();
+                  
+                  // Nếu là node đang được hover trực tiếp, vẽ thêm vòng viền nổi bật nhẹ
+                  if (hoverNode && hoverNode.id === node.id) {
+                    ctx.beginPath();
+                    ctx.arc(node.x, node.y, size + 3, 0, 2 * Math.PI, false);
+                    ctx.strokeStyle = node.type === 'author' ? 'rgba(255, 107, 0, 0.8)' : 'rgba(27, 36, 50, 0.8)';
+                    ctx.lineWidth = 1.5;
+                    ctx.stroke();
+                  }
+                }
               }}
             />
           )}

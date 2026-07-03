@@ -24,7 +24,7 @@ const TopicIntensityMatrix = ({ data, type, onTypeChange }) => {
   }
 
   return (
-    <div className="ca-card">
+    <div className="ca-card" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <div className="ca-card-header">
         <h3 className="ca-card-title">Topic Intensity Matrix</h3>
         <div className="kn-toggle-group">
@@ -86,7 +86,7 @@ const TopicIntensityMatrix = ({ data, type, onTypeChange }) => {
         ))}
       </div>
 
-      <div className="ca-intensity-legend">
+      <div className="ca-intensity-legend" style={{ marginTop: 'auto' }}>
         <span>LOW ACTIVITY</span>
         <div className="ca-intensity-gradient"></div>
         <span>HIGH IMPACT</span>
