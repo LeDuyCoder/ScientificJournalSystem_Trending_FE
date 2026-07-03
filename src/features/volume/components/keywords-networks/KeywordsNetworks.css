@@ -22,12 +22,12 @@
 }
 
 .kn-tab:hover {
-  color: var(--color-primary-600);
+  color: var(--color-primary-orange, #ff6b00);
 }
 
 .kn-tab.active {
-  color: var(--color-primary-600);
-  border-bottom-color: var(--color-primary-600);
+  color: var(--color-primary-orange, #ff6b00);
+  border-bottom-color: var(--color-primary-orange, #ff6b00);
 }
 
 .kn-layout {

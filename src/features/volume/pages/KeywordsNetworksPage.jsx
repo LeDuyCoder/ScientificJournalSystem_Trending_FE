@@ -9,6 +9,7 @@ import ConceptualProximityCard from '../components/keywords-networks/ConceptualP
 import DomainCrossLinksCard from '../components/keywords-networks/DomainCrossLinksCard';
 import TemporalClusterShiftCard from '../components/keywords-networks/TemporalClusterShiftCard';
 import { useDashboardContext } from '../../dashboard/contexts/DashboardContext';
+import ErrorStateSection from '../../../shared/components/common/ErrorStateSection';
 import {
   useKeywordVectorsQuery,
   useCountryCollaborationQuery,
@@ -44,10 +45,12 @@ const KeywordsNetworksPage = () => {
             <div>Loading analytics...</div>
           </div>
         ) : hasError ? (
-          <div className="kn-error" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '400px', gap: '16px', color: '#dc2626' }}>
-            <div>Unable to load keyword and networks analytics. Try again later.</div>
-            <button onClick={refreshData} className="kn-btn-primary" style={{ marginTop: '16px', width: 'auto', background: 'var(--color-primary-orange)', color: '#fff', border: 'none', padding: '8px 16px', borderRadius: 'var(--radius-md)', cursor: 'pointer' }}>Retry</button>
-          </div>
+          <ErrorStateSection 
+            title="Analytics Loading Failed"
+            message="Unable to load keyword and networks analytics. Please check your connection or try again."
+            onRetry={refreshData}
+            minHeight={400}
+          />
         ) : (
           <div className="kn-layout">
             <div className="kn-row kn-row-1">

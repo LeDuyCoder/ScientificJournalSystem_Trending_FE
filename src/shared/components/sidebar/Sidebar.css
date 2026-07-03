@@ -72,6 +72,12 @@
   height: var(--spacing-xl);
 }
 
+.sidebar-logo-full {
+  height: 36px;
+  max-width: 100%;
+  object-fit: contain;
+}
+
 /* Menu */
 .sidebar-menu {
   flex: 1;

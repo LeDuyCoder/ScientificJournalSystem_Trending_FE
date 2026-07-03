@@ -6,6 +6,7 @@ import QuartileDistributionCard from '../components/QuartileDistributionCard';
 import ImpactMatrixCard from '../components/ImpactMatrixCard';
 import MigrationAnalysisCard from '../components/MigrationAnalysisCard';
 import { useJournalsData } from '../hooks/useJournalsData';
+import ErrorStateSection from '../../../shared/components/common/ErrorStateSection';
 import '../styles/JournalsPage.css';
 
 const placeholderStyle = {
@@ -36,11 +37,12 @@ export default function JournalsPage() {
 
   if (error && !data) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%', padding: '24px' }}>
-        <div style={{ ...placeholderStyle, height: '400px', flexDirection: 'column', gap: '16px', color: '#dc2626', borderColor: '#fca5a5' }}>
-          <div>Unable to load journals data. Try again later.</div>
-        </div>
-      </div>
+      <ErrorStateSection 
+        title="Data Loading Failed"
+        message="Unable to load journals data. Please check your connection or try again."
+        onRetry={refetch}
+        minHeight={400}
+      />
     );
   }
 
@@ -52,16 +54,19 @@ export default function JournalsPage() {
             data={quartile.data} 
             loading={quartile.loading} 
             error={quartile.error} 
+            onRetry={refetch}
           />
           <TopJournalRankingCard 
             data={topRanking.data} 
             loading={topRanking.loading} 
             error={topRanking.error} 
+            onRetry={refetch}
           />
           <ImpactMatrixCard 
             data={impactMatrix.data} 
             loading={impactMatrix.loading} 
             error={impactMatrix.error} 
+            onRetry={refetch}
           />
           <MigrationAnalysisCard 
             data={migration.data}

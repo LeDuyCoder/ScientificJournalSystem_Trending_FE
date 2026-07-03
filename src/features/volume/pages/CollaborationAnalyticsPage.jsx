@@ -9,12 +9,12 @@ import KeyInsightsCard from '../components/collaboration-analytics/KeyInsightsCa
 import GlobalCollaborationNetwork from '../components/collaboration-analytics/GlobalCollaborationNetwork';
 import TopicIntensityMatrix from '../components/collaboration-analytics/TopicIntensityMatrix';
 import CollaborationAnalyticsSkeleton from '../components/collaboration-analytics/CollaborationAnalyticsSkeleton';
-import { 
-  useInfluentialRankingsQuery, 
+import {
+  useInfluentialRankingsQuery,
   useAuthorProductivityMatrixQuery,
   useCollaborationInsightsQuery,
   useGlobalCollaborationNetworkQuery,
-  useTopicIntensityMatrixQuery 
+  useTopicIntensityMatrixQuery
 } from '../hooks/useCollaborationAnalyticsQueries';
 import { useParams } from 'react-router-dom';
 import '../components/collaboration-analytics/CollaborationAnalytics.css';
@@ -27,7 +27,7 @@ const CollaborationAnalyticsPage = () => {
   const { data: impactMatrix, isLoading: isLoadingImpact, error: errImpact, refetch: refetchImpact } = useAuthorProductivityMatrixQuery(projectId);
   const { data: keyInsights, isLoading: isLoadingInsights, error: errInsights, refetch: refetchInsights } = useCollaborationInsightsQuery(projectId);
   const { data: globalNetwork, isLoading: isLoadingNetwork, error: errNetwork, refetch: refetchNetwork } = useGlobalCollaborationNetworkQuery(projectId);
-  
+
   const [intensityType, setIntensityType] = React.useState('author');
   const { data: topicIntensity, isLoading: isLoadingIntensity, error: errIntensity, refetch: refetchIntensity } = useTopicIntensityMatrixQuery(projectId, intensityType);
 
@@ -46,16 +46,17 @@ const CollaborationAnalyticsPage = () => {
     <>
       <div className="ca-page">
         <CollaborationTabs />
-        
+
         {isLoading ? (
           <CollaborationAnalyticsSkeleton />
         ) : error ? (
-          <div className="kn-error">
-            <h2>Error</h2>
-            <p>{error.message || "Something went wrong"}</p>
-            <button className="ca-btn-dark" style={{ marginTop: '10px' }} onClick={handleRefetch}>Retry</button>
-          </div>
-        ) : !rankings && !impactMatrix && !keyInsights && !globalNetwork && !topicIntensity ? (
+          <ErrorStateSection
+            title="Collaboration Analytics Failed"
+            message={error}
+            onRetry={refetch}
+            minHeight={400}
+          />
+        ) : !data ? (
           <div className="kn-empty">
             <h2>No Data</h2>
             <p>No collaboration analytics data available.</p>
@@ -68,15 +69,15 @@ const CollaborationAnalyticsPage = () => {
                 <TopInfluentialAuthorsCard data={rankings?.authors} />
                 <LeadingInstitutionsCard data={rankings?.institutions} />
               </div>
-              
+
               <div className="ca-row ca-row-2-1">
                 <AuthorImpactMatrix data={impactMatrix} />
                 <KeyInsightsCard data={keyInsights} />
               </div>
-              
+
               <div className="ca-row ca-row-half">
                 <GlobalCollaborationNetwork data={globalNetwork} />
-                <TopicIntensityMatrix 
+                <TopicIntensityMatrix
                   data={topicIntensity}
                   type={intensityType}
                   onTypeChange={setIntensityType}

@@ -8,6 +8,6 @@ export const fetchKeywordsNetworksData = (timeframe = 'daily') => {
           timeframe
         }
       });
-    }, 500); // Simulate network delay
+    }, 50); // Simulate network delay
   });
 };
