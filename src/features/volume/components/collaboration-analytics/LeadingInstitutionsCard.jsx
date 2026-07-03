@@ -1,10 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './CollaborationAnalytics.css';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Cell, Label } from 'recharts';
 import { FiList, FiBarChart2 } from 'react-icons/fi';
 
 const LeadingInstitutionsCard = ({ data }) => {
   const [isChartView, setIsChartView] = useState(false);
+  const [animate, setAnimate] = useState(false);
+
+  useEffect(() => {
+    if (!isChartView) {
+      const timer = setTimeout(() => {
+        setAnimate(true);
+      }, 50);
+      return () => clearTimeout(timer);
+    }
+  }, [isChartView]);
 
   const chartData = data?.slice(0, 10).map(item => ({
     name: item.name,
@@ -38,7 +48,10 @@ const LeadingInstitutionsCard = ({ data }) => {
             gap: '2px'
           }}>
             <button
-              onClick={() => setIsChartView(false)}
+              onClick={() => {
+                setAnimate(false);
+                setIsChartView(false);
+              }}
               title="List View"
               style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -91,7 +104,14 @@ const LeadingInstitutionsCard = ({ data }) => {
                   </div>
                 </div>
                 <div className="ca-list-bar-container">
-                  <div className="ca-list-bar" style={{ width: `${Math.min(100, Math.max(0, score))}%`, backgroundColor: '#1b2432' }}></div>
+                  <div 
+                    className="ca-list-bar" 
+                    style={{ 
+                      width: animate ? `${Math.min(100, Math.max(0, score))}%` : '0%', 
+                      backgroundColor: '#1b2432',
+                      transition: 'width 1.2s cubic-bezier(0.25, 1, 0.5, 1)'
+                    }}
+                  ></div>
                 </div>
               </div>
             );
