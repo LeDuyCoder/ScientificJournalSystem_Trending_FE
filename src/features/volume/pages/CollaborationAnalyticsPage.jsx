@@ -9,11 +9,30 @@ import KeyInsightsCard from '../components/collaboration-analytics/KeyInsightsCa
 import GlobalCollaborationNetwork from '../components/collaboration-analytics/GlobalCollaborationNetwork';
 import TopicIntensityMatrix from '../components/collaboration-analytics/TopicIntensityMatrix';
 import CollaborationAnalyticsSkeleton from '../components/collaboration-analytics/CollaborationAnalyticsSkeleton';
-import { useCollaborationAnalytics } from '../hooks/useCollaborationAnalytics';
+import { 
+  useInfluentialRankingsQuery, 
+  useAuthorProductivityMatrixQuery,
+  useCollaborationInsightsQuery,
+  useGlobalCollaborationNetworkQuery,
+  useTopicIntensityMatrixQuery 
+} from '../hooks/useCollaborationAnalyticsQueries';
+import { useParams } from 'react-router-dom';
 import '../components/collaboration-analytics/CollaborationAnalytics.css';
 
 const CollaborationAnalyticsPage = () => {
-  const { data, isLoading, error } = useCollaborationAnalytics();
+  const { id } = useParams();
+  const projectId = id === 'default-id' ? '1' : id;
+
+  const { data: rankings, isLoading: isLoadingRankings, error: errRankings } = useInfluentialRankingsQuery(projectId);
+  const { data: impactMatrix, isLoading: isLoadingImpact, error: errImpact } = useAuthorProductivityMatrixQuery(projectId);
+  const { data: keyInsights, isLoading: isLoadingInsights, error: errInsights } = useCollaborationInsightsQuery(projectId);
+  const { data: globalNetwork, isLoading: isLoadingNetwork, error: errNetwork } = useGlobalCollaborationNetworkQuery(projectId);
+  
+  const [intensityType, setIntensityType] = React.useState('author');
+  const { data: topicIntensity, isLoading: isLoadingIntensity, error: errIntensity } = useTopicIntensityMatrixQuery(projectId, intensityType);
+
+  const isLoading = isLoadingRankings || isLoadingImpact || isLoadingInsights || isLoadingNetwork || isLoadingIntensity;
+  const error = errRankings || errImpact || errInsights || errNetwork || errIntensity;
 
   return (
     <>
@@ -25,32 +44,28 @@ const CollaborationAnalyticsPage = () => {
         ) : error ? (
           <div className="kn-error">
             <h2>Error</h2>
-            <p>{error}</p>
-          </div>
-        ) : !data ? (
-          <div className="kn-empty">
-            <h2>No Data</h2>
-            <p>No collaboration analytics data available.</p>
+            <p>{error.message}</p>
           </div>
         ) : (
           <>
             <CollaborationHeader />
             <div className="ca-layout">
               <div className="ca-row ca-row-half">
-                <TopInfluentialAuthorsCard data={data.topAuthors} />
-                <LeadingInstitutionsCard data={data.leadingInstitutions} />
+                <TopInfluentialAuthorsCard data={rankings?.authors} />
+                <LeadingInstitutionsCard data={rankings?.institutions} />
               </div>
               
               <div className="ca-row ca-row-2-1">
-                <AuthorImpactMatrix data={data.impactMatrix} />
-                <KeyInsightsCard data={data.keyInsights} />
+                <AuthorImpactMatrix data={impactMatrix} />
+                <KeyInsightsCard data={keyInsights} />
               </div>
               
               <div className="ca-row ca-row-half">
-                <GlobalCollaborationNetwork data={data.globalNetwork} />
+                <GlobalCollaborationNetwork data={globalNetwork} />
                 <TopicIntensityMatrix 
-                  authorData={data.topicIntensityAuthors} 
-                  institutionData={data.topicIntensityInstitutions} 
+                  data={topicIntensity}
+                  type={intensityType}
+                  onTypeChange={setIntensityType}
                 />
               </div>
             </div>

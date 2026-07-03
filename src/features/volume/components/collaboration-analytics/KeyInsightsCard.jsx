@@ -2,22 +2,41 @@ import React from 'react';
 import './CollaborationAnalytics.css';
 
 const KeyInsightsCard = ({ data }) => {
+  if (!data) {
+    return (
+      <div className="ca-card ca-card-dark">
+        <div className="ca-card-header">
+          <h3 className="ca-card-title">Key Insights</h3>
+        </div>
+        <p className="ca-insights-desc">No insights available.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="ca-card ca-card-dark">
       <div className="ca-card-header">
         <h3 className="ca-card-title">Key Insights</h3>
       </div>
-      <p className="ca-insights-desc">{data.description}</p>
+      <p className="ca-insights-desc">{data.subtitle || data.description}</p>
       
       <div>
-        {data.metrics.map((metric, index) => (
-          <div key={index} className="ca-insight-metric">
-            <div className={index === 0 ? "ca-insight-value" : "ca-insight-value-white"}>
-              {metric.value}
+        {data.metrics && data.metrics.length > 0 ? (
+          data.metrics.map((metric, idx) => (
+            <div key={idx} className="ca-insight-metric">
+              {/* index 0, 2 màu cam (value), index 1 màu trắng (value-white) */}
+              <div className={idx % 2 === 0 ? "ca-insight-value" : "ca-insight-value-white"}>
+                {metric.value}
+              </div>
+              <div className="ca-insight-label">{metric.label}</div>
             </div>
-            <div className="ca-insight-label">{metric.label}</div>
+          ))
+        ) : (
+          <div className="ca-insight-metric">
+            <div className="ca-insight-value">N/A</div>
+            <div className="ca-insight-label">No metrics available</div>
           </div>
-        ))}
+        )}
       </div>
       <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'flex-end' }}>
         <svg width="80" height="80" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ opacity: 0.2 }}>

@@ -4,6 +4,7 @@ import IconButton from './IconButton';
 import UserProfile from './UserProfile';
 import { headerConfig } from './header.config';
 import { useUserProfileQuery } from '../../../hooks/useUserProfile';
+import { useDashboardSearchQuery } from '../../../hooks/useDashboardSearch';
 import './Header.css';
 
 /**
@@ -17,6 +18,7 @@ const AppHeader = ({
 }) => {
   const [searchValue, setSearchValue] = useState('');
   const { data: userProfile } = useUserProfileQuery();
+  const { data: searchResults, isLoading: isSearchLoading } = useDashboardSearchQuery(searchValue);
 
   const handleSearchChange = (e) => {
     const value = e.target.value;
@@ -33,6 +35,8 @@ const AppHeader = ({
           value={searchValue} 
           onChange={handleSearchChange} 
           placeholder={headerConfig.searchPlaceholder}
+          results={searchResults}
+          isLoading={isSearchLoading}
         />
       </div>
       <div className="header-right">
