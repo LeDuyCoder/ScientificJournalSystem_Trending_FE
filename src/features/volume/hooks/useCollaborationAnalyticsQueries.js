@@ -15,7 +15,7 @@ export const useInfluentialRankingsQuery = (projectId) => {
   return useQuery({
     queryKey: ['collaboration', 'rankings', projectId],
     queryFn: () => apiClient.get('/analytics/rankings', {
-      params: { project_id: projectId, limit: 4 }
+      params: { project_id: projectId, limit: 10 }
     }),
     enabled: !!projectId,
     staleTime: Infinity,
@@ -53,6 +53,10 @@ export const useAuthorProductivityMatrixQuery = (projectId) => {
       
       return data.map((d, index) => ({
         id: d.authorId || index,
+        authorId: d.authorId || `#${index + 1}`,
+        authorName: d.authorName || null,
+        hIndex: d.hIndex ?? 0,
+        yearlyOutput: d.yearlyOutput ?? 0,
         x: maxX > 0 ? (d.yearlyOutput / maxX) * 100 : 0,
         y: maxY > 0 ? (d.hIndex / maxY) * 100 : 0,
         r: 5,
