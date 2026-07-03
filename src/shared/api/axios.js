@@ -31,7 +31,7 @@ apiClient.interceptors.response.use(
 );
 
 export const coreApiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_CORE_URL || 'http://localhost:8000',
+  baseURL: import.meta.env.VITE_API_CORE_URL || 'http://localhost:3000',
   withCredentials: true,
   timeout: 5000,
   headers: {

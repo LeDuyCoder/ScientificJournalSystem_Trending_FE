@@ -1,60 +1,92 @@
 import React, { useState } from 'react';
 import './CollaborationAnalytics.css';
 
-const TopicIntensityMatrix = ({ authorData, institutionData }) => {
-  const [activeTab, setActiveTab] = useState('AUTHORS');
-  const data = activeTab === 'AUTHORS' ? authorData : institutionData;
-
+const TopicIntensityMatrix = ({ data, type, onTypeChange }) => {
   const getIntensityColor = (value) => {
-    // scale from #ffe5d0 to #ff6b00
-    // roughly we can use an rgba of #ff6b00 with varying opacity, or we can just use HSL interpolation
-    // But since the mock has 0 to 1 value:
-    return `rgba(255, 107, 0, ${value})`;
+    // scale from #f1f5f9 to #ff6b00
+    if (!value || value === 0) return '#f1f5f9';
+    // Đảm bảo opacity tối thiểu để có thể nhìn thấy màu cam
+    const opacity = Math.max(0.15, value);
+    return `rgba(255, 107, 0, ${opacity})`;
   };
 
+  if (!data || !Array.isArray(data.columns) || !Array.isArray(data.rows) || !Array.isArray(data.data)) {
+    return (
+      <div className="ca-card">
+        <div className="ca-card-header">
+          <h3 className="ca-card-title">Topic Intensity Matrix</h3>
+        </div>
+        <div style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>
+          No data available for this project.
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="ca-card">
+    <div className="ca-card" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <div className="ca-card-header">
         <h3 className="ca-card-title">Topic Intensity Matrix</h3>
         <div className="kn-toggle-group">
           <button 
-            className={`kn-toggle-btn ${activeTab === 'AUTHORS' ? 'active' : ''}`}
-            onClick={() => setActiveTab('AUTHORS')}
+            className={`kn-toggle-btn ${type === 'author' ? 'active' : ''}`}
+            onClick={() => onTypeChange('author')}
           >
             AUTHORS
           </button>
           <button 
-            className={`kn-toggle-btn ${activeTab === 'INSTITUTIONS' ? 'active' : ''}`}
-            onClick={() => setActiveTab('INSTITUTIONS')}
+            className={`kn-toggle-btn ${type === 'institution' ? 'active' : ''}`}
+            onClick={() => onTypeChange('institution')}
           >
             INSTITUTIONS
           </button>
         </div>
       </div>
       
-      <div className="ca-intensity-grid">
-        <div className="ca-intensity-header">
+      <div className="ca-intensity-grid" style={{ overflowX: 'auto', paddingBottom: '10px' }}>
+        <div 
+          className="ca-intensity-header" 
+          style={{ 
+            display: 'grid', 
+            gridTemplateColumns: `120px repeat(${data.columns.length}, 1fr)`, 
+            gap: '4px', 
+            marginBottom: '8px' 
+          }}
+        >
           <div></div>
-          {data.columns.map((col, idx) => (
+          {data.columns?.map((col, idx) => (
             <div key={idx} className="ca-intensity-col">{col}</div>
           ))}
         </div>
         
         {data.rows.map((row, rowIdx) => (
-          <div key={rowIdx} className="ca-intensity-row">
-            <div className="ca-intensity-row-label">{row}</div>
+          <div 
+            key={rowIdx} 
+            className="ca-intensity-row"
+            style={{ 
+              display: 'grid', 
+              gridTemplateColumns: `120px repeat(${data.columns.length}, 1fr)`, 
+              gap: '4px', 
+              alignItems: 'center',
+              marginBottom: '6px'
+            }}
+          >
+            <div className="ca-intensity-row-label" title={row} style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              {row}
+            </div>
             {data.data[rowIdx].map((value, colIdx) => (
               <div 
                 key={colIdx} 
                 className="ca-intensity-cell" 
                 style={{ backgroundColor: getIntensityColor(value) }}
+                title={`${data.columns[colIdx]}: ${value * 100}%`}
               ></div>
             ))}
           </div>
         ))}
       </div>
 
-      <div className="ca-intensity-legend">
+      <div className="ca-intensity-legend" style={{ marginTop: 'auto' }}>
         <span>LOW ACTIVITY</span>
         <div className="ca-intensity-gradient"></div>
         <span>HIGH IMPACT</span>

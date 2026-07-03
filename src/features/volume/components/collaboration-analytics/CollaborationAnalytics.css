@@ -68,10 +68,16 @@
 
 .ca-row-half {
   grid-template-columns: 1fr 1fr;
+  align-items: stretch;
+}
+
+.ca-row-rankings > .ca-card {
+  height: 340px;
+  overflow: hidden;
 }
 
 .ca-row-2-1 {
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 1.5fr 1fr;
 }
 
 .ca-card {
@@ -81,6 +87,7 @@
   padding: 24px;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .ca-card-dark {
@@ -103,6 +110,7 @@
 
 .ca-card-dark .ca-card-title {
   color: #ff6b00;
+  font-size: 2.75rem;
 }
 
 .ca-card-action {
@@ -164,32 +172,32 @@
 }
 
 .ca-insights-desc {
-  font-size: 0.875rem;
+  font-size: 0.95rem;
   color: rgba(255,255,255,0.7);
-  margin-bottom: 24px;
+  margin-bottom: 32px;
   line-height: 1.5;
 }
 
 .ca-insight-metric {
-  margin-bottom: 24px;
+  margin-bottom: 32px;
 }
 
 .ca-insight-value {
-  font-size: 2rem;
+  font-size: 2.75rem;
   font-weight: 700;
   color: #ff6b00;
   margin-bottom: 4px;
 }
 
 .ca-insight-value-white {
-  font-size: 1.5rem;
+  font-size: 2.75rem;
   font-weight: 700;
   color: white;
   margin-bottom: 4px;
 }
 
 .ca-insight-label {
-  font-size: 0.75rem;
+  font-size: 0.85rem;
   font-weight: 600;
   color: rgba(255,255,255,0.7);
   text-transform: uppercase;
@@ -198,7 +206,9 @@
 
 .ca-matrix-container {
   position: relative;
-  width: 100%;
+  width: calc(100% - 32px);
+  margin-left: 32px;
+  margin-bottom: 24px;
   aspect-ratio: 16 / 9;
   border: 1px solid var(--color-neutral-200);
   margin-top: 16px;
@@ -220,12 +230,12 @@
   position: absolute;
   top: 50%;
   left: -24px;
-  transform: translateY(-50%) rotate(-90deg);
+  transform-origin: 0 0;
+  transform: rotate(-90deg) translateX(-50%);
   font-size: 0.75rem;
   color: var(--color-neutral-500);
   font-weight: 600;
   text-transform: uppercase;
-  transform-origin: center;
   white-space: nowrap;
 }
 
@@ -234,7 +244,6 @@
   background: var(--color-neutral-50);
   border-radius: 8px;
   padding: 16px;
-  aspect-ratio: 4 / 3;
   display: flex;
   flex-direction: column;
 }
@@ -273,10 +282,13 @@
 }
 
 .ca-intensity-col {
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   font-weight: 700;
   text-align: center;
   color: var(--color-neutral-500);
+  word-break: break-word;
+  line-height: 1.15;
+  padding: 0 2px;
 }
 
 .ca-intensity-row {
@@ -317,4 +329,14 @@
   .ca-row-half, .ca-row-2-1 {
     grid-template-columns: 1fr;
   }
+}
+
+/* Custom styling to ensure the tooltip doesn't have borders or default grey backgrounds */
+.float-tooltip-kap, .scene-tooltip, .graph-tooltip {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  color: initial !important;
 }

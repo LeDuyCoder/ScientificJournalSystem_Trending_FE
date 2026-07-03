@@ -1,9 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './CollaborationAnalytics.css';
 
 const AuthorImpactMatrix = ({ data }) => {
+  const [tooltip, setTooltip] = useState(null);
+
+  if (!Array.isArray(data)) {
+    return (
+      <div className="ca-card">
+        <div className="ca-card-header">
+          <h3 className="ca-card-title">Author Productivity vs Impact Matrix</h3>
+        </div>
+        <div style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>
+          No data available for this project.
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="ca-card">
+    <div className="ca-card" style={{ position: 'relative' }}>
       <div className="ca-card-header">
         <h3 className="ca-card-title">Author Productivity vs Impact Matrix</h3>
       </div>
@@ -20,22 +35,88 @@ const AuthorImpactMatrix = ({ data }) => {
         </div>
         
         {/* Plot points */}
-        <svg style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
+        <svg style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', overflow: 'visible' }}>
           {data.map(point => {
-            const isAuthor = point.type === 'author';
+            const jitterX = (Math.sin(point.id * 12.9898) * 43758.5453) % 1; 
+            const jitterY = (Math.cos(point.id * 78.233) * 43758.5453) % 1;
+            const finalX = Math.max(1, Math.min(99, point.x + jitterX * 1.5));
+            const finalY = Math.max(1, Math.min(99, point.y + jitterY * 1.5));
+
             return (
               <circle
                 key={point.id}
-                cx={`${point.x}%`}
-                cy={`${100 - point.y}%`}
+                cx={`${finalX}%`}
+                cy={`${100 - finalY}%`}
                 r={point.r * 1.5}
-                fill={isAuthor ? 'none' : 'var(--color-neutral-300)'}
-                stroke={isAuthor ? '#ff6b00' : '#1b2432'}
+                fill="none"
+                stroke="#ff6b00"
                 strokeWidth="2"
+                style={{ cursor: 'pointer' }}
+                onMouseEnter={(e) => {
+                  const svgEl = e.currentTarget.closest('svg');
+                  const svgRect = svgEl.getBoundingClientRect();
+                  const cx = e.clientX - svgRect.left;
+                  const cy = e.clientY - svgRect.top;
+                  setTooltip({ point, cx, cy });
+                }}
+                onMouseLeave={() => setTooltip(null)}
               />
             );
           })}
         </svg>
+
+        {/* Tooltip */}
+        {tooltip && (() => {
+          const { point, cx, cy } = tooltip;
+          const tooltipW = 220;
+          const parentEl = document.querySelector('.ca-matrix-container');
+          const parentW = parentEl ? parentEl.clientWidth : 600;
+          const left = cx + tooltipW > parentW ? cx - tooltipW - 10 : cx + 10;
+          return (
+            <div
+              style={{
+                position: 'absolute',
+                left: `${left}px`,
+                top: `${cy - 10}px`,
+                background: 'white',
+                border: '1px solid #e2e8f0',
+                borderRadius: '10px',
+                boxShadow: '0 8px 20px rgba(0,0,0,0.12)',
+                width: `${tooltipW}px`,
+                zIndex: 100,
+                pointerEvents: 'none',
+                overflow: 'hidden',
+              }}
+            >
+              {/* Header */}
+              <div style={{
+                padding: '10px 14px',
+                background: '#fff7f0',
+                borderBottom: '2px solid #ff6b00',
+                fontWeight: 700,
+                fontSize: '13px',
+                color: '#1e293b',
+              }}>
+                {point.authorName || `Author ID: ${point.authorId}`}
+              </div>
+              {/* Rows */}
+              <div style={{ padding: '8px 14px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
+                  <span style={{ color: '#64748b' }}>Type</span>
+                  <span style={{ fontWeight: 700, color: '#1e293b' }}>Author</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
+                  <span style={{ color: '#64748b' }}>H-Index</span>
+                  <span style={{ fontWeight: 700, color: '#1e293b' }}>{point.hIndex}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
+                  <span style={{ color: '#64748b' }}>Article Output (Yearly)</span>
+                  <span style={{ fontWeight: 700, color: '#ff6b00' }}>{point.yearlyOutput}</span>
+                </div>
+              </div>
+            </div>
+          );
+        })()}
 
         <div className="ca-matrix-axis-x">ARTICLE OUTPUT (YEARLY)</div>
         <div className="ca-matrix-axis-y">IMPACT FACTOR (H-INDEX)</div>
