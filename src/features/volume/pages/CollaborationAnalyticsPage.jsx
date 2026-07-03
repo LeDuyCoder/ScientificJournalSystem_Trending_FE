@@ -17,22 +17,31 @@ import {
   useTopicIntensityMatrixQuery 
 } from '../hooks/useCollaborationAnalyticsQueries';
 import { useParams } from 'react-router-dom';
+import ErrorStateSection from '../../../shared/components/common/ErrorStateSection';
 import '../components/collaboration-analytics/CollaborationAnalytics.css';
 
 const CollaborationAnalyticsPage = () => {
   const { id } = useParams();
   const projectId = id === 'default-id' ? '1' : id;
 
-  const { data: rankings, isLoading: isLoadingRankings, error: errRankings } = useInfluentialRankingsQuery(projectId);
-  const { data: impactMatrix, isLoading: isLoadingImpact, error: errImpact } = useAuthorProductivityMatrixQuery(projectId);
-  const { data: keyInsights, isLoading: isLoadingInsights, error: errInsights } = useCollaborationInsightsQuery(projectId);
-  const { data: globalNetwork, isLoading: isLoadingNetwork, error: errNetwork } = useGlobalCollaborationNetworkQuery(projectId);
+  const { data: rankings, isLoading: isLoadingRankings, error: errRankings, refetch: refetchRankings } = useInfluentialRankingsQuery(projectId);
+  const { data: impactMatrix, isLoading: isLoadingImpact, error: errImpact, refetch: refetchImpact } = useAuthorProductivityMatrixQuery(projectId);
+  const { data: keyInsights, isLoading: isLoadingInsights, error: errInsights, refetch: refetchInsights } = useCollaborationInsightsQuery(projectId);
+  const { data: globalNetwork, isLoading: isLoadingNetwork, error: errNetwork, refetch: refetchNetwork } = useGlobalCollaborationNetworkQuery(projectId);
   
   const [intensityType, setIntensityType] = React.useState('author');
-  const { data: topicIntensity, isLoading: isLoadingIntensity, error: errIntensity } = useTopicIntensityMatrixQuery(projectId, intensityType);
+  const { data: topicIntensity, isLoading: isLoadingIntensity, error: errIntensity, refetch: refetchIntensity } = useTopicIntensityMatrixQuery(projectId, intensityType);
 
   const isLoading = isLoadingRankings || isLoadingImpact || isLoadingInsights || isLoadingNetwork || isLoadingIntensity;
   const error = errRankings || errImpact || errInsights || errNetwork || errIntensity;
+
+  const handleRefetch = () => {
+    refetchRankings();
+    refetchImpact();
+    refetchInsights();
+    refetchNetwork();
+    refetchIntensity();
+  };
 
   return (
     <>
@@ -42,9 +51,16 @@ const CollaborationAnalyticsPage = () => {
         {isLoading ? (
           <CollaborationAnalyticsSkeleton />
         ) : error ? (
-          <div className="kn-error">
-            <h2>Error</h2>
-            <p>{error.message}</p>
+          <ErrorStateSection 
+            title="Collaboration Analytics Failed"
+            message={error.message || "Something went wrong"}
+            onRetry={handleRefetch}
+            minHeight={400}
+          />
+        ) : !rankings && !impactMatrix && !keyInsights && !globalNetwork && !topicIntensity ? (
+          <div className="kn-empty">
+            <h2>No Data</h2>
+            <p>No collaboration analytics data available.</p>
           </div>
         ) : (
           <>
