@@ -48,7 +48,7 @@ const TopicIntensityMatrix = ({ data, type, onTypeChange }) => {
           className="ca-intensity-header" 
           style={{ 
             display: 'grid', 
-            gridTemplateColumns: `180px repeat(${data.columns.length}, 1fr)`, 
+            gridTemplateColumns: `120px repeat(${data.columns.length}, 1fr)`, 
             gap: '4px', 
             marginBottom: '8px' 
           }}
@@ -65,7 +65,7 @@ const TopicIntensityMatrix = ({ data, type, onTypeChange }) => {
             className="ca-intensity-row"
             style={{ 
               display: 'grid', 
-              gridTemplateColumns: `180px repeat(${data.columns.length}, 1fr)`, 
+              gridTemplateColumns: `120px repeat(${data.columns.length}, 1fr)`, 
               gap: '4px', 
               alignItems: 'center',
               marginBottom: '6px'

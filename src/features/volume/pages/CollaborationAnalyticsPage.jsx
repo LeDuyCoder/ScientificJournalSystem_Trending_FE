@@ -17,6 +17,7 @@ import {
   useTopicIntensityMatrixQuery
 } from '../hooks/useCollaborationAnalyticsQueries';
 import { useParams } from 'react-router-dom';
+import ErrorStateSection from '../../../shared/components/common/ErrorStateSection';
 import '../components/collaboration-analytics/CollaborationAnalytics.css';
 
 const CollaborationAnalyticsPage = () => {
@@ -52,11 +53,11 @@ const CollaborationAnalyticsPage = () => {
         ) : error ? (
           <ErrorStateSection
             title="Collaboration Analytics Failed"
-            message={error}
-            onRetry={refetch}
+            message={error?.message || error || "Something went wrong"}
+            onRetry={handleRefetch}
             minHeight={400}
           />
-        ) : !data ? (
+        ) : !rankings && !impactMatrix && !keyInsights && !globalNetwork && !topicIntensity ? (
           <div className="kn-empty">
             <h2>No Data</h2>
             <p>No collaboration analytics data available.</p>

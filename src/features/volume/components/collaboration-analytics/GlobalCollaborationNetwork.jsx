@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import ForceGraph2D from 'react-force-graph-2d';
-import { forceCollide } from 'd3-force';
+import { forceCollide, forceX, forceY } from 'd3-force';
 import './CollaborationAnalytics.css';
 
 const GlobalCollaborationNetwork = ({ data }) => {
@@ -57,18 +57,22 @@ const GlobalCollaborationNetwork = ({ data }) => {
       const timer = setTimeout(() => {
         if (!fgRef.current) return;
         
-        // Lực đẩy giữa các node vừa phải để các cụm không liên quan không bị văng xa nhau quá
-        fgRef.current.d3Force('charge').strength(-150);
+        // Lực đẩy giữa các node
+        fgRef.current.d3Force('charge').strength(-180);
         
-        // Điều chỉnh khoảng cách và sức kéo liên kết ở mức hợp lý
+        // Kéo các cụm rời rạc về phía trung tâm (0, 0) với lực RẤT NHẸ để không bị đè lên nhau
+        fgRef.current.d3Force('x', forceX(0).strength(0.015));
+        fgRef.current.d3Force('y', forceY(0).strength(0.015));
+        
+        // Điều chỉnh khoảng cách liên kết vừa phải để cấu trúc graph rõ ràng
         const linkForce = fgRef.current.d3Force('link');
         if (linkForce) {
-          linkForce.distance(90);
-          // Giảm nhẹ sức kéo của liên kết cùng loại để chúng thoáng hơn
+          linkForce.distance(80);
+          // Giảm nhẹ sức kéo của liên kết cùng loại để các node giãn thoáng tự nhiên
           linkForce.strength(link => {
             const isCrossType = (link.source?.type === 'author' && link.target?.type === 'institution') || 
                                 (link.source?.type === 'institution' && link.target?.type === 'author');
-            return isCrossType ? 0.3 : 0.08;
+            return isCrossType ? 0.35 : 0.08;
           });
         }
 
@@ -77,8 +81,8 @@ const GlobalCollaborationNetwork = ({ data }) => {
 
         // Bắt buộc engine vật lý "nóng lên" (tính toán lại) với các thông số mới này
         fgRef.current.d3ReheatSimulation();
-        // Zoom fit vừa vặn (padding 80 giúp zoom gần hơn vì các cụm đã gom lại gần)
-        fgRef.current.zoomToFit(600, 80); 
+        // Zoom fit vừa vặn
+        fgRef.current.zoomToFit(600, 45); 
       }, 300); // Tăng thời gian chờ lên 300ms để đảm bảo engine đã init hoàn toàn
 
       return () => clearTimeout(timer);

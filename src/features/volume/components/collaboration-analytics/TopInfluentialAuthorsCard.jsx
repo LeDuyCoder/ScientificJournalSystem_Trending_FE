@@ -49,8 +49,10 @@ const TopInfluentialAuthorsCard = ({ data }) => {
           }}>
             <button
               onClick={() => {
-                setAnimate(false);
-                setIsChartView(false);
+                if (isChartView) {
+                  setAnimate(false);
+                  setIsChartView(false);
+                }
               }}
               title="List View"
               style={{

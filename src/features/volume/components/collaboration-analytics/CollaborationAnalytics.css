@@ -87,6 +87,7 @@
   padding: 24px;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .ca-card-dark {
@@ -281,10 +282,13 @@
 }
 
 .ca-intensity-col {
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   font-weight: 700;
   text-align: center;
   color: var(--color-neutral-500);
+  word-break: break-word;
+  line-height: 1.15;
+  padding: 0 2px;
 }
 
 .ca-intensity-row {
