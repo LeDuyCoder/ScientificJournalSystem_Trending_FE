@@ -28,18 +28,18 @@ const GlobalCollaborationNetwork = ({ data }) => {
       const timer = setTimeout(() => {
         if (!fgRef.current) return;
         
-        // Giảm lực đẩy xuống mức vừa phải để các cụm (islands) không bị văng quá xa nhau
-        fgRef.current.d3Force('charge').strength(-150);
+        // Giảm lực đẩy xuống thấp để các cụm gần nhau hơn
+        fgRef.current.d3Force('charge').strength(-30);
         
-        // Giảm độ dài đường nối để các chấm trong cùng 1 cụm đứng gần nhau hơn một chút
+        // Giảm độ dài đường nối + tăng sức kéo để các chấm trong cùng 1 cụm đứng sát nhau
         const linkForce = fgRef.current.d3Force('link');
         if (linkForce) {
-          linkForce.distance(40);
-          linkForce.strength(0.5); 
+          linkForce.distance(20);
+          linkForce.strength(0.8); 
         }
 
-        // Vẫn giữ bán kính va chạm vật lý để các node tuyệt đối không đè lên nhau
-        fgRef.current.d3Force('collide', forceCollide(node => (node.val || 5) * 2 + 10));
+        // Giữ bán kính va chạm nhỏ hơn để node có thể đứng gần nhau hơn
+        fgRef.current.d3Force('collide', forceCollide(node => (node.val || 5) * 1.2 + 4));
 
         // Bắt buộc engine vật lý "nóng lên" (tính toán lại) với các thông số mới này
         fgRef.current.d3ReheatSimulation();

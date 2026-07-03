@@ -64,7 +64,7 @@ const CollaborationAnalyticsPage = () => {
           <>
             <CollaborationHeader />
             <div className="ca-layout">
-              <div className="ca-row ca-row-half">
+              <div className="ca-row ca-row-half ca-row-rankings">
                 <TopInfluentialAuthorsCard data={rankings?.authors} />
                 <LeadingInstitutionsCard data={rankings?.institutions} />
               </div>

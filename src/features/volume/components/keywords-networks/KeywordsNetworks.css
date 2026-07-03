@@ -93,7 +93,7 @@
 
 .kn-toggle-group {
   display: flex;
-  background-color: var(--color-neutral-100);
+  background-color: #f1f5f9;
   border-radius: 4px;
   padding: 4px;
   gap: 4px;
@@ -112,7 +112,7 @@
 
 .kn-toggle-btn.active {
   background-color: var(--color-primary-orange);
-  color: var(--color-white);
+  color: #ffffff;
 }
 
 .kn-stat-huge {

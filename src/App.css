@@ -4,6 +4,14 @@
   background-color: var(--color-background);
 }
 
+.app-main-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  margin-left: 240px;
+}
+
 .app-main-content {
   flex: 1;
   display: flex;
@@ -12,3 +20,4 @@
 }
 
 /* Responsive main padding no longer applied here */
+

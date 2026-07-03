@@ -1,4 +1,4 @@
-/* Sidebar Container */
+/* Sidebar Container — fixed to viewport, content area scrolls independently */
 .sidebar {
   display: flex;
   flex-direction: column;
@@ -8,12 +8,14 @@
   background-color: var(--color-surface);
   border-right: var(--border-light);
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  position: sticky;
+  position: fixed;
   top: 0;
   left: 0;
   z-index: 100;
   font-family: var(--font-family-base);
-  box-sizing: border-box; /* Added to fix overflow */
+  box-sizing: border-box;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .sidebar * {
@@ -184,16 +186,22 @@
 }
 
 @media (max-width: 1023px) {
-  /* Tablet handles auto collapse via JS state */
+  /* Tablet: sidebar collapses to 64px */
+  .app-main-content-wrapper {
+    margin-left: 64px;
+  }
 }
 
 @media (max-width: 767px) {
+  .app-main-content-wrapper {
+    margin-left: 0;
+  }
+
   .sidebar-mobile-toggle {
     display: block;
   }
   
   .sidebar {
-    position: fixed;
     transform: translateX(-100%);
     width: 240px; 
   }
