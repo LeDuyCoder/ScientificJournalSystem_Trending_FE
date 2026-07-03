@@ -17,7 +17,6 @@ import {
   useTopicIntensityMatrixQuery 
 } from '../hooks/useCollaborationAnalyticsQueries';
 import { useParams } from 'react-router-dom';
-import ErrorStateSection from '../../../shared/components/common/ErrorStateSection';
 import '../components/collaboration-analytics/CollaborationAnalytics.css';
 
 const CollaborationAnalyticsPage = () => {
@@ -51,12 +50,11 @@ const CollaborationAnalyticsPage = () => {
         {isLoading ? (
           <CollaborationAnalyticsSkeleton />
         ) : error ? (
-          <ErrorStateSection 
-            title="Collaboration Analytics Failed"
-            message={error.message || "Something went wrong"}
-            onRetry={handleRefetch}
-            minHeight={400}
-          />
+          <div className="kn-error">
+            <h2>Error</h2>
+            <p>{error.message || "Something went wrong"}</p>
+            <button className="ca-btn-dark" style={{ marginTop: '10px' }} onClick={handleRefetch}>Retry</button>
+          </div>
         ) : !rankings && !impactMatrix && !keyInsights && !globalNetwork && !topicIntensity ? (
           <div className="kn-empty">
             <h2>No Data</h2>
