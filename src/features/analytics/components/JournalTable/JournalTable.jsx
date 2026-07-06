@@ -6,14 +6,20 @@ import styles from '../../styles/Analytics.module.css';
  * @param {Array<number>} data - Array of data points
  */
 const Sparkline = ({ data }) => {
-  const min = Math.min(...data);
-  const max = Math.max(...data);
+  if (!data || data.length === 0) {
+    return <span style={{ color: 'var(--color-neutral-400)', fontSize: '12px' }}>No trend data</span>;
+  }
+
+  // Safeguard for single data point
+  const pointsData = data.length === 1 ? [data[0], data[0]] : data;
+  const min = Math.min(...pointsData);
+  const max = Math.max(...pointsData);
   const range = max - min === 0 ? 1 : max - min;
   const width = 100;
   const height = 30;
 
-  const points = data.map((val, i) => {
-    const x = (i / (data.length - 1)) * width;
+  const points = pointsData.map((val, i) => {
+    const x = (i / (pointsData.length - 1)) * width;
     const y = height - ((val - min) / range) * height;
     return `${x},${y}`;
   }).join(' ');
@@ -36,7 +42,12 @@ const Sparkline = ({ data }) => {
  * Table displaying tracked journals
  * @param {Array<Object>} journals - List of journal data
  */
-export const JournalTable = ({ journals }) => {
+export const JournalTable = ({ journals, page = 1, limit = 4, totalCount = 0, onPrevPage, onNextPage }) => {
+  const startIndex = totalCount === 0 ? 0 : (page - 1) * limit + 1;
+  const endIndex = Math.min(totalCount, page * limit);
+  const hasPrev = page > 1;
+  const hasNext = page * limit < totalCount;
+
   return (
     <div className={styles.tableCardContainer}>
       <table className={styles.journalTable}>
@@ -67,7 +78,7 @@ export const JournalTable = ({ journals }) => {
                 </div>
               </td>
               <td className={styles.issn}>{journal.issn}</td>
-              <td className={styles.impactFactor}>{journal.impactFactor}</td>
+              <td className={styles.impactFactor}>{journal.impactFactor?.toFixed(2) || '0.00'}</td>
               <td>
                 <span className={styles.sjrBadge}>{journal.sjrRank}</span>
               </td>
@@ -75,18 +86,32 @@ export const JournalTable = ({ journals }) => {
                 <Sparkline data={journal.trend} />
               </td>
               <td>
-                <button className={`${styles.btn} ${styles.btnPrimary}`}>View</button>
+                <button className={`${styles.btn} ${styles.btnPrimary}`} onClick={() => console.log('View detail:', journal.id)}>View</button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-      
+
       <div className={styles.pagination}>
-        <span className={styles.paginationText}>Showing 4 of 48 tracked journals</span>
+        <span className={styles.paginationText}>Showing {startIndex}-{endIndex} of {totalCount} tracked journals</span>
         <div className={styles.paginationControls}>
-          <button className={`${styles.btn} ${styles.btnOutline}`}>Previous</button>
-          <button className={`${styles.btn} ${styles.btnOutline}`}>Next</button>
+          <button
+            className={`${styles.btn} ${styles.btnOutline}`}
+            onClick={onPrevPage}
+            disabled={!hasPrev}
+            style={{ opacity: hasPrev ? 1 : 0.5, cursor: hasPrev ? 'pointer' : 'not-allowed' }}
+          >
+            Previous
+          </button>
+          <button
+            className={`${styles.btn} ${styles.btnOutline}`}
+            onClick={onNextPage}
+            disabled={!hasNext}
+            style={{ opacity: hasNext ? 1 : 0.5, cursor: hasNext ? 'pointer' : 'not-allowed' }}
+          >
+            Next
+          </button>
         </div>
       </div>
     </div>
