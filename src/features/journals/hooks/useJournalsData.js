@@ -27,7 +27,11 @@ export function useJournalsData() {
     setTopRanking(prev => ({ ...prev, loading: true, error: null }));
     try {
       const result = await getTopJournalRanking({ ...currentFilters, project_id: currentProjectId });
-      const items = result.items || result.data || result;
+      const items = Array.isArray(result) 
+        ? result 
+        : (Array.isArray(result.data) 
+            ? result.data 
+            : (result.journals || result.data?.journals || []));
       setTopRanking({ data: items, loading: false, error: null });
     } catch (err) {
       setTopRanking({ data: null, loading: false, error: err?.message || 'Failed to load top journal ranking' });

@@ -6,7 +6,26 @@ import styles from '../../styles/Analytics.module.css';
 /**
  * Container for summary metrics cards
  */
-export const SummaryCards = () => {
+export const SummaryCards = ({ summary = {} }) => {
+  const {
+    averageImpactFactor = 0,
+    percentageChange = '+0.0%',
+    trackedCount = 0,
+    limit = 100
+  } = summary;
+
+  const usagePercentage = limit > 0 ? Math.min(100, Math.round((trackedCount / limit) * 100)) : 0;
+
+  // Calculate next sync countdown (sync occurs at 00:00 every day)
+  const getNextSyncCountdown = () => {
+    const now = new Date();
+    const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+    const diffMs = tomorrow - now;
+    const diffHrs = Math.floor(diffMs / (1000 * 60 * 60));
+    const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+    return `Next update in ${diffHrs}h ${diffMins}m`;
+  };
+
   return (
     <div className={styles.summaryCardsContainer}>
       
@@ -16,8 +35,8 @@ export const SummaryCards = () => {
           <span>Average IF Score</span>
           <MdTrendingUp size={20} color="var(--color-primary-orange, #ff6b00)" />
         </div>
-        <div className={styles.summaryCardValue}>10.15</div>
-        <div className={styles.summaryCardSubtext}>+1.2% from last month</div>
+        <div className={styles.summaryCardValue}>{averageImpactFactor.toFixed(2)}</div>
+        <div className={styles.summaryCardSubtext}>{percentageChange} from last period</div>
       </Card>
 
       {/* Tracking Usage Card */}
@@ -27,9 +46,9 @@ export const SummaryCards = () => {
           <MdAutorenew size={20} color="var(--color-neutral-500, #666666)" />
         </div>
         <div className={styles.progressBarBg}>
-          <div className={styles.progressBarFill} style={{ width: '48%' }}></div>
+          <div className={styles.progressBarFill} style={{ width: `${usagePercentage}%` }}></div>
         </div>
-        <div className={styles.summaryCardSubtext}>48 / 100 limit reached</div>
+        <div className={styles.summaryCardSubtext}>{trackedCount} / {limit} limit reached</div>
       </Card>
 
       {/* Auto-Refresh Status Card */}
@@ -40,7 +59,7 @@ export const SummaryCards = () => {
           </div>
           <div className={styles.autoRefreshContent}>
             <h3>Auto-Refresh Active</h3>
-            <p className={styles.summaryCardSubtext} style={{ margin: 0 }}>Next update in 12h 43m</p>
+            <p className={styles.summaryCardSubtext} style={{ margin: 0 }}>{getNextSyncCountdown()}</p>
           </div>
         </div>
       </Card>

@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { Tabs } from '../components/Tabs/Tabs';
 import { JournalTable } from '../components/JournalTable/JournalTable';
 import { SummaryCards } from '../components/SummaryCards/SummaryCards';
 import DashboardFooter from '../../../shared/components/layout/DashboardFooter';
-import { journalData } from '../data/journalData';
+import { useTrackedJournalsQuery } from '../hooks/useTrackedJournals';
 import styles from '../styles/Analytics.module.css';
 
 /**
@@ -20,22 +21,63 @@ import styles from '../styles/Analytics.module.css';
  * ---------------------------------------------------------
  */
 export const AnalyticsDashboard = () => {
+  const { id } = useParams();
+  const projectId = id === 'default-id' ? '1' : id;
+
+  const [page, setPage] = useState(1);
+  const limit = 4; // Matches the design displaying 4 journals per page
+
+  const { data, isLoading, error } = useTrackedJournalsQuery(projectId, page, limit);
+
+  const journals = data?.journals || [];
+  const pagination = data?.pagination || { totalCount: 0, page, limit, totalPages: 0 };
+  const summary = data?.summary || { averageImpactFactor: 0, percentageChange: '+0.0%', trackedCount: 0, limit: 100 };
+
+  const handlePrevPage = () => {
+    setPage((prev) => Math.max(1, prev - 1));
+  };
+
+  const handleNextPage = () => {
+    setPage((prev) => (prev * limit < pagination.totalCount ? prev + 1 : prev));
+  };
+
   return (
     <div className={styles.analyticsPage}>
       <Tabs />
-      
+
       <div className={styles.pageContent}>
         <div className={styles.pageHeader}>
           <h2 className={styles.pageTitle}>Tracked Journals</h2>
           <p className={styles.pageDescription}>
-            Manage your watchlist for bibliometric monitoring. These journals are currently indexed for<br/>
+            Manage your watchlist for bibliometric monitoring. These journals are currently indexed for<br />
             real-time impact factor updates and citation frequency alerts.
           </p>
         </div>
 
-        <JournalTable journals={journalData} />
-        
-        <SummaryCards />
+        {isLoading ? (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '300px', gap: '16px' }}>
+            <div className="update-icon spin" style={{ width: '32px', height: '32px', border: '3px solid var(--color-primary-orange)', borderTopColor: 'transparent', borderRadius: '50%' }}></div>
+            <div style={{ color: 'var(--color-neutral-500)', fontSize: '14px' }}>Loading tracked journals...</div>
+          </div>
+        ) : error ? (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '300px', gap: '12px', border: 'var(--border-light)', borderRadius: 'var(--radius-md)', background: 'var(--color-surface)' }}>
+            <div style={{ color: '#ef4444', fontSize: '16px', fontWeight: 'bold' }}>Error Loading Data</div>
+            <div style={{ color: 'var(--color-neutral-500)', fontSize: '14px' }}>{error.message || 'Unable to connect to the server.'}</div>
+          </div>
+        ) : (
+          <>
+            <JournalTable
+              journals={journals}
+              page={page}
+              limit={limit}
+              totalCount={pagination.totalCount}
+              onPrevPage={handlePrevPage}
+              onNextPage={handleNextPage}
+            />
+
+            <SummaryCards summary={summary} />
+          </>
+        )}
       </div>
       <DashboardFooter />
     </div>
