@@ -48,7 +48,7 @@ export const Pagination = ({
   return (
     <div className={styles.container}>
       <div className={styles.text}>
-        Showing {startItem} to {endItem} of {totalItems}<br />results
+        Showing {startItem} to {endItem} of {totalItems} results
       </div>
       
       <div className={styles.controls}>

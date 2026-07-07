@@ -9,7 +9,7 @@ import styles from '../../styles/curatedArticles.module.css';
  * @param {Object} props
  * @param {Array<Object>} props.keywords - List of keyword objects
  */
-export const KeywordPanel = ({ keywords = [] }) => {
+export const KeywordPanel = ({ keywords = [], onManageClick }) => {
   return (
     <div className={styles.panelCard}>
       <h3 className={styles.panelTitle}>Keywords</h3>
@@ -18,7 +18,7 @@ export const KeywordPanel = ({ keywords = [] }) => {
           <KeywordChip key={kw.id} label={kw.label} />
         ))}
       </div>
-      <button className={styles.manageKeywordsBtn}>Manage Keywords</button>
+      <button className={styles.manageKeywordsBtn} onClick={onManageClick}>Manage Keywords</button>
     </div>
   );
 };

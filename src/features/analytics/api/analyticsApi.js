@@ -1,31 +1,35 @@
-import { curatedArticlesMock } from '../data/curatedArticlesMock';
-import { keywordsMock } from '../data/keywordsMock';
+import apiClient from '../../../shared/api/axios';
 
 /**
- * Mock API for Analytics feature
+ * API for Analytics feature
  */
 export const analyticsApi = {
   /**
    * Fetch curated articles
-   * @returns {Promise<Array>}
+   * @param {Object} params - Query parameters
+   * @returns {Promise<Object>}
    */
-  getCuratedArticles: () => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(curatedArticlesMock);
-      }, 500);
-    });
+  getCuratedArticles: (params) => {
+    return apiClient.get('/analytics/curated-articles', { params });
   },
 
-  /**
-   * Fetch keywords
-   * @returns {Promise<Array>}
-   */
-  getKeywords: () => {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(keywordsMock);
-      }, 300);
-    });
+  getKeywords: (params) => {
+    return apiClient.get('/analytics/project-keywords', { params });
+  },
+
+  addKeyword: (projectId, keyword) => {
+    return apiClient.post('/analytics/project-keywords', { keyword }, { params: { project_id: projectId } });
+  },
+
+  removeKeyword: (projectId, keywordId) => {
+    return apiClient.delete(`/analytics/project-keywords/${keywordId}`, { params: { project_id: projectId } });
+  },
+
+  searchKeywords: (query) => {
+    return apiClient.get('/dashboard/search', { params: { q: query, type: 'keyword' } });
+  },
+
+  getTrackedJournals: (params) => {
+    return apiClient.get('/analytics/tracked-journals', { params });
   }
 };
