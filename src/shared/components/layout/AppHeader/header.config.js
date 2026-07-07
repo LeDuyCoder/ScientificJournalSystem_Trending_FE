@@ -2,11 +2,6 @@ import { FiBell, FiSettings, FiHelpCircle } from 'react-icons/fi';
 
 export const headerConfig = {
   searchPlaceholder: "Tìm kiếm danh mục, bài báo...",
-  userProfile: {
-    initials: "JR",
-    name: "Dr. Julian Reed",
-    role: "Senior Analyst"
-  },
   icons: [
     {
       id: "notifications",
