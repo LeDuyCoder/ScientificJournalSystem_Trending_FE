@@ -6,6 +6,11 @@ export const sidebarConfig = {
     title: "Scientia",
     subtitle: "Bibliometric Excellence",
   },
+  userProfile: {
+    initials: "JR",
+    name: "Dr. Julian Reed",
+    role: "Senior Analyst"
+  },
   menuItems: [
     { label: "Dashboard", segment: "dashboard", icon: FiGrid },
     { label: "Journals", segment: "journals", icon: FiBook },

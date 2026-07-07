@@ -15,12 +15,9 @@ export const useUserProfileQuery = () => {
       if (!user) return null;
 
       // Extract and combine first_name and last_name
-      let name = '';
-      if (user.first_name || user.last_name) {
-        name = [user.first_name, user.last_name].filter(Boolean).join(' ');
-      } else {
-        name = user.fullName || user.name || user.username || 'Current User';
-      }
+      const name = (user.first_name || user.last_name)
+        ? [user.first_name, user.last_name].filter(Boolean).join(' ')
+        : user.fullName || user.name || user.username || 'Current User';
 
       // Normalize role
       let role = 'Researcher';
