@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import GlobalStatsSection from '../components/GlobalStatsSection';
 import GlobalHeatMapSection from '../components/GlobalHeatMapSection';
 import ResearchLandscapeCard from '../components/ResearchLandscapeCard';
@@ -28,10 +28,23 @@ const placeholderStyle = {
 
 export default function GlobalEcosystemPage() {
   const { projectId, filters, refreshTrigger, refreshData } = useDashboardContext();
+  const [selectedGeoCountry, setSelectedGeoCountry] = useState('');
   const queryParams = mapFiltersToQueryParams(filters);
 
   const { data: kpiStats, isLoading: isStatsLoading, error: statsError } = useDashboardStatsQuery(projectId, refreshTrigger);
-  const { data: heatMapData, isLoading: isGeoLoading, error: geoError } = useGeoDistribution(projectId, queryParams, refreshTrigger);
+  const { data: globalMapData, isLoading: isGeoLoading, error: geoError } = useGeoDistribution(projectId, queryParams, refreshTrigger);
+  
+  const regionalQueryParams = useMemo(() => ({
+    ...queryParams,
+    country: selectedGeoCountry
+  }), [queryParams, selectedGeoCountry]);
+  
+  const { data: regionalData, isFetching: isRegionalLoading } = useGeoDistribution(
+    projectId,
+    regionalQueryParams,
+    refreshTrigger
+  );
+
   const { data: landscapeData, isLoading: isLandscapeLoading, error: landscapeError } = useDistribution(projectId, queryParams, refreshTrigger);
   const { data: topEntitiesData, isLoading: isTopEntitiesLoading, error: topEntitiesError } = useTopEntities(projectId, { limit: 4, filters: queryParams, refreshTrigger });
   const { data: quartilesData, isLoading: isQuartilesLoading, error: quartilesError } = useQuartiles(projectId, queryParams, refreshTrigger);
@@ -65,7 +78,13 @@ export default function GlobalEcosystemPage() {
 
       <div className="ecosystem-main-layout">
         <div className="ecosystem-left-col">
-          <GlobalHeatMapSection data={heatMapData} />
+          <GlobalHeatMapSection
+            mapData={globalMapData}
+            regionalData={regionalData}
+            selectedCountryCode={selectedGeoCountry}
+            onCountryChange={setSelectedGeoCountry}
+            isGeoLoading={isRegionalLoading && selectedGeoCountry !== ''}
+          />
         </div>
         <div className="ecosystem-right-col">
           <ResearchLandscapeCard data={landscapeData} />

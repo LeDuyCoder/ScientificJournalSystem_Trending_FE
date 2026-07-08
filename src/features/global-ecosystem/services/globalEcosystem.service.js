@@ -90,7 +90,13 @@ export const transformGeoData = (data) => {
   if (!Array.isArray(data)) return [];
   return data.map((item) => ({
     country: item.countryCode,
+    countryCode: item.countryCode,
+    countryName: item.countryName,
+    regionCode: item.regionCode,
+    regionName: item.regionName,
+    count: item.count ?? 0,
     intensity: intensityLabelToNumber(item.intensity),
+    intensityLabel: item.intensity,
   }));
 };
 
@@ -179,7 +185,9 @@ export const mapFiltersToQueryParams = (filters) => {
 
   const queryParams = {};
 
-  if (filters.domain && filters.domain !== 'All Domains') {
+  if (filters.subject_category && filters.subject_category !== 'All Categories') {
+    queryParams.subject_area = filters.subject_category;
+  } else if (filters.domain && filters.domain !== 'All Domains') {
     queryParams.subject_area = filters.domain;
   }
 
