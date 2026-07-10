@@ -30,7 +30,15 @@ export const CuratedArticleCard = ({ article }) => {
       
       <div className={styles.cardFooter}>
         <span className={styles.publishedYear}>Published {article.publishedYear}</span>
-        <button className={styles.viewBtn}>View Details</button>
+        <button 
+          className={styles.viewBtn}
+          onClick={() => {
+            const coreUrl = import.meta.env.VITE_CORE_FE_URL || 'http://localhost:5173';
+            window.location.href = `${coreUrl}/articles/${article.id}/visual`;
+          }}
+        >
+          View Details
+        </button>
       </div>
     </div>
   );
