@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
+import { useTranslation } from 'react-i18next';
 import { FiBriefcase, FiChevronRight } from 'react-icons/fi';
 import { coreApiClient } from '../../api/axios';
 import './Sidebar.css';
@@ -45,9 +46,11 @@ const getProjectInitials = (title) => {
 
 // Renders the selected project summary at the top of the Sidebar.
 const SidebarHeader = ({ collapsed }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
-  const { id } = useParams();
+  const { id, lang } = useParams();
+  const currentLang = lang || 'en';
   const headerRef = useRef(null);
   const [projectMenuOpen, setProjectMenuOpen] = useState(false);
   const hasProject = Boolean(id && id !== 'default-id');
@@ -64,8 +67,8 @@ const SidebarHeader = ({ collapsed }) => {
 
   const project = selectedProject || {
     id: hasProject ? String(id) : '',
-    title: hasProject ? `Project #${id}` : 'Project Workspace',
-    domain: hasProject && isLoading ? 'LOADING PROJECT' : 'SELECT A PROJECT',
+    title: hasProject ? `Project #${id}` : t('sidebar.projectWorkspace', 'Project Workspace'),
+    domain: hasProject && isLoading ? t('sidebar.loadingProject', 'LOADING PROJECT') : t('sidebar.selectProject', 'SELECT A PROJECT'),
     articleCount: 0,
     journalCount: 0,
   };
@@ -85,7 +88,7 @@ const SidebarHeader = ({ collapsed }) => {
 
   const handleHeaderClick = () => {
     if (collapsed) {
-      navigate('/projects');
+      navigate(`/${currentLang}/projects`);
       return;
     }
     setProjectMenuOpen((open) => !open);
@@ -93,11 +96,16 @@ const SidebarHeader = ({ collapsed }) => {
 
   const handleProjectSelect = (projectId) => {
     const currentBase = hasProject ? `/project/${id}` : '';
-    const currentSection = currentBase && location.pathname.startsWith(currentBase)
-      ? location.pathname.slice(currentBase.length) || '/dashboard'
-      : '/dashboard';
+    let currentSection = '/dashboard';
+    
+    // Extract current section to navigate to same view in the selected project
+    if (currentBase && location.pathname.includes(currentBase)) {
+      // Find index after `/project/:id`
+      const index = location.pathname.indexOf(currentBase) + currentBase.length;
+      currentSection = location.pathname.slice(index) || '/dashboard';
+    }
 
-    navigate(`/project/${projectId}${currentSection}`);
+    navigate(`/${currentLang}/project/${projectId}${currentSection}`);
     setProjectMenuOpen(false);
   };
 
@@ -119,7 +127,7 @@ const SidebarHeader = ({ collapsed }) => {
         ) : (
           <div className={`sidebar-project-card ${projectMenuOpen ? 'open' : ''}`}>
             <div className="sidebar-project-eyebrow">
-              <span>Current Project</span>
+              <span>{t('sidebar.currentProject', 'Current Project')}</span>
               <FiChevronRight className="sidebar-project-chevron" />
             </div>
             <div className="sidebar-project-main">
@@ -137,12 +145,12 @@ const SidebarHeader = ({ collapsed }) => {
 
       {!collapsed && projectMenuOpen && (
         <div className="sidebar-project-menu" role="menu" aria-label="Project switcher">
-          <div className="sidebar-project-menu-header">Switch Project</div>
+          <div className="sidebar-project-menu-header">{t('sidebar.switchProject', 'Switch Project')}</div>
           <div className="sidebar-project-menu-list">
             {isLoading ? (
-              <div className="sidebar-project-menu-state">Loading projects...</div>
+              <div className="sidebar-project-menu-state">{t('sidebar.loadingProjects', 'Loading projects...')}</div>
             ) : projects.length === 0 ? (
-              <div className="sidebar-project-menu-state">No projects found</div>
+              <div className="sidebar-project-menu-state">{t('sidebar.noProjects', 'No projects found')}</div>
             ) : (
               projects.map((item) => {
                 const selected = item.id === String(id);

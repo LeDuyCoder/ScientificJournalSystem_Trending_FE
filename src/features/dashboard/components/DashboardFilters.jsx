@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FiFilter, FiRefreshCw } from 'react-icons/fi';
 import { useDashboardContext } from '../contexts/DashboardContext';
 import FilterDropdown from './FilterDropdown';
@@ -20,6 +21,7 @@ const REGION_OPTIONS = [
 ];
 
 export default function DashboardFilters() {
+  const { t } = useTranslation();
   const { filters, updateFilter, refreshData, loading, projectId } = useDashboardContext();
   const [categories, setCategories] = useState([]);
 
@@ -81,12 +83,12 @@ export default function DashboardFilters() {
         <div className="dashboard-filters-controls">
           <div className="dashboard-filter-label">
             <FiFilter aria-hidden="true" />
-            <span>Filters</span>
+            <span>{t('dashboard.filters.label', 'Filters')}</span>
           </div>
 
           <div className="dashboard-filter-group">
             <FilterDropdown
-              title="Timeframe"
+              title={t('dashboard.filters.timeframe', 'Timeframe')}
               value={filters.timeframe}
               options={TIMEFRAME_OPTIONS}
               onChange={(val) => updateFilter('timeframe', val)}
@@ -97,7 +99,7 @@ export default function DashboardFilters() {
 
           <div className="dashboard-filter-group">
             <FilterDropdown
-              title="Subject Area"
+              title={t('dashboard.filters.subjectArea', 'Subject Area')}
               value={filters.subject_category}
               options={['All Categories', ...(categories ? categories.map(c => c.name) : [])]}
               onChange={(val) => updateFilter('subject_category', val)}
@@ -108,7 +110,7 @@ export default function DashboardFilters() {
 
           <div className="dashboard-filter-group">
             <FilterDropdown
-              title="Zone"
+              title={t('dashboard.filters.zone', 'Zone')}
               value={filters.region}
               options={REGION_OPTIONS}
               onChange={(val) => updateFilter('region', val)}
@@ -125,22 +127,22 @@ export default function DashboardFilters() {
           aria-live="polite"
         >
           <FiRefreshCw className={`update-icon ${loading ? 'spin' : ''}`} aria-hidden="true" />
-          {loading ? 'Updating...' : 'Update Analysis'}
+          {loading ? t('dashboard.filters.updating', 'Updating...') : t('dashboard.filters.updateAnalysis', 'Update Analysis')}
         </button>
       </div>
 
       <div className="dashboard-filter-chips">
         <div className="dashboard-chip">
-          <span className="chip-label">Timeframe:</span>
-          <span className="chip-value">{filters.timeframe}</span>
+          <span className="chip-label">{t('dashboard.filters.timeframe', 'Timeframe')}:</span>
+          <span className="chip-value">{t(`dashboard.filters.${filters.timeframe}`, filters.timeframe)}</span>
         </div>
         <div className="dashboard-chip">
-          <span className="chip-label">Subject Category:</span>
-          <span className="chip-value">{filters.subject_category}</span>
+          <span className="chip-label">{t('dashboard.filters.subjectCategory', 'Subject Category')}:</span>
+          <span className="chip-value">{t(`dashboard.filters.${filters.subject_category}`, filters.subject_category)}</span>
         </div>
         <div className="dashboard-chip">
-          <span className="chip-label">Region:</span>
-          <span className="chip-value">{filters.region}</span>
+          <span className="chip-label">{t('dashboard.filters.region', 'Region')}:</span>
+          <span className="chip-value">{t(`dashboard.filters.${filters.region}`, filters.region)}</span>
         </div>
       </div>
     </div>

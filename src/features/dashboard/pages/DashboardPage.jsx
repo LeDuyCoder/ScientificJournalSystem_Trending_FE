@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import DashboardContainer from '../components/DashboardContainer';
 import DashboardStack from '../../../shared/components/layout/DashboardStack';
 import DashboardFilters from '../components/DashboardFilters';
@@ -23,18 +24,19 @@ const placeholderStyle = {
 };
 
 const DashboardContent = () => {
+  const { t } = useTranslation();
   const { error, refreshData } = useDashboardContext();
   const [activeTab, setActiveTab] = useState('global-ecosystem');
 
   const tabs = [
     {
       id: 'global-ecosystem',
-      label: 'Global Ecosystem',
+      label: t('dashboard.tabs.globalEcosystem', 'Global Ecosystem'),
       content: <GlobalEcosystemPage />
     },
     {
       id: 'development-trends',
-      label: 'Development & Trends',
+      label: t('dashboard.tabs.developmentTrends', 'Development & Trends'),
       content: <DevelopmentTrendsPage />
     }
   ];
@@ -43,8 +45,8 @@ const DashboardContent = () => {
     if (error) {
       return (
         <ErrorStateSection 
-          title="Dashboard Loading Failed"
-          message="Unable to load dashboard data. Please check your connection or try again."
+          title={t('common.error', 'Dashboard Loading Failed')}
+          message={t('dashboard.loadingFailedDesc', 'Unable to load dashboard data. Please check your connection or try again.')}
           onRetry={refreshData}
           minHeight={400}
         />

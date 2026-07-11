@@ -1,11 +1,16 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { sidebarConfig } from './sidebar.config';
 import { useUserProfileQuery } from '../../hooks/useUserProfile';
 import './Sidebar.css';
 
 // Renders the footer actions of the sidebar like Support and Sign Out
 const SidebarFooter = ({ collapsed }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
+  const { lang } = useParams();
+  const currentLang = lang || 'en';
+  
   const { data: userProfile } = useUserProfileQuery();
   const profile = {
     initials: userProfile?.initials || sidebarConfig.userProfile.initials,
@@ -19,9 +24,9 @@ const SidebarFooter = ({ collapsed }) => {
     if (action === 'logout') {
       // Mock logout behavior
       localStorage.clear();
-      navigate('/login');
+      navigate(`/${currentLang}/login`);
     } else if (action === 'support') {
-      navigate('/support');
+      navigate(`/${currentLang}/support`);
     }
   };
 
@@ -53,18 +58,19 @@ const SidebarFooter = ({ collapsed }) => {
       </div>
       {sidebarConfig.footerItems.map((item, index) => {
         const IconComponent = item.icon;
+        const translatedLabel = t(`sidebar.${item.label.toLowerCase().replace(/\s+/g, '')}`, item.label);
         return (
           <button 
             key={index} 
             className={`sidebar-footer-item ${collapsed ? 'collapsed' : ''}`}
             onClick={() => handleAction(item.action)}
-            title={collapsed ? item.label : undefined}
-            aria-label={item.label}
+            title={collapsed ? translatedLabel : undefined}
+            aria-label={translatedLabel}
           >
             <div className="sidebar-item-icon">
               <IconComponent />
             </div>
-            {!collapsed && <span className="sidebar-item-label">{item.label}</span>}
+            {!collapsed && <span className="sidebar-item-label">{translatedLabel}</span>}
           </button>
         );
       })}

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import DashboardFooter from '../../../shared/components/layout/DashboardFooter';
 import VolumeAnalyticsTabs from '../components/keywords-networks/VolumeAnalyticsTabs';
 import CoreClustersCard from '../components/keywords-networks/CoreClustersCard';
@@ -21,6 +22,7 @@ import {
 import '../components/keywords-networks/KeywordsNetworks.css';
 
 const KeywordsNetworksPage = () => {
+  const { t } = useTranslation();
   const { projectId, filters, refreshTrigger, refreshData } = useDashboardContext();
   const [localTimeframe, setLocalTimeframe] = useState('monthly');
 
@@ -42,12 +44,12 @@ const KeywordsNetworksPage = () => {
         {isLoading ? (
           <div className="kn-loading" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '400px', gap: '16px' }}>
             <div className="update-icon spin" style={{ width: '24px', height: '24px', border: '3px solid var(--color-primary-orange)', borderTopColor: 'transparent', borderRadius: '50%' }}></div>
-            <div>Loading analytics...</div>
+            <div>{t('common.loading', 'Loading analytics...')}</div>
           </div>
         ) : hasError ? (
           <ErrorStateSection 
-            title="Analytics Loading Failed"
-            message="Unable to load keyword and networks analytics. Please check your connection or try again."
+            title={t('common.error', 'Analytics Loading Failed')}
+            message={t('dashboard.loadingFailedDesc', 'Unable to load keyword and networks analytics. Please check your connection or try again.')}
             onRetry={refreshData}
             minHeight={400}
           />

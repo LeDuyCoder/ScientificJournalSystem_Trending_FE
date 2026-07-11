@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import GlobalStatsSection from '../components/GlobalStatsSection';
 import GlobalHeatMapSection from '../components/GlobalHeatMapSection';
 import ResearchLandscapeCard from '../components/ResearchLandscapeCard';
@@ -27,6 +28,7 @@ const placeholderStyle = {
 };
 
 export default function GlobalEcosystemPage() {
+  const { t } = useTranslation();
   const { projectId, filters, refreshTrigger, refreshData } = useDashboardContext();
   const [selectedGeoCountry, setSelectedGeoCountry] = useState('');
   const queryParams = mapFiltersToQueryParams(filters);
@@ -56,7 +58,7 @@ export default function GlobalEcosystemPage() {
     return (
       <div style={{ ...placeholderStyle, height: '400px', flexDirection: 'column', gap: '16px' }}>
         <div className="update-icon spin" style={{ width: '24px', height: '24px', border: '3px solid var(--color-primary-orange)', borderTopColor: 'transparent', borderRadius: '50%' }}></div>
-        <div>Loading Global Ecosystem...</div>
+        <div>{t('common.loading', 'Loading Global Ecosystem...')}</div>
       </div>
     );
   }
@@ -64,8 +66,8 @@ export default function GlobalEcosystemPage() {
   if (hasError) {
     return (
       <ErrorStateSection 
-        title="Data Loading Failed"
-        message="Unable to load global ecosystem data. Please check your connection or try again."
+        title={t('common.error', 'Data Loading Failed')}
+        message={t('dashboard.loadingFailedDesc', 'Unable to load global ecosystem data. Please check your connection or try again.')}
         onRetry={refreshData}
         minHeight={400}
       />
@@ -88,12 +90,16 @@ export default function GlobalEcosystemPage() {
         </div>
         <div className="ecosystem-right-col">
           <ResearchLandscapeCard data={landscapeData} />
-          <TopEntitiesCard title="Top Entities" items={topEntitiesData} />
+          <TopEntitiesCard title={t('dashboard.topEntities', 'Top Entities')} items={topEntitiesData} />
           <ImpactQuartilesCard 
-            title="Impact Quartiles" 
+            title={t('dashboard.impactQuartiles', 'Impact Quartiles')} 
             description={quartilesData 
-              ? `Highest concentration is in ${quartilesData.highestGroup.group} (${quartilesData.totalJournals} total journals)` 
-              : "Ratio of publications in top 25% of citation rankings"
+              ? t('dashboard.quartilesDescDynamic', { 
+                  group: quartilesData.highestGroup.group, 
+                  total: quartilesData.totalJournals,
+                  defaultValue: `Highest concentration is in ${quartilesData.highestGroup.group} (${quartilesData.totalJournals} total journals)`
+                })
+              : t('dashboard.quartilesDescStatic', 'Ratio of publications in top 25% of citation rankings')
             }
             percentage={quartilesData?.percentage ?? 0}
             label={quartilesData?.label ?? "-"}

@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { FiFilter, FiTrendingUp, FiCheck, FiChevronDown } from 'react-icons/fi';
 import { BiSortAlt2 } from 'react-icons/bi';
 import { coreApiClient } from '../../../shared/api/axios';
@@ -30,6 +31,7 @@ const mapProjectFromApi = (project) => {
 };
 
 export default function ProjectsPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -132,8 +134,8 @@ export default function ProjectsPage() {
     <div className="projects-page-container">
       <div className="projects-header-section">
         <div className="projects-title-block">
-          <h1 className="projects-page-title">Research Projects</h1>
-          <p className="projects-page-subtitle">Manage and track your ongoing bibliometric research initiatives.</p>
+          <h1 className="projects-page-title">{t('dashboard.title')}</h1>
+          <p className="projects-page-subtitle">{t('dashboard.subtitle')}</p>
         </div>
 
         <div className="projects-actions-block">
@@ -147,7 +149,7 @@ export default function ProjectsPage() {
               }}
             >
               <FiFilter className="btn-icon" />
-              <span>Lọc: {selectedDomain === 'ALL' ? 'Tất cả' : selectedDomain}</span>
+              <span>{t('dashboard.filter')}: {selectedDomain === 'ALL' ? t('dashboard.all') : selectedDomain}</span>
               <FiChevronDown className="chevron-icon" />
             </button>
             {showFilterDropdown && (
@@ -161,7 +163,7 @@ export default function ProjectsPage() {
                       setShowFilterDropdown(false);
                     }}
                   >
-                    <span>{d === 'ALL' ? 'Tất cả lĩnh vực' : d}</span>
+                    <span>{d === 'ALL' ? t('dashboard.all') : d}</span>
                     {selectedDomain === d && <FiCheck className="check-icon" />}
                   </button>
                 ))}
@@ -179,7 +181,7 @@ export default function ProjectsPage() {
               }}
             >
               <BiSortAlt2 className="btn-icon" />
-              <span>Sắp xếp: {sortOrder === 'NEWEST' ? 'Mới nhất' : sortOrder === 'OLDEST' ? 'Cũ nhất' : 'Tên A-Z'}</span>
+              <span>{t('dashboard.sortBy')}: {sortOrder === 'NEWEST' ? t('dashboard.newest') : sortOrder === 'OLDEST' ? t('dashboard.oldest') : t('dashboard.az')}</span>
               <FiChevronDown className="chevron-icon" />
             </button>
             {showSortDropdown && (
@@ -191,7 +193,7 @@ export default function ProjectsPage() {
                     setShowSortDropdown(false);
                   }}
                 >
-                  <span>Mới sửa đổi</span>
+                  <span>{t('dashboard.newest')}</span>
                   {sortOrder === 'NEWEST' && <FiCheck className="check-icon" />}
                 </button>
                 <button 
@@ -201,7 +203,7 @@ export default function ProjectsPage() {
                     setShowSortDropdown(false);
                   }}
                 >
-                  <span>Cũ sửa đổi</span>
+                  <span>{t('dashboard.oldest')}</span>
                   {sortOrder === 'OLDEST' && <FiCheck className="check-icon" />}
                 </button>
                 <button 
@@ -211,7 +213,7 @@ export default function ProjectsPage() {
                     setShowSortDropdown(false);
                   }}
                 >
-                  <span>Tên từ A-Z</span>
+                  <span>{t('dashboard.az')}</span>
                   {sortOrder === 'A-Z' && <FiCheck className="check-icon" />}
                 </button>
               </div>
@@ -225,12 +227,12 @@ export default function ProjectsPage() {
         {loading ? (
           <div style={{ gridColumn: '1 / -1', padding: '40px', textAlign: 'center', color: 'var(--color-neutral-500)' }}>
             <div className="update-icon spin" style={{ width: '32px', height: '32px', border: '3px solid var(--color-primary-orange)', borderTopColor: 'transparent', borderRadius: '50%', margin: '0 auto 16px' }}></div>
-            <div>Đang tải danh sách dự án...</div>
+            <div>{t('common.loading')}</div>
           </div>
         ) : error ? (
           <div style={{ gridColumn: '1 / -1' }}>
             <ErrorStateSection 
-              title="Lỗi tải dữ liệu"
+              title={t('common.error')}
               message={error}
               onRetry={fetchProjects}
               minHeight={300}
@@ -238,8 +240,7 @@ export default function ProjectsPage() {
           </div>
         ) : projects.length === 0 ? (
           <div style={{ gridColumn: '1 / -1', padding: '60px', textAlign: 'center', color: 'var(--color-neutral-500)', backgroundColor: 'var(--color-surface)', borderRadius: 'var(--radius-lg)', border: '1px dashed var(--color-neutral-300)' }}>
-            <h3>Chưa có dự án nào</h3>
-            <p>Bạn chưa tạo dự án nghiên cứu nào. Vui lòng tạo dự án mới để bắt đầu.</p>
+            <h3>{t('dashboard.noProjects')}</h3>
           </div>
         ) : (
           sortedProjects.map(project => (
@@ -257,11 +258,26 @@ export default function ProjectsPage() {
             </h3>
 
             <div className="project-tags-list">
-              {project.tags.map((tag, idx) => (
-                <span key={idx} className="project-sub-tag">
-                  {tag}
-                </span>
-              ))}
+              {project.tags.map((tag, idx) => {
+                const parts = tag.split(': ');
+                if (parts.length === 2) {
+                  const key = parts[0];
+                  const val = parts[1];
+                  const label = key === 'JOURNALS' ? t('dashboard.journalsCount') : 
+                                key === 'KEYWORDS' ? t('dashboard.keywordsCount') : 
+                                key === 'ARTICLES' ? t('dashboard.articlesCount') : key;
+                  return (
+                    <span key={idx} className="project-sub-tag">
+                      {label}: {val}
+                    </span>
+                  );
+                }
+                return (
+                  <span key={idx} className="project-sub-tag">
+                    {tag}
+                  </span>
+                );
+              })}
             </div>
 
             <div className="project-card-footer">
@@ -290,28 +306,28 @@ export default function ProjectsPage() {
         <div className="modal-overlay" onClick={() => setShowCreateModal(false)}>
           <div className="modal-container" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
-              <h2 className="modal-title">Tạo Dự Án Mới</h2>
+              <h2 className="modal-title">{t('dashboard.createProject')}</h2>
               <button className="modal-close-btn" onClick={() => setShowCreateModal(false)}>
                 <FiX />
               </button>
             </div>
             <form onSubmit={handleCreateProject} className="modal-form">
               <div className="form-group">
-                <label className="form-label" htmlFor="proj-title">Tên dự án *</label>
+                <label className="form-label" htmlFor="proj-title">{t('dashboard.projectName')} *</label>
                 <input 
                   id="proj-title"
                   type="text" 
                   className="form-input" 
                   value={newProject.title}
                   onChange={e => setNewProject({ ...newProject, title: e.target.value })}
-                  placeholder="Nhập tên dự án nghiên cứu..."
+                  placeholder={t('dashboard.projectName')}
                   required
                   autoFocus
                 />
               </div>
 
               <div className="form-group">
-                <label className="form-label" htmlFor="proj-domain">Lĩnh vực nghiên cứu</label>
+                <label className="form-label" htmlFor="proj-domain">{t('dashboard.subjectArea')}</label>
                 <select 
                   id="proj-domain"
                   className="form-select"
@@ -325,23 +341,23 @@ export default function ProjectsPage() {
               </div>
 
               <div className="form-group">
-                <label className="form-label" htmlFor="proj-tags">Từ khóa (phân cách bằng dấu phẩy)</label>
+                <label className="form-label" htmlFor="proj-tags">{t('dashboard.keywords')}</label>
                 <input 
                   id="proj-tags"
                   type="text" 
                   className="form-input" 
                   value={newProject.tagsStr}
                   onChange={e => setNewProject({ ...newProject, tagsStr: e.target.value })}
-                  placeholder="Ví dụ: DEEP LEARNING, GNN, LSTM..."
+                  placeholder="DEEP LEARNING, GNN, LSTM..."
                 />
               </div>
 
               <div className="modal-actions">
                 <button type="button" className="modal-btn btn-cancel" onClick={() => setShowCreateModal(false)}>
-                  Hủy bỏ
+                  {t('common.cancel')}
                 </button>
                 <button type="submit" className="modal-btn btn-submit">
-                  Tạo dự án
+                  {t('common.create')}
                 </button>
               </div>
             </form>

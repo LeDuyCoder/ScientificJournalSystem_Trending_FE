@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { Tabs } from '../components/Tabs/Tabs';
 import { JournalTable } from '../components/JournalTable/JournalTable';
@@ -21,6 +22,7 @@ import styles from '../styles/Analytics.module.css';
  * ---------------------------------------------------------
  */
 export const AnalyticsDashboard = () => {
+  const { t } = useTranslation();
   const { id } = useParams();
   const projectId = id === 'default-id' ? '1' : id;
 
@@ -47,22 +49,21 @@ export const AnalyticsDashboard = () => {
 
       <div className={styles.pageContent}>
         <div className={styles.pageHeader}>
-          <h2 className={styles.pageTitle}>Tracked Journals</h2>
+          <h2 className={styles.pageTitle}>{t('analytics.trackedJournals', 'Tracked Journals')}</h2>
           <p className={styles.pageDescription}>
-            Manage your watchlist for bibliometric monitoring. These journals are currently indexed for<br />
-            real-time impact factor updates and citation frequency alerts.
+            {t('analytics.trackedJournalsDesc', 'Manage your watchlist for bibliometric monitoring. These journals are currently indexed for real-time impact factor updates and citation frequency alerts.')}
           </p>
         </div>
 
         {isLoading ? (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '300px', gap: '16px' }}>
             <div className="update-icon spin" style={{ width: '32px', height: '32px', border: '3px solid var(--color-primary-orange)', borderTopColor: 'transparent', borderRadius: '50%' }}></div>
-            <div style={{ color: 'var(--color-neutral-500)', fontSize: '14px' }}>Loading tracked journals...</div>
+            <div style={{ color: 'var(--color-neutral-500)', fontSize: '14px' }}>{t('common.loading', 'Loading tracked journals...')}</div>
           </div>
         ) : error ? (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '300px', gap: '12px', border: 'var(--border-light)', borderRadius: 'var(--radius-md)', background: 'var(--color-surface)' }}>
-            <div style={{ color: '#ef4444', fontSize: '16px', fontWeight: 'bold' }}>Error Loading Data</div>
-            <div style={{ color: 'var(--color-neutral-500)', fontSize: '14px' }}>{error.message || 'Unable to connect to the server.'}</div>
+            <div style={{ color: '#ef4444', fontSize: '16px', fontWeight: 'bold' }}>{t('common.error', 'Error Loading Data')}</div>
+            <div style={{ color: 'var(--color-neutral-500)', fontSize: '14px' }}>{error.message || t('analytics.unableToConnect', 'Unable to connect to the server.')}</div>
           </div>
         ) : (
           <>

@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import SearchInput from './SearchInput';
 import IconButton from './IconButton';
 import { headerConfig } from './header.config';
 import { useDashboardSearchQuery } from '../../../hooks/useDashboardSearch';
+import LanguageSelector from '../../common/LanguageSelector';
 import './Header.css';
 
 /**
@@ -15,6 +17,7 @@ const AppHeader = ({
   sticky = true,
   onSearch,
 }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const { id } = useParams();
@@ -74,7 +77,7 @@ const AppHeader = ({
         <SearchInput 
           value={canSearchInProject ? searchValue : ''} 
           onChange={handleSearchChange} 
-          placeholder={canSearchInProject ? headerConfig.searchPlaceholder : 'Chọn project để tìm kiếm'}
+          placeholder={canSearchInProject ? t('header.searchPlaceholder') : t('header.selectProject')}
           disabled={!canSearchInProject}
           results={searchResults}
           counts={searchCounts}
@@ -99,11 +102,13 @@ const AppHeader = ({
               key={iconConfig.id}
               icon={iconConfig.icon} 
               onClick={() => console.log(`${iconConfig.id} clicked`)} 
-              ariaLabel={iconConfig.ariaLabel} 
+              ariaLabel={t(`header.${iconConfig.id}`)} 
               badge={iconConfig.badge}
             />
           ))}
         </div>
+        <div className="header-divider"></div>
+        <LanguageSelector />
       </div>
     </header>
   );

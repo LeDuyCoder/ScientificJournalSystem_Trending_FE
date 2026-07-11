@@ -1,3 +1,4 @@
+import React from 'react';
 import { Route, Routes, Navigate } from 'react-router-dom';
 import ArticleGraphEmbedPage from '../../features/articles/pages/ArticleGraphEmbedPage';
 import DashboardPage from '../../features/dashboard/pages/DashboardPage';
@@ -10,39 +11,53 @@ import CuratedArticlesPage from '../../features/analytics/pages/CuratedArticlesP
 import NotFoundPage from '../../pages/NotFoundPage';
 import ProjectsPage from '../../features/projects/pages/ProjectsPage';
 
+// i18n routing components
+import LanguageRedirect from './LanguageRedirect';
+import LangLayout from '../layouts/LangLayout';
+
 export default function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/projects" replace />} />
+      {/* Root redirect to default language prefix */}
+      <Route path="/" element={<LanguageRedirect />} />
 
-      <Route path="/projects" element={<DashboardLayout />}>
-        <Route index element={<ProjectsPage />} />
-      </Route>
+      {/* Language prefix shell */}
+      <Route path="/:lang" element={<LangLayout />}>
+        {/* Redirect lang root index directly to projects */}
+        <Route index element={<Navigate to="projects" replace />} />
 
-
-      <Route path="/project/:id" element={<DashboardLayout />}>
-
-        <Route index element={<Navigate to="dashboard" replace />} />
-
-        <Route path="dashboard" element={<DashboardPage />} />
-        <Route path="journals" element={<JournalsPage />} />
-
-        <Route path="volumes">
-          <Route index element={<Navigate to="journal-metrics" replace />} />
-          <Route path="journal-metrics" element={<CollaborationAnalyticsPage />} />
-          <Route path="keywords-networks" element={<KeywordsNetworksPage />} />
+        {/* Existing dashboard & project routes */}
+        <Route path="projects" element={<DashboardLayout />}>
+          <Route index element={<ProjectsPage />} />
         </Route>
 
-        <Route path="analytics">
-          <Route index element={<AnalyticsDashboard />} />
-          <Route path="curated-articles" element={<CuratedArticlesPage />} />
+        <Route path="project/:id" element={<DashboardLayout />}>
+          <Route index element={<Navigate to="dashboard" replace />} />
+          <Route path="dashboard" element={<DashboardPage />} />
+          <Route path="journals" element={<JournalsPage />} />
+
+          <Route path="volumes">
+            <Route index element={<Navigate to="journal-metrics" replace />} />
+            <Route path="journal-metrics" element={<CollaborationAnalyticsPage />} />
+            <Route path="keywords-networks" element={<KeywordsNetworksPage />} />
+          </Route>
+
+          <Route path="analytics">
+            <Route index element={<AnalyticsDashboard />} />
+            <Route path="curated-articles" element={<CuratedArticlesPage />} />
+          </Route>
+
+          <Route path="*" element={<NotFoundPage />} />
         </Route>
 
+        <Route path="embed/article-graph" element={<ArticleGraphEmbedPage />} />
+        
+        {/* Localized fallback */}
         <Route path="*" element={<NotFoundPage />} />
       </Route>
 
-      <Route path="/embed/article-graph" element={<ArticleGraphEmbedPage />} />
-      <Route path="*" element={<NotFoundPage />} />
+      {/* Global fallback: redirect back to root to trigger language detection */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import DashboardContainer from '../../dashboard/components/DashboardContainer';
 import DashboardGrid from '../../../shared/components/layout/DashboardGrid';
 import TopJournalRankingCard from '../components/TopJournalRankingCard';
@@ -22,6 +23,7 @@ const placeholderStyle = {
 };
 
 export default function JournalsPage() {
+  const { t } = useTranslation();
   const { data, loading, error, topRanking, quartile, impactMatrix, migration, refetch } = useJournalsData();
 
   if (loading && !data) {
@@ -29,7 +31,7 @@ export default function JournalsPage() {
       <div style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%', padding: '24px' }}>
         <div style={{ ...placeholderStyle, height: '400px', flexDirection: 'column', gap: '16px' }}>
           <div className="update-icon spin" style={{ width: '24px', height: '24px', border: '3px solid var(--color-primary-orange)', borderTopColor: 'transparent', borderRadius: '50%' }}></div>
-          <div>Loading Journals...</div>
+          <div>{t('common.loading', 'Loading Journals...')}</div>
         </div>
       </div>
     );
@@ -38,8 +40,8 @@ export default function JournalsPage() {
   if (error && !data) {
     return (
       <ErrorStateSection 
-        title="Data Loading Failed"
-        message="Unable to load journals data. Please check your connection or try again."
+        title={t('common.error', 'Data Loading Failed')}
+        message={t('dashboard.loadingFailedDesc', 'Unable to load journals data. Please check your connection or try again.')}
         onRetry={refetch}
         minHeight={400}
       />
