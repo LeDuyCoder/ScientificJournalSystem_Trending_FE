@@ -9,6 +9,7 @@ import { Pagination } from '../components/Pagination/Pagination';
 import DashboardFooter from '../../../shared/components/layout/DashboardFooter';
 import { ManageKeywordsModal } from '../components/ManageKeywordsModal/ManageKeywordsModal';
 import { useCuratedArticles } from '../hooks/useCuratedArticles';
+import { favoriteArticlesApi } from '../../favorite-articles/api/favoriteArticlesApi';
 import styles from '../styles/curatedArticles.module.css';
 import analyticsStyles from '../styles/Analytics.module.css';
 
@@ -65,6 +66,20 @@ const CuratedArticlesPage = () => {
     setFilters(newFilters);
     setCurrentPage(1);
     setShowFilters(false);
+  };
+
+  const handleBookmarkToggle = async (articleId, isBookmarking) => {
+    try {
+      if (isBookmarking) {
+        await favoriteArticlesApi.bookmarkArticle(projectId, articleId, '');
+      } else {
+        await favoriteArticlesApi.unbookmarkArticle(projectId, articleId);
+      }
+      refetch(); // Refresh the list to update bookmark states
+    } catch (err) {
+      console.error('Failed to toggle bookmark:', err);
+      alert(t('favoriteArticles.toggleError', 'Failed to update bookmark. Please try again.'));
+    }
   };
 
   return (
@@ -143,7 +158,11 @@ const CuratedArticlesPage = () => {
                 <p>{t('common.error', 'Error')}: {error}</p>
               ) : (
                 articles.map(article => (
-                  <CuratedArticleCard key={article.id} article={article} />
+                  <CuratedArticleCard 
+                    key={article.id} 
+                    article={article} 
+                    onBookmarkToggle={handleBookmarkToggle}
+                  />
                 ))
               )}
             </div>
