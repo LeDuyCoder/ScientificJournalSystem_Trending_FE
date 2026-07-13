@@ -86,7 +86,15 @@ export const JournalTable = ({ journals, page = 1, limit = 4, totalCount = 0, on
                 <Sparkline data={journal.trend} />
               </td>
               <td>
-                <button className={`${styles.btn} ${styles.btnPrimary}`} onClick={() => console.log('View detail:', journal.id)}>View</button>
+                <button 
+                  className={`${styles.btn} ${styles.btnPrimary}`} 
+                  onClick={() => {
+                    const coreUrl = import.meta.env.VITE_CORE_FE_URL || 'http://localhost:5173';
+                    window.location.href = `${coreUrl}/journals/${journal.id}`;
+                  }}
+                >
+                  View
+                </button>
               </td>
             </tr>
           ))}
