@@ -11,7 +11,8 @@
     "reset": "リセット",
     "view": "表示",
     "previous": "前へ",
-    "next": "次へ"
+    "next": "次へ",
+    "sessionExpired": "ログインしていないか、セッションの有効期限が切れています。"
   },
   "header": {
     "language": "言語",
@@ -297,5 +298,35 @@
     "administrator": "管理者",
     "senioranalyst": "シニアアナリスト",
     "researcher": "研究者"
+  },
+  "chatbot": {
+    "welcome": "こんにちは！私は AI Research Assistant です。論文、ジャーナル、Q1-Q4 ランキング、またはプロジェクトのデータについて質問してください。",
+    "suggestedPrompt1": "このプロジェクトの主要な論文を見つけてください",
+    "suggestedPrompt2": "2024年のQ1ジャーナルリスト",
+    "suggestedPrompt3": "被引用数が最も多い論文はどれですか？",
+    "selectProjectHistory": "チャット履歴を表示する前にプロジェクトを選択してください。",
+    "messageTooLong": "メッセージの長さが {{length}} 文字です。送信する前に最大 {{maxLength}} 文字に短縮してください。",
+    "selectProjectAsk": "AIに質問する前にプロジェクトを選択してください。",
+    "emptyAnswer": "応答を受信しましたが、回答テキストが含まれていません。",
+    "pleaseLogin": "続行するにはログインしてください。",
+    "connectionError": "申し訳ありませんが、チャットボットAPIに接続できませんでした。\n\n**エラーの詳細**: {{error}}\n**呼び出し先**: {{url}}",
+    "close": "チャットボットを閉じる",
+    "loadingHistory": "チャット履歴を読み込み中...",
+    "dataTable": "データテーブル",
+    "rows": "{{count}} 行",
+    "typing": "AIが入力中...",
+    "suggestions": "推奨質問",
+    "placeholder": "論文、ジャーナル、Q1-Q4 ランキングについての質問を入力してください...",
+    "minimize": "チャットボットを非表示にする",
+    "launcher": "AIチャットボットを開く",
+    "title": "AI Research Assistant"
+  },
+  "notFound": {
+    "title": "ページが見つかりません",
+    "description": "アクセスしたリンクは存在しないか、別のアドレスに移動されました。リンクを確認するか、ダッシュボードに戻ってください。",
+    "goBack": "戻る",
+    "goBackTitle": "前のページに戻る",
+    "goHome": "ダッシュボードへ",
+    "goHomeTitle": "ダッシュボードに戻る"
   }
 }

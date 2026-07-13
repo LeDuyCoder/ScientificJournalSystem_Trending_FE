@@ -11,7 +11,8 @@
     "reset": "Reset",
     "view": "View",
     "previous": "Previous",
-    "next": "Next"
+    "next": "Next",
+    "sessionExpired": "You are not logged in or your session has expired."
   },
   "header": {
     "language": "Language",
@@ -297,5 +298,35 @@
     "administrator": "Administrator",
     "senioranalyst": "Senior Analyst",
     "researcher": "Researcher"
+  },
+  "chatbot": {
+    "welcome": "Hello! I am your AI Research Assistant. Ask me about articles, journals, Q1-Q4 rankings, or data in your project.",
+    "suggestedPrompt1": "Find the top articles in this project for me",
+    "suggestedPrompt2": "Q1 journal list for 2024",
+    "suggestedPrompt3": "Which article has the highest number of citations?",
+    "selectProjectHistory": "Please select a project before viewing chat history.",
+    "messageTooLong": "Your message is {{length}} characters. Please shorten to a maximum of {{maxLength}} characters.",
+    "selectProjectAsk": "Please select a project before asking AI.",
+    "emptyAnswer": "I received a response, but it contains no answer text.",
+    "pleaseLogin": "Please login to continue.",
+    "connectionError": "Sorry, I could not connect to the chatbot API.\n\n**Error Details**: {{error}}\n**Calling**: {{url}}",
+    "close": "Close chatbot",
+    "loadingHistory": "Loading chat history...",
+    "dataTable": "Data Table",
+    "rows": "{{count}} rows",
+    "typing": "AI is typing...",
+    "suggestions": "Suggested questions",
+    "placeholder": "Ask a question about articles, journals, Q1-Q4 rankings...",
+    "minimize": "Minimize chatbot",
+    "launcher": "Open AI chatbot",
+    "title": "AI Research Assistant"
+  },
+  "notFound": {
+    "title": "Page Not Found",
+    "description": "The link you accessed does not exist or has been moved to another address. Please check the link or return to the dashboard.",
+    "goBack": "Go Back",
+    "goBackTitle": "Go back to the previous page",
+    "goHome": "To Dashboard",
+    "goHomeTitle": "Return to the Dashboard"
   }
 }
