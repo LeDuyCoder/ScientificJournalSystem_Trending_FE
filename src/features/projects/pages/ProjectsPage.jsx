@@ -15,6 +15,7 @@ const mapProjectFromApi = (project) => {
   return {
     id: String(projectId),
     title,
+    status: project.status || 'ACTIVE',
     domain: String(subjectArea).toUpperCase(),
     tags: [
       `JOURNALS: ${project.journal_count ?? 0}`,
@@ -242,47 +243,70 @@ export default function ProjectsPage() {
             <p>Bạn chưa tạo dự án nghiên cứu nào. Vui lòng tạo dự án mới để bắt đầu.</p>
           </div>
         ) : (
-          sortedProjects.map(project => (
-          <div 
-            key={project.id} 
-            className="project-card real-project-card"
-            onClick={() => handleProjectClick(project.id)}
-          >
-            <div className="project-card-header">
-              <span className="project-domain-tag">{project.domain}</span>
-            </div>
-            
-            <h3 className="project-title" title={project.title}>
-              {project.title}
-            </h3>
+          sortedProjects.map(project => {
+            const isInactive = project.status === 'INACTIVE';
+            return (
+              <div 
+                key={project.id} 
+                className={`project-card real-project-card ${isInactive ? 'inactive-project-card' : ''}`}
+                onClick={() => {
+                  if (isInactive) return;
+                  handleProjectClick(project.id);
+                }}
+                title={isInactive ? "This project is inactive and cannot be accessed." : undefined}
+                aria-disabled={isInactive}
+                tabIndex={isInactive ? -1 : 0}
+              >
+                <div className="project-card-header">
+                  <span className="project-domain-tag">{project.domain}</span>
+                  {isInactive && (
+                    <span className="inactive-badge">🔒 Inactive</span>
+                  )}
+                </div>
+                
+                <h3 className="project-title" title={project.title}>
+                  {project.title}
+                </h3>
 
-            <div className="project-tags-list">
-              {project.tags.map((tag, idx) => (
-                <span key={idx} className="project-sub-tag">
-                  {tag}
-                </span>
-              ))}
-            </div>
+                <div className="project-tags-list">
+                  {project.tags.map((tag, idx) => (
+                    <span key={idx} className="project-sub-tag">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
 
-            <div className="project-card-footer">
-              <div className="project-creator">
-                <img 
-                  src={project.creator.avatar} 
-                  alt={project.creator.name} 
-                  className="creator-avatar"
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(project.creator.name)}&background=F97316&color=fff`;
-                  }}
-                />
-                <span className="creator-name">{project.creator.name}</span>
+                <div className="project-card-footer">
+                  <div className="project-creator">
+                    <img 
+                      src={project.creator.avatar} 
+                      alt={project.creator.name} 
+                      className="creator-avatar"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(project.creator.name)}&background=F97316&color=fff`;
+                      }}
+                    />
+                    <span className="creator-name">{project.creator.name}</span>
+                  </div>
+                  <span className="project-date">
+                    {formatDate(project.modifiedAt)}
+                  </span>
+                </div>
+                
+                {isInactive && (
+                  <div className="inactive-overlay">
+                    <div className="inactive-overlay-content">
+                      <span className="inactive-overlay-divider">────────────────────────</span>
+                      <p>This project is not activated yet.<br/>Contact the administrator to activate it.</p>
+                      <span className="inactive-overlay-divider">────────────────────────</span>
+                    </div>
+                  </div>
+                )}
               </div>
-              <span className="project-date">
-                {formatDate(project.modifiedAt)}
-              </span>
-            </div>
-          </div>
-        )))}
+            );
+          })
+        )}
       </div>
 
       {/* Create Modal */}
