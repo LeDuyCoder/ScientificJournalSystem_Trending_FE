@@ -284,7 +284,41 @@ export default function ArticleGraphWidget({
           nodeRelSize={1}
           nodeCanvasObject={drawNode}
           nodePointerAreaPaint={drawPointerArea}
-          nodeLabel={(node) => node.title}
+          nodeLabel={(node) => {
+            const title = node.properties?.title;
+            const doi = node.properties?.doi;
+            const year = node.properties?.publication_year || node.properties?.year;
+
+            let html = `
+              <div style="
+                background: rgba(255, 255, 255, 0.95);
+                backdrop-filter: blur(8px);
+                color: #431407;
+                border: 1px solid rgba(234, 88, 12, 0.3);
+                border-radius: 8px;
+                padding: 10px 14px;
+                box-shadow: 0 8px 24px rgba(234, 88, 12, 0.15);
+                font-family: system-ui, -apple-system, sans-serif;
+                font-size: 13px;
+                line-height: 1.5;
+                max-width: 280px;
+              ">
+            `;
+            if (title) {
+              html += `<div style="font-weight: 600; font-size: 14px; color: #9a3412; margin-bottom: 4px;">${title}</div>`;
+            }
+            if (doi) {
+              html += `<div style="margin-bottom: 2px;"><strong style="color: #c2410c;">DOI:</strong> ${doi}</div>`;
+            }
+            if (year) {
+              html += `<div><strong style="color: #c2410c;">Year:</strong> ${year}</div>`;
+            }
+            if (!title && !doi && !year) {
+              html += `<div style="font-weight: 500;">${node.label}</div>`;
+            }
+            html += `</div>`;
+            return html;
+          }}
           linkColor={getLinkColor}
           linkWidth={(link) => (highlightLinks.has(link) ? 1.4 : 0.65)}
           linkDirectionalParticles={0}
