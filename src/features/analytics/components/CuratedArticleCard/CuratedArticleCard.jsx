@@ -23,14 +23,14 @@ export const CuratedArticleCard = ({ article }) => {
           </svg>
         </div>
       </div>
-      
+
       <div>
         <h3 className={styles.cardTitle}>{article.title}</h3>
         <p className={styles.authors}>{article.authors}</p>
       </div>
-      
+
       <p className={styles.description}>{article.description}</p>
-      
+
       <div className={styles.cardFooter}>
         <span className={styles.publishedYear}>
           {t('analytics.publishedAt', { year: article.publishedYear, defaultValue: `Published ${article.publishedYear}` })}

@@ -97,11 +97,11 @@ export const JournalTable = ({ journals, page = 1, limit = 4, totalCount = 0, on
 
       <div className={styles.pagination}>
         <span className={styles.paginationText}>
-          {t('analytics.showingTracked', { 
-            start: startIndex, 
-            end: endIndex, 
-            total: totalCount, 
-            defaultValue: `Showing ${startIndex}-${endIndex} of ${totalCount} tracked journals` 
+          {t('analytics.showingTracked', {
+            start: startIndex,
+            end: endIndex,
+            total: totalCount,
+            defaultValue: `Showing ${startIndex}-${endIndex} of ${totalCount} tracked journals`
           })}
         </span>
         <div className={styles.paginationControls}>

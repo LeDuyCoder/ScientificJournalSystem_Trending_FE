@@ -19,14 +19,9 @@ const chatbotApi = {
   sendMessage: async ({ projectId, project_id, message }) => {
     const resolvedProjectId = project_id ?? projectId;
 
-    const token = localStorage.getItem('accessToken') || localStorage.getItem('token');
     const headers = {
       'Content-Type': 'application/json',
     };
-
-    if (token) {
-      headers.Authorization = `Bearer ${token}`;
-    }
 
     const response = await fetch(CHATBOT_API_URL, {
       method: 'POST',
