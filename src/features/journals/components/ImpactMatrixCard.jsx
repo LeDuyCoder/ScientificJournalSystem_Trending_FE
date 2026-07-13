@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   ScatterChart,
   Scatter,
@@ -56,6 +57,7 @@ const getQuartileColor = (quartile) => {
 };
 
 const CustomTooltip = ({ active, payload }) => {
+  const { t } = useTranslation();
   if (active && payload && payload.length) {
     const data = payload[0].payload;
     return (
@@ -63,19 +65,19 @@ const CustomTooltip = ({ active, payload }) => {
         <p className="imc-tooltip-title">{data.journalName}</p>
         <div className="imc-tooltip-content">
           <p className="imc-tooltip-item">
-            <span className="imc-tooltip-label">SJR Score:</span>
+            <span className="imc-tooltip-label">{t('journals.sjrScore', 'SJR Score')}:</span>
             <span className="imc-tooltip-value">{data.sjrCitationScore}</span>
           </p>
           <p className="imc-tooltip-item">
-            <span className="imc-tooltip-label">H-Index:</span>
+            <span className="imc-tooltip-label">{t('journals.hIndex', 'H-Index')}:</span>
             <span className="imc-tooltip-value">{data.hIndex}</span>
           </p>
           <p className="imc-tooltip-item">
-            <span className="imc-tooltip-label">Articles:</span>
+            <span className="imc-tooltip-label">{t('journals.articles', 'Articles')}:</span>
             <span className="imc-tooltip-value">{data.size}</span>
           </p>
           <p className="imc-tooltip-item">
-            <span className="imc-tooltip-label">Quartile:</span>
+            <span className="imc-tooltip-label">{t('journals.quartile', 'Quartile')}:</span>
             <span className="imc-tooltip-value" style={{ color: getQuartileColor(data.quartile) }}>
               {data.quartile}
             </span>
@@ -119,28 +121,29 @@ const LegendActions = ({ data }) => {
 };
 
 const ImpactMatrixCard = ({ data, loading, error, onRetry }) => {
+  const { t } = useTranslation();
   return (
     <Card 
-      title="Impact Matrix" 
-      subtitle="SJR vs H-Index Distribution" 
+      title={t('journals.impactMatrix', 'Impact Matrix')} 
+      subtitle={t('journals.sjrVsHindex', 'SJR vs H-Index Distribution')} 
       actions={<LegendActions data={data} />}
       className="imc-card"
     >
       {loading ? (
         <div style={{ padding: '20px', textAlign: 'center', color: 'var(--color-neutral-500)', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
           <div className="update-icon spin" style={{ width: '24px', height: '24px', border: '3px solid var(--color-primary-orange)', borderTopColor: 'transparent', borderRadius: '50%', margin: '0 auto 10px' }}></div>
-          Loading impact matrix data...
+          {t('common.loading', 'Loading impact matrix data...')}
         </div>
       ) : error ? (
         <InlineErrorState 
-          title="Network Error"
-          message={error.toLowerCase().includes('not found') || error.toLowerCase().includes('404') ? 'No impact matrix data available for this project.' : error}
+          title={t('common.error', 'Network Error')}
+          message={error.toLowerCase().includes('not found') || error.toLowerCase().includes('404') ? t('journals.noImpactMatrixData', 'No impact matrix data available for this project.') : error}
           onRetry={error.toLowerCase().includes('not found') || error.toLowerCase().includes('404') ? null : onRetry}
           minHeight={200}
         />
       ) : !data || data.length === 0 ? (
         <div style={{ padding: '20px', textAlign: 'center', color: 'var(--color-neutral-500)', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
-          No impact matrix data available for the selected filters.
+          {t('journals.noDataAvailable', 'No journal data available for the selected filters.')}
         </div>
       ) : (
         <div className="imc-content">
@@ -151,13 +154,13 @@ const ImpactMatrixCard = ({ data, loading, error, onRetry }) => {
                 <XAxis 
                   type="number" 
                   dataKey="sjrCitationScore" 
-                  name="SJR Citation Score"
+                  name={t('journals.sjrCitationScore', 'SJR Citation Score')}
                   domain={['dataMin - 1', 'dataMax + 1']}
                   tickCount={5}
                   tick={false}
                   axisLine={{ stroke: '#f0f0f0' }}
                   label={{ 
-                    value: 'SJR CITATION SCORE', 
+                    value: t('journals.sjrCitationScoreUpper', 'SJR CITATION SCORE'), 
                     position: 'bottom', 
                     offset: 10, 
                     fontSize: 10, 
@@ -169,13 +172,13 @@ const ImpactMatrixCard = ({ data, loading, error, onRetry }) => {
                 <YAxis 
                   type="number" 
                   dataKey="hIndex" 
-                  name="H-Index"
+                  name={t('journals.hIndex', 'H-Index')}
                   domain={['dataMin - 10', 'dataMax + 10']}
                   tickCount={5}
                   tick={false}
                   axisLine={{ stroke: '#f0f0f0' }}
                   label={{ 
-                    value: 'H-INDEX', 
+                    value: t('journals.hIndexUpper', 'H-INDEX'), 
                     angle: -90, 
                     position: 'left', 
                     offset: 10,

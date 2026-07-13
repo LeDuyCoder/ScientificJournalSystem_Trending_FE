@@ -232,14 +232,9 @@ export const useDashboardSearchQuery = (query, type = 'all', options = {}) => {
     if (fromYear) params.set('from_year', String(fromYear));
     if (toYear) params.set('to_year', String(toYear));
 
-    const token = localStorage.getItem('accessToken');
     const headers = {
       Accept: 'application/json, text/event-stream, application/x-ndjson',
     };
-
-    if (token) {
-      headers.Authorization = `Bearer ${token}`;
-    }
 
     const runSearch = async () => {
       setData(createEmptySearchData(fallback));

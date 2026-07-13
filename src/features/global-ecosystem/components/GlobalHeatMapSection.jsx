@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
 import { FiSearch, FiX } from 'react-icons/fi';
 
@@ -105,6 +106,7 @@ export default function GlobalHeatMapSection({
   onCountryChange,
   isGeoLoading = false
 }) {
+  const { t } = useTranslation();
   const [selectedCountryName, setSelectedCountryName] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [availableCountries, setAvailableCountries] = useState([]);
@@ -207,11 +209,11 @@ export default function GlobalHeatMapSection({
     <div className="world-heatmap-container dashboard-card">
       <div className="world-heatmap-header">
         <div>
-          <h2 className="world-heatmap-title">Geographical Heat Map</h2>
+          <h2 className="world-heatmap-title">{t('dashboard.geoHeatMap', 'Geographical Heat Map')}</h2>
           <p className="world-heatmap-subtitle">
             {selectedCountryCode
-              ? `Viewing details: ${selectedCountryName}`
-              : 'Global research output intensity by jurisdiction'}
+              ? `${t('dashboard.viewingDetails', 'Viewing details')}: ${selectedCountryName}`
+              : t('dashboard.geoHeatMapSub', 'Global research output intensity by jurisdiction')}
           </p>
         </div>
         <div className="world-heatmap-actions">
@@ -219,7 +221,7 @@ export default function GlobalHeatMapSection({
             <FiSearch className="search-icon" onClick={handleSearchSubmit} />
             <input
               type="text"
-              placeholder="Search country..."
+              placeholder={t('dashboard.searchCountry', 'Search country...')}
               className="country-search-input"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -240,7 +242,7 @@ export default function GlobalHeatMapSection({
               onChange={(e) => onCountryChange(e.target.value)}
               className="country-select-dropdown"
             >
-              <option value="">All Countries</option>
+              <option value="">{t('dashboard.allCountries', 'All Countries')}</option>
               {availableCountries.map((c) => (
                 <option key={c.code} value={c.code}>
                   {c.name}
@@ -321,11 +323,11 @@ export default function GlobalHeatMapSection({
               {isGeoLoading ? (
                 <div className="py-6 flex flex-col items-center justify-center gap-2">
                   <div className="province-spinner"></div>
-                  <span className="text-xs text-neutral-400">Loading regional details...</span>
+                  <span className="text-xs text-neutral-400">{t('dashboard.loadingRegionalDetails', 'Loading regional details...')}</span>
                 </div>
               ) : regionalData.length === 0 ? (
                 <div className="py-8 text-center text-xs text-neutral-400">
-                  No regional data found for this country.
+                  {t('dashboard.noRegionalData', 'No regional data found for this country.')}
                 </div>
               ) : (
                 <div className="region-map-list-preview max-h-56 overflow-y-auto pr-1">

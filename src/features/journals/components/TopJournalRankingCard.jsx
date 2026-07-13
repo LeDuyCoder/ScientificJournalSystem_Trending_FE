@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import Card from '../../../shared/components/common/Card';
 import InlineErrorState from '../../../shared/components/common/InlineErrorState';
 
 const TopJournalRankingCard = ({ data, loading, error, onRetry }) => {
+  const { t } = useTranslation();
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -16,34 +18,34 @@ const TopJournalRankingCard = ({ data, loading, error, onRetry }) => {
     <button 
       className="tjr-action-link"
       onClick={() => console.log('View Full Table clicked')}
-      aria-label="View Full Table"
+      aria-label={t('journals.viewFullTable', 'VIEW FULL TABLE')}
     >
-      VIEW FULL TABLE
+      {t('journals.viewFullTable', 'VIEW FULL TABLE')}
     </button>
   );
 
   return (
     <Card 
-      title="Top Journal Ranking" 
-      subtitle="Performance by Weighted Impact Factor" 
+      title={t('journals.topJournalRanking', 'Top Journal Ranking')} 
+      subtitle={t('journals.performanceByWeighted', 'Performance by Weighted Impact Factor')} 
       actions={actionLink}
       className="tjr-card"
     >
       {loading ? (
         <div style={{ padding: '20px', textAlign: 'center', color: 'var(--color-neutral-500)' }}>
           <div className="update-icon spin" style={{ width: '24px', height: '24px', border: '3px solid var(--color-primary-orange)', borderTopColor: 'transparent', borderRadius: '50%', margin: '0 auto 10px' }}></div>
-          Loading ranking data...
+          {t('common.loading', 'Loading ranking data...')}
         </div>
       ) : error ? (
         <InlineErrorState 
-          title="Network Error"
-          message={error.toLowerCase().includes('not found') || error.toLowerCase().includes('404') ? 'No ranking data available for this project.' : error}
+          title={t('common.error', 'Network Error')}
+          message={error.toLowerCase().includes('not found') || error.toLowerCase().includes('404') ? t('journals.noRankingData', 'No ranking data available for this project.') : error}
           onRetry={error.toLowerCase().includes('not found') || error.toLowerCase().includes('404') ? null : onRetry}
           minHeight={200}
         />
       ) : !data || data.length === 0 ? (
         <div style={{ padding: '20px', textAlign: 'center', color: 'var(--color-neutral-500)' }}>
-          No journal data available for the selected filters.
+          {t('journals.noDataAvailable', 'No journal data available for the selected filters.')}
         </div>
       ) : (
         <div className="tjr-list" role="list" aria-label="List of top journals by impact factor">

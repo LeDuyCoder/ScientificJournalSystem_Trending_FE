@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import DashboardFooter from '../../../shared/components/layout/DashboardFooter';
 import CollaborationTabs from '../components/collaboration-analytics/CollaborationTabs';
 import CollaborationHeader from '../components/collaboration-analytics/CollaborationHeader';
@@ -21,6 +22,7 @@ import ErrorStateSection from '../../../shared/components/common/ErrorStateSecti
 import '../components/collaboration-analytics/CollaborationAnalytics.css';
 
 const CollaborationAnalyticsPage = () => {
+  const { t } = useTranslation();
   const { id } = useParams();
   const projectId = id === 'default-id' ? '1' : id;
 
@@ -52,15 +54,15 @@ const CollaborationAnalyticsPage = () => {
           <CollaborationAnalyticsSkeleton />
         ) : error ? (
           <ErrorStateSection
-            title="Collaboration Analytics Failed"
-            message={error?.message || error || "Something went wrong"}
+            title={t('common.error', 'Collaboration Analytics Failed')}
+            message={error?.message || error || t('dashboard.loadingFailedDesc', 'Something went wrong')}
             onRetry={handleRefetch}
             minHeight={400}
           />
         ) : !rankings && !impactMatrix && !keyInsights && !globalNetwork && !topicIntensity ? (
           <div className="kn-empty">
-            <h2>No Data</h2>
-            <p>No collaboration analytics data available.</p>
+            <h2>{t('dashboard.noData', 'No Data')}</h2>
+            <p>{t('dashboard.noCollaborationData', 'No collaboration analytics data available.')}</p>
           </div>
         ) : (
           <>

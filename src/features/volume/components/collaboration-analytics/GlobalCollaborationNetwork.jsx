@@ -1,9 +1,11 @@
 import React, { useRef, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import ForceGraph2D from 'react-force-graph-2d';
 import { forceCollide, forceX, forceY } from 'd3-force';
 import './CollaborationAnalytics.css';
 
 const GlobalCollaborationNetwork = ({ data }) => {
+  const { t } = useTranslation();
   const fgRef = useRef();
   const [containerDimensions, setContainerDimensions] = useState({ width: 0, height: 0 });
   const containerRef = useRef(null);
@@ -93,10 +95,10 @@ const GlobalCollaborationNetwork = ({ data }) => {
     return (
       <div className="ca-card">
         <div className="ca-card-header">
-          <h3 className="ca-card-title">Global Collaboration Network</h3>
+          <h3 className="ca-card-title">{t('volume.globalCollaborationNetwork', 'Global Collaboration Network')}</h3>
         </div>
         <div style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>
-          No data available for this project.
+          {t('volume.noData', 'No data available for this project.')}
         </div>
       </div>
     );
@@ -105,7 +107,7 @@ const GlobalCollaborationNetwork = ({ data }) => {
   return (
     <div className="ca-card" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <div className="ca-card-header">
-        <h3 className="ca-card-title">Global Collaboration Network</h3>
+        <h3 className="ca-card-title">{t('volume.globalCollaborationNetwork', 'Global Collaboration Network')}</h3>
       </div>
       
       <div className="ca-network-container" ref={containerRef} style={{ flex: 1, position: 'relative', minHeight: '300px', backgroundColor: '#f4f5f7', borderRadius: '8px', overflow: 'hidden', boxSizing: 'border-box' }}>
@@ -129,19 +131,19 @@ const GlobalCollaborationNetwork = ({ data }) => {
                       ${node.label}
                     </div>
                     <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px;">
-                      <span style="color: #64748b;">Type:</span>
-                      <span style="font-weight: 600; color: ${node.type === 'author' ? '#ff6b00' : '#1b2432'}">${node.type === 'author' ? 'Author' : 'Institution'}</span>
+                      <span style="color: #64748b;">${t('volume.type', 'Type')}:</span>
+                      <span style="font-weight: 600; color: ${node.type === 'author' ? '#ff6b00' : '#1b2432'}">${node.type === 'author' ? t('volume.authorLabel', 'Author') : t('volume.institutionLabel', 'Institution')}</span>
                     </div>
                     <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px;">
-                      <span style="color: #64748b;">${node.type === 'author' ? 'Articles' : 'Affiliated Authors'}:</span>
+                      <span style="color: #64748b;">${node.type === 'author' ? t('volume.articles', 'Articles') : t('volume.affiliatedAuthors', 'Affiliated Authors')}:</span>
                       <span style="font-weight: 500; color: #334155;">${metric}</span>
                     </div>
                     <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px;">
-                      <span style="color: #64748b;">H-Index:</span>
+                      <span style="color: #64748b;">${t('volume.hIndex', 'H-Index')}:</span>
                       <span style="font-weight: 500; color: #334155;">${hIndex}</span>
                     </div>
                     <div style="display: flex; justify-content: space-between; font-size: 13px;">
-                      <span style="color: #64748b;">Impact Score:</span>
+                      <span style="color: #64748b;">${t('volume.impactScore', 'Impact Score')}:</span>
                       <span style="font-weight: 500; color: #334155;">${impact}</span>
                     </div>
                   </div>
@@ -203,11 +205,11 @@ const GlobalCollaborationNetwork = ({ data }) => {
         <div className="ca-network-legend" style={{ position: 'absolute', bottom: '10px', left: '10px', pointerEvents: 'none' }}>
           <div className="ca-legend-item">
             <div className="ca-legend-dot" style={{ backgroundColor: '#ff6b00' }}></div>
-            <span>Active Author</span>
+            <span>{t('volume.activeAuthor', 'Active Author')}</span>
           </div>
           <div className="ca-legend-item">
             <div className="ca-legend-dot" style={{ backgroundColor: '#1b2432' }}></div>
-            <span>Institution</span>
+            <span>{t('volume.institutionLabel', 'Institution')}</span>
           </div>
         </div>
       </div>

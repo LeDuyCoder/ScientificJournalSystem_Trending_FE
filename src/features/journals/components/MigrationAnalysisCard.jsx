@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Sankey, ResponsiveContainer, Tooltip } from 'recharts';
 import Card from '../../../shared/components/common/Card';
 import InlineErrorState from '../../../shared/components/common/InlineErrorState';
@@ -17,6 +18,7 @@ const NODE_NAMES = {
 };
 
 const MigrationAnalysisCard = ({ data, isLoading, error, onRetry }) => {
+  const { t } = useTranslation();
   const isDataEmpty = !data || (data.totalCount === 0 && !data.flows?.length);
 
   const sankeyData = useMemo(() => {
@@ -60,6 +62,7 @@ const MigrationAnalysisCard = ({ data, isLoading, error, onRetry }) => {
     const rectHeight = Math.max(height, 24);
     // Nếu khối bị đẩy cao lên, ta cũng điều chỉnh y một chút để nó vẫn nằm giữa luồng chảy
     const rectY = height < 24 ? y - (24 - height) / 2 : y;
+    const nodeName = t(`journals.nodes.${payload.id}`, payload.name);
 
     return (
       <g>
@@ -67,7 +70,7 @@ const MigrationAnalysisCard = ({ data, isLoading, error, onRetry }) => {
         <foreignObject x={x} y={rectY - 20} width={width} height={rectHeight + 40}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', padding: '0 4px', textAlign: 'center' }}>
              <span style={{ color: payload.textColor, fontSize: '10px', fontWeight: 'bold', letterSpacing: '0.05em', lineHeight: 1.2 }}>
-               {payload.name}
+               {nodeName}
              </span>
           </div>
         </foreignObject>
@@ -102,7 +105,7 @@ const MigrationAnalysisCard = ({ data, isLoading, error, onRetry }) => {
       return (
         <div style={{ background: '#fff', border: '1px solid var(--color-neutral-200)', padding: '10px', borderRadius: '4px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}>
           <p style={{ margin: 0, fontSize: '12px', color: 'var(--color-neutral-600)' }}>
-            Journals: <strong style={{ color: 'var(--color-neutral-900)' }}>{data.value}</strong>
+            {t('journals.journals', 'Journals')}: <strong style={{ color: 'var(--color-neutral-900)' }}>{data.value}</strong>
           </p>
         </div>
       );
@@ -115,7 +118,7 @@ const MigrationAnalysisCard = ({ data, isLoading, error, onRetry }) => {
       return (
         <div style={{ padding: '20px', textAlign: 'center', color: 'var(--color-neutral-500)', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%', minHeight: '350px' }}>
           <div className="update-icon spin" style={{ width: '24px', height: '24px', border: '3px solid var(--color-primary-orange)', borderTopColor: 'transparent', borderRadius: '50%', margin: '0 auto 10px' }}></div>
-          Loading migration analysis...
+          {t('common.loading', 'Loading migration analysis...')}
         </div>
       );
     }
@@ -125,13 +128,13 @@ const MigrationAnalysisCard = ({ data, isLoading, error, onRetry }) => {
       if (isNotFoundError) {
         return (
           <div style={{ padding: '20px', textAlign: 'center', color: 'var(--color-neutral-500)', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%', minHeight: '350px' }}>
-            No migration data available for this project (Project ID not found).
+            {t('journals.noMigrationDataNotFound', 'No migration data available for this project (Project ID not found).')}
           </div>
         );
       }
       return (
         <InlineErrorState 
-          title="Network Error"
+          title={t('common.error', 'Network Error')}
           message={error}
           onRetry={onRetry || (() => window.location.reload())}
           minHeight={350}
@@ -142,7 +145,7 @@ const MigrationAnalysisCard = ({ data, isLoading, error, onRetry }) => {
     if (isDataEmpty || sankeyData.links.length === 0) {
       return (
         <div style={{ padding: '20px', textAlign: 'center', color: 'var(--color-neutral-500)', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%', minHeight: '350px' }}>
-          No migration data available for this project.
+          {t('journals.noMigrationData', 'No migration data available for this project.')}
         </div>
       );
     }
@@ -164,8 +167,8 @@ const MigrationAnalysisCard = ({ data, isLoading, error, onRetry }) => {
           </ResponsiveContainer>
         </div>
         <div className="mac-footer">
-          <span className="mac-footer-metric">TOTAL: {data.totalCount}</span>
-          <span className="mac-footer-metric">TRANSITION RATE: +{data.transitionRate}%</span>
+          <span className="mac-footer-metric">{t('journals.total', 'TOTAL')}: {data.totalCount}</span>
+          <span className="mac-footer-metric">{t('journals.transitionRate', 'TRANSITION RATE')}: +{data.transitionRate}%</span>
         </div>
       </div>
     );
@@ -173,8 +176,8 @@ const MigrationAnalysisCard = ({ data, isLoading, error, onRetry }) => {
 
   return (
     <Card 
-      title="Migration Analysis" 
-      subtitle="Subscription to Open Access Transition" 
+      title={t('journals.migrationAnalysis', 'Migration Analysis')} 
+      subtitle={t('journals.subscriptionTransition', 'Subscription to Open Access Transition')} 
       actions={<PeriodBadge />}
       className="mac-card flex flex-col h-full"
     >

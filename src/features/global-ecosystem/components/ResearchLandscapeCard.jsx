@@ -1,7 +1,9 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { FiShare2 } from 'react-icons/fi';
 
 export default function ResearchLandscapeCard({ data }) {
+  const { t } = useTranslation();
   const validData = Array.isArray(data) ? data : [];
   
   const getClassForIndex = (index) => {
@@ -14,7 +16,7 @@ export default function ResearchLandscapeCard({ data }) {
       <div className="research-landscape-header">
         <div className="header-title-with-icon">
           <FiShare2 className="header-icon" />
-          <h3 className="research-landscape-title">Research Landscape</h3>
+          <h3 className="research-landscape-title">{t('dashboard.researchLandscape', 'Research Landscape')}</h3>
         </div>
       </div>
       

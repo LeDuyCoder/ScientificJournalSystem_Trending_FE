@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import './CollaborationAnalytics.css';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, Cell, Label } from 'recharts';
 import { FiList, FiBarChart2 } from 'react-icons/fi';
 
 const TopInfluentialAuthorsCard = ({ data }) => {
+  const { t } = useTranslation();
   const [isChartView, setIsChartView] = useState(false);
   const [animate, setAnimate] = useState(false);
 
@@ -27,7 +29,7 @@ const TopInfluentialAuthorsCard = ({ data }) => {
       return (
         <div style={{ background: 'white', padding: '12px', border: '1px solid #e2e8f0', borderRadius: '8px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
           <p style={{ margin: '0 0 6px 0', fontWeight: 'bold', color: '#1e293b', fontSize: '13px' }}>{payload[0].payload.rawName}</p>
-          <p style={{ margin: 0, color: '#ff6b00', fontWeight: '600', fontSize: '13px' }}>Impact Score: {payload[0].value}</p>
+          <p style={{ margin: 0, color: '#ff6b00', fontWeight: '600', fontSize: '13px' }}>{t('volume.impactScore', 'Impact Score')}: {payload[0].value}</p>
         </div>
       );
     }
@@ -37,7 +39,7 @@ const TopInfluentialAuthorsCard = ({ data }) => {
   return (
     <div className="ca-card">
       <div className="ca-card-header">
-        <h3 className="ca-card-title">Top Influential Authors</h3>
+        <h3 className="ca-card-title">{t('volume.topInfluentialAuthors', 'Top Influential Authors')}</h3>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           {/* Toggle View Button */}
           <div style={{
@@ -54,7 +56,7 @@ const TopInfluentialAuthorsCard = ({ data }) => {
                   setIsChartView(false);
                 }
               }}
-              title="List View"
+              title={t('volume.listView', 'List View')}
               style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 padding: '5px 8px', borderRadius: '6px', border: 'none', cursor: 'pointer',
@@ -69,7 +71,7 @@ const TopInfluentialAuthorsCard = ({ data }) => {
             </button>
             <button
               onClick={() => setIsChartView(true)}
-              title="Chart View"
+              title={t('volume.chartView', 'Chart View')}
               style={{
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                 padding: '5px 8px', borderRadius: '6px', border: 'none', cursor: 'pointer',
@@ -83,7 +85,7 @@ const TopInfluentialAuthorsCard = ({ data }) => {
               <FiBarChart2 />
             </button>
           </div>
-          <span className="ca-card-action">VIEW ALL</span>
+          <span className="ca-card-action">{t('volume.viewAll', 'VIEW ALL')}</span>
         </div>
       </div>
 
@@ -102,7 +104,7 @@ const TopInfluentialAuthorsCard = ({ data }) => {
                   </div>
                   <div>
                     <span className="ca-list-score">{score}</span>
-                    <span className="ca-list-label" style={{ marginLeft: '4px', color: '#ff6b00' }}>Impact Score</span>
+                    <span className="ca-list-label" style={{ marginLeft: '4px', color: '#ff6b00' }}>{t('volume.impactScore', 'Impact Score')}</span>
                   </div>
                 </div>
                 <div className="ca-list-bar-container">
@@ -136,14 +138,14 @@ const TopInfluentialAuthorsCard = ({ data }) => {
                   tickFormatter={(val) => val.length > 10 ? val.substring(0, 10) + '...' : val}
                   dy={5}
                 >
-                  <Label value="AUTHOR" position="insideBottom" offset={-30} style={{ textAnchor: 'middle', fontSize: 10, fill: '#94a3b8', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase' }} />
+                  <Label value={t('volume.author', 'AUTHOR')} position="insideBottom" offset={-30} style={{ textAnchor: 'middle', fontSize: 10, fill: '#94a3b8', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase' }} />
                 </XAxis>
                 <YAxis
                   axisLine={false}
                   tickLine={false}
                   tick={{ fontSize: 11, fill: '#64748b' }}
                 >
-                  <Label value="IMPACT SCORE" angle={-90} position="insideLeft" offset={-20} style={{ textAnchor: 'middle', fontSize: 10, fill: '#94a3b8', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase' }} />
+                  <Label value={t('volume.impactScoreUpper', 'IMPACT SCORE')} angle={-90} position="insideLeft" offset={-20} style={{ textAnchor: 'middle', fontSize: 10, fill: '#94a3b8', fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase' }} />
                 </YAxis>
                 <Tooltip content={<CustomTooltip />} cursor={{ fill: '#fff7f0' }} />
                 <Bar dataKey="score" radius={[4, 4, 0, 0]} barSize={38}>
@@ -155,7 +157,7 @@ const TopInfluentialAuthorsCard = ({ data }) => {
             </ResponsiveContainer>
           ) : (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', color: '#94a3b8' }}>
-              No data available
+              {t('volume.noData', 'No data available')}
             </div>
           )}
         </div>

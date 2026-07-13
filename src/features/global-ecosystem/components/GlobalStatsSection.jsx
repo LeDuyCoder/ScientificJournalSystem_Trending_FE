@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { FiUsers, FiHome, FiActivity, FiNavigation } from 'react-icons/fi';
 import DashboardGrid from '../../../shared/components/layout/DashboardGrid';
 
@@ -46,16 +47,33 @@ const KPIStatCard = ({ title, value, trend, trendValue, icon: Icon }) => {
 };
 
 export default function GlobalStatsSection({ stats }) {
+  const { t } = useTranslation();
   if (!stats) return null;
+
+  const getLocalizedTitle = (title) => {
+    switch (title) {
+      case 'TOP AUTHORS': return t('dashboard.topAuthors', 'TOP AUTHORS');
+      case 'INSTITUTIONS': return t('dashboard.institutions', 'INSTITUTIONS');
+      case 'DENSITY INDEX': return t('dashboard.densityIndex', 'DENSITY INDEX');
+      case 'RELOCATED': return t('dashboard.relocated', 'RELOCATED');
+      default: return title;
+    }
+  };
+
+  const getLocalizedTrendValue = (trend, val) => {
+    if (trend === 'stable' && val === 'stable') return t('dashboard.stable', 'stable');
+    return val;
+  };
+
   return (
     <DashboardGrid columns={4} className="kpi-cards-grid">
       {stats.map(stat => (
         <KPIStatCard
           key={stat.title}
-          title={stat.title}
+          title={getLocalizedTitle(stat.title)}
           value={stat.value}
           trend={stat.trend}
-          trendValue={stat.trendValue}
+          trendValue={getLocalizedTrendValue(stat.trend, stat.trendValue)}
           icon={getIcon(stat.title)}
         />
       ))}
