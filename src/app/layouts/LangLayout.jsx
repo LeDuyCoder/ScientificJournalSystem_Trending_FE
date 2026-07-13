@@ -9,12 +9,6 @@ export default function LangLayout() {
   const { pathname } = useLocation();
   const { i18n } = useTranslation();
 
-  // If language prefix is invalid, redirect to the default language prefix with preserved path
-  if (!isValidLanguage(lang)) {
-    const fallbackPath = buildLocalizedPath(DEFAULT_LANGUAGE, pathname);
-    return <Navigate to={fallbackPath} replace />;
-  }
-
   // Sync language with i18next and localStorage when valid prefix is matched
   useEffect(() => {
     if (lang && isValidLanguage(lang)) {
@@ -24,6 +18,12 @@ export default function LangLayout() {
       localStorage.setItem(LANGUAGE, lang);
     }
   }, [lang, i18n]);
+
+  // If language prefix is invalid, redirect to the default language prefix with preserved path
+  if (!isValidLanguage(lang)) {
+    const fallbackPath = buildLocalizedPath(DEFAULT_LANGUAGE, pathname);
+    return <Navigate to={fallbackPath} replace />;
+  }
 
   return <Outlet />;
 }
