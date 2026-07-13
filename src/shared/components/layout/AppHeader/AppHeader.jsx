@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { FiBell, FiHelpCircle } from 'react-icons/fi';
 import SearchInput from './SearchInput';
 import IconButton from './IconButton';
 import { headerConfig } from './header.config';
@@ -97,18 +98,19 @@ const AppHeader = ({
       </div>
       <div className="header-right">
         <div className="header-actions">
-          {headerConfig.icons.map((iconConfig) => (
-            <IconButton 
-              key={iconConfig.id}
-              icon={iconConfig.icon} 
-              onClick={() => console.log(`${iconConfig.id} clicked`)} 
-              ariaLabel={t(`header.${iconConfig.id}`)} 
-              badge={iconConfig.badge}
-            />
-          ))}
+          <IconButton 
+            icon={FiBell} 
+            onClick={() => console.log('notifications clicked')} 
+            ariaLabel={t('header.notifications')} 
+            badge={3}
+          />
+          <LanguageSelector />
+          <IconButton 
+            icon={FiHelpCircle} 
+            onClick={() => console.log('help clicked')} 
+            ariaLabel={t('header.help')} 
+          />
         </div>
-        <div className="header-divider"></div>
-        <LanguageSelector />
       </div>
     </header>
   );

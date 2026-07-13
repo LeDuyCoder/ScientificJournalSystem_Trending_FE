@@ -1,7 +1,9 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { FiTrendingUp } from 'react-icons/fi';
 
 const CountryCollaborationChord = ({ data }) => {
+  const { t } = useTranslation();
   const COLORS = [
     'var(--color-neutral-700)',
     'var(--color-neutral-800)',
@@ -121,8 +123,8 @@ const CountryCollaborationChord = ({ data }) => {
     <div className="kn-card">
       <div className="kn-card-header">
         <div>
-          <h2 className="kn-card-title">Country Collaboration Chord</h2>
-          <p className="kn-card-subtitle">Cross-border co-authorship & knowledge exchange</p>
+          <h2 className="kn-card-title">{t('volume.countryCollaborationChord', 'Country Collaboration Chord')}</h2>
+          <p className="kn-card-subtitle">{t('volume.crossBorderCollaborationSub', 'Cross-border co-authorship & knowledge exchange')}</p>
         </div>
       </div>
 
@@ -144,7 +146,7 @@ const CountryCollaborationChord = ({ data }) => {
               <g transform="translate(200, 200)">
                 <circle cx="0" cy="0" r="120" fill="none" stroke="var(--color-neutral-300)" strokeWidth="3" strokeDasharray="6, 6" />
                 <text x="0" y="5" textAnchor="middle" fill="var(--color-neutral-400)" fontSize="11" fontWeight="700">
-                  No Collaboration Data
+                  {t('volume.noCollaborationData', 'No Collaboration Data')}
                 </text>
               </g>
             </svg>
@@ -154,7 +156,7 @@ const CountryCollaborationChord = ({ data }) => {
         {/* Right side: Detailed Stats */}
         <div style={{ flex: '1 1 280px', display: 'flex', flexDirection: 'column', gap: '14px', alignSelf: 'stretch', justifyContent: 'center' }}>
           <h4 style={{ margin: 0, fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-neutral-500)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-            Primary Collaboration Links
+            {t('volume.primaryCollaborationLinks', 'Primary Collaboration Links')}
           </h4>
           
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -182,7 +184,7 @@ const CountryCollaborationChord = ({ data }) => {
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <div style={{ textAlign: 'right' }}>
                       <div style={{ fontSize: '0.8125rem', fontWeight: 700, color: 'var(--color-neutral-900)' }}>{link.papers}</div>
-                      <div style={{ fontSize: '0.6875rem', color: 'var(--color-neutral-500)' }}>{link.pct} of total</div>
+                      <div style={{ fontSize: '0.6875rem', color: 'var(--color-neutral-500)' }}>{link.pct} {t('volume.ofTotal', 'of total')}</div>
                     </div>
                     <span 
                       style={{ 
@@ -204,7 +206,7 @@ const CountryCollaborationChord = ({ data }) => {
               ))
             ) : (
               <div style={{ color: 'var(--color-neutral-400)', fontSize: '0.8125rem', padding: '24px 12px', textAlign: 'center', border: '1px dashed var(--color-neutral-200)', borderRadius: '6px' }}>
-                No country collaboration links found for this timeframe.
+                {t('volume.noCountryCollabLinks', 'No country collaboration links found for this timeframe.')}
               </div>
             )}
           </div>

@@ -1,14 +1,16 @@
+import { useTranslation } from 'react-i18next';
 import { FiClock } from 'react-icons/fi';
 
 const TemporalClusterShiftCard = ({ data }) => {
+  const { t } = useTranslation();
   const heatmap = data?.heatmap || [];
   const driftEntropy = data?.driftEntropy || 'N/A';
-  const description = data?.description || 'No cluster shift analysis available for this timeframe.';
+  const description = data?.description || t('volume.noClusterShiftAnalysis', 'No cluster shift analysis available for this timeframe.');
 
   return (
     <div className="kn-card">
       <div className="kn-card-header">
-        <h2 className="kn-card-title">Temporal Cluster Shift</h2>
+        <h2 className="kn-card-title">{t('volume.temporalClusterShift', 'Temporal Cluster Shift')}</h2>
         <FiClock className="kn-card-subtitle" />
       </div>
 
@@ -29,18 +31,18 @@ const TemporalClusterShiftCard = ({ data }) => {
           </div>
         ) : (
           <div style={{ color: 'var(--color-neutral-400)', fontSize: '0.875rem' }}>
-            No shift heatmap data available
+            {t('volume.noShiftHeatmap', 'No shift heatmap data available')}
           </div>
         )}
         {heatmap.length > 0 && (
           <div style={{ position: 'absolute', bottom: '8px', right: '8px', backgroundColor: 'var(--color-white)', padding: '4px 8px', borderRadius: '4px', fontSize: '0.625rem', fontWeight: 700, boxShadow: '0 1px 3px rgba(0,0,0,0.1)', color: 'var(--color-primary-orange)' }}>
-            T + 24m Projection
+            {t('volume.t24mProjection', 'T + 24m Projection')}
           </div>
         )}
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '8px' }}>
-        <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-neutral-600)' }}>Drift Entropy</div>
+        <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-neutral-600)' }}>{t('volume.driftEntropy', 'Drift Entropy')}</div>
         <div style={{ fontSize: '0.875rem', fontWeight: 700, color: 'var(--color-neutral-900)' }}>{driftEntropy}</div>
       </div>
       <p className="kn-stat-desc" style={{ fontSize: '0.75rem' }}>

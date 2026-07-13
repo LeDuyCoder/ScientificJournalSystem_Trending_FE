@@ -1,8 +1,10 @@
+import { useTranslation } from 'react-i18next';
 import { FiTrendingUp } from 'react-icons/fi';
 
 const CoreClustersCard = ({ data }) => {
+  const { t } = useTranslation();
   const topItem = Array.isArray(data) && data[0];
-  const label = topItem?.keyword || 'No active clusters';
+  const label = topItem?.keyword || t('volume.noActiveClusters', 'No active clusters');
   const rawVolume = topItem?.volume ?? 0;
   const volume = rawVolume >= 1000 ? `${(rawVolume / 1000).toFixed(1)}k` : String(rawVolume);
   
@@ -14,7 +16,9 @@ const CoreClustersCard = ({ data }) => {
   return (
     <div className="kn-card" style={{ justifyContent: 'space-between' }}>
       <div>
-        <h3 className="kn-card-subtitle" style={{ color: 'var(--color-neutral-400)', textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.75rem', fontWeight: 700, marginBottom: '24px' }}>CORE CLUSTERS</h3>
+        <h3 className="kn-card-subtitle" style={{ color: 'var(--color-neutral-400)', textTransform: 'uppercase', letterSpacing: '0.05em', fontSize: '0.75rem', fontWeight: 700, marginBottom: '24px' }}>
+          {t('volume.coreClustersUpper', 'CORE CLUSTERS')}
+        </h3>
         
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div>
@@ -32,11 +36,14 @@ const CoreClustersCard = ({ data }) => {
         </div>
       </div>
       
-      <p className="kn-stat-desc" style={{ color: 'var(--color-neutral-500)', fontSize: '0.875rem' }}>
+      <p className="kn-stat-desc" style={{ color: 'var(--color-neutral-50)', fontSize: '0.875rem' }}>
         {topItem ? (
-          <>Central nodes show high density in deep learning paradigms with a <strong style={{ color: 'var(--color-primary-orange)' }}>{growth}</strong> growth vector.</>
+          t('volume.coreClustersDesc', { 
+            growth, 
+            defaultValue: `Central nodes show high density in deep learning paradigms with a ${growth} growth vector.` 
+          })
         ) : (
-          <>No active topic clusters detected for this timeframe.</>
+          t('volume.noActiveClustersDesc', 'No active topic clusters detected for this timeframe.')
         )}
       </p>
     </div>

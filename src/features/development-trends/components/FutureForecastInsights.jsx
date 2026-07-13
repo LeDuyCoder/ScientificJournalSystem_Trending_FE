@@ -2,6 +2,8 @@ import React from 'react';
 import DashboardGrid from '../../../shared/components/layout/DashboardGrid';
 import { FiTrendingUp, FiAlertTriangle, FiShare2 } from 'react-icons/fi';
 
+import { useTranslation } from 'react-i18next';
+
 const getIcon = (type) => {
   const t = String(type || '').toLowerCase();
   if (t.includes('peak')) return <FiTrendingUp />;
@@ -19,12 +21,13 @@ const getAccent = (type) => {
 };
 
 export default function FutureForecastInsights({ data }) {
+  const { t } = useTranslation();
   const insights = data || [];
 
   if (insights.length === 0) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '150px', background: 'var(--color-surface)', border: 'var(--border-light)', borderRadius: 'var(--radius-md)', color: 'var(--color-neutral-500)', fontSize: 'var(--font-size-body)' }}>
-        Không có dữ liệu phù hợp với bộ lọc hiện tại.
+        {t('dashboard.noDataForFilters', 'No data matches the current filters.')}
       </div>
     );
   }

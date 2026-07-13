@@ -1,14 +1,17 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import './CollaborationAnalytics.css';
 
 const KeyInsightsCard = ({ data }) => {
+  const { t } = useTranslation();
+
   if (!data) {
     return (
       <div className="ca-card ca-card-dark">
         <div className="ca-card-header">
-          <h3 className="ca-card-title">Key Insights</h3>
+          <h3 className="ca-card-title">{t('volume.keyInsights', 'Key Insights')}</h3>
         </div>
-        <p className="ca-insights-desc">No insights available.</p>
+        <p className="ca-insights-desc">{t('volume.noInsights', 'No insights available.')}</p>
       </div>
     );
   }
@@ -16,7 +19,7 @@ const KeyInsightsCard = ({ data }) => {
   return (
     <div className="ca-card ca-card-dark">
       <div className="ca-card-header">
-        <h3 className="ca-card-title">Key Insights</h3>
+        <h3 className="ca-card-title">{t('volume.keyInsights', 'Key Insights')}</h3>
       </div>
       <p className="ca-insights-desc">{data.subtitle || data.description}</p>
       
@@ -34,7 +37,7 @@ const KeyInsightsCard = ({ data }) => {
         ) : (
           <div className="ca-insight-metric">
             <div className="ca-insight-value">N/A</div>
-            <div className="ca-insight-label">No metrics available</div>
+            <div className="ca-insight-label">{t('volume.noMetrics', 'No metrics available')}</div>
           </div>
         )}
       </div>

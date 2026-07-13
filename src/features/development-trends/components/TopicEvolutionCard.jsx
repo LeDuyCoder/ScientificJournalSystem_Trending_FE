@@ -1,6 +1,6 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-
 const CustomTooltip = ({ active, payload, label, meta }) => {
   if (active && payload && payload.length && meta) {
     return (
@@ -20,6 +20,7 @@ const CustomTooltip = ({ active, payload, label, meta }) => {
 };
 
 export default function TopicEvolutionCard({ topicEvolution }) {
+  const { t } = useTranslation();
   const topics = topicEvolution?.topics || [];
 
   if (topics.length === 0) {
@@ -27,12 +28,12 @@ export default function TopicEvolutionCard({ topicEvolution }) {
       <div className="analytics-card">
         <div className="analytics-card-header">
           <div className="analytics-card-title-group">
-            <h3 className="analytics-card-title">Topic Evolution</h3>
-            <p className="analytics-card-subtitle">Shifting research focuses across domains</p>
+            <h3 className="analytics-card-title">{t('dashboard.topicEvolution', 'Topic Evolution')}</h3>
+            <p className="analytics-card-subtitle">{t('dashboard.topicEvolutionSub', 'Shifting research focuses across domains')}</p>
           </div>
         </div>
         <div className="analytics-card-body" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--color-neutral-500)', fontSize: 'var(--font-size-body)' }}>
-          Không có dữ liệu phù hợp với bộ lọc hiện tại.
+          {t('dashboard.noDataForFilters', 'No data matches the current filters.')}
         </div>
       </div>
     );
@@ -69,8 +70,8 @@ export default function TopicEvolutionCard({ topicEvolution }) {
     <div className="analytics-card">
       <div className="analytics-card-header">
         <div className="analytics-card-title-group">
-          <h3 className="analytics-card-title">Topic Evolution</h3>
-          <p className="analytics-card-subtitle">Shifting research focuses across domains</p>
+          <h3 className="analytics-card-title">{t('dashboard.topicEvolution', 'Topic Evolution')}</h3>
+          <p className="analytics-card-subtitle">{t('dashboard.topicEvolutionSub', 'Shifting research focuses across domains')}</p>
         </div>
       </div>
       <div className="analytics-card-body">

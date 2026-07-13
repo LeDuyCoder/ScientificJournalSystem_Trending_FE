@@ -1,6 +1,8 @@
+import { useTranslation } from 'react-i18next';
 import { FiExternalLink } from 'react-icons/fi';
 
 const ConceptualProximityCard = ({ data }) => {
+  const { t } = useTranslation();
   const nodes = data?.nodes || [];
   const edges = data?.edges || [];
 
@@ -15,8 +17,8 @@ const ConceptualProximityCard = ({ data }) => {
   const topNodesText = nodes.slice(0, 3).map(n => n.label);
   const description = data?.description || (
     topNodesText.length > 0 
-      ? `Strong thematic correlation between ${topNodesText.join(', ')} paradigms.` 
-      : 'No network topology paradigms found for this timeframe.'
+      ? t('volume.thematicCorrelation', { topics: topNodesText.join(', '), defaultValue: `Strong thematic correlation between ${topNodesText.join(', ')} paradigms.` })
+      : t('volume.noParadigmsFound', 'No network topology paradigms found for this timeframe.')
   );
 
   // Layout parameters for visualization
@@ -94,7 +96,7 @@ const ConceptualProximityCard = ({ data }) => {
   return (
     <div className="kn-card">
       <div className="kn-card-header">
-        <h2 className="kn-card-title">Conceptual Proximity</h2>
+        <h2 className="kn-card-title">{t('volume.conceptualProximity', 'Conceptual Proximity')}</h2>
         <FiExternalLink className="kn-card-subtitle" style={{ cursor: 'pointer' }} />
       </div>
       
@@ -110,7 +112,7 @@ const ConceptualProximityCard = ({ data }) => {
               {/* Clean, dynamic empty-state ring/text */}
               <circle cx="100" cy="75" r="40" fill="none" stroke="var(--color-neutral-300)" strokeWidth="2" strokeDasharray="4, 4" />
               <text x="100" y="79" textAnchor="middle" fill="var(--color-neutral-400)" fontSize="10" fontWeight="600">
-                No Topology Data
+                {t('volume.noTopologyData', 'No Topology Data')}
               </text>
             </>
           )}
@@ -118,7 +120,7 @@ const ConceptualProximityCard = ({ data }) => {
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '8px' }}>
-        <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-neutral-600)' }}>Node Density</div>
+        <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--color-neutral-600)' }}>{t('volume.nodeDensity', 'Node Density')}</div>
         <div style={{ fontSize: '1.25rem', fontWeight: 700 }}>{nodeDensity}</div>
       </div>
       <p className="kn-stat-desc" style={{ fontSize: '0.75rem' }}>

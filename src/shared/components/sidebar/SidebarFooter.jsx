@@ -12,10 +12,12 @@ const SidebarFooter = ({ collapsed }) => {
   const currentLang = lang || 'en';
   
   const { data: userProfile } = useUserProfileQuery();
+  const rawRole = userProfile?.displayRole || sidebarConfig.userProfile.role;
+  const translationKey = `role.${rawRole.toLowerCase().replace(/\s+/g, '')}`;
   const profile = {
     initials: userProfile?.initials || sidebarConfig.userProfile.initials,
     name: userProfile?.displayName || sidebarConfig.userProfile.name,
-    role: userProfile?.displayRole || sidebarConfig.userProfile.role,
+    role: t(translationKey, rawRole),
     avatar: userProfile?.avatar || null
   };
 

@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { FiGlobe, FiChevronDown } from 'react-icons/fi';
+import { FiSettings } from 'react-icons/fi';
 import { LANGUAGE } from '../../constants/storageKeys';
 import { buildLocalizedPath } from '../../../app/routes/languageRouting';
 import './LanguageSelector.css';
@@ -14,7 +14,7 @@ const LANGUAGE_LABELS = {
 };
 
 export default function LanguageSelector() {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const { lang } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -41,19 +41,21 @@ export default function LanguageSelector() {
   };
 
   const currentLangCode = lang || i18n.language || 'en';
-  const currentLang = LANGUAGE_LABELS[currentLangCode] || LANGUAGE_LABELS.en;
 
   return (
     <div className="lang-selector-wrapper" ref={dropdownRef}>
       <button 
-        className="lang-selector-trigger" 
+        type="button"
+        className="header-icon-button" 
         onClick={() => setDropdownOpen(!dropdownOpen)}
         aria-haspopup="true"
         aria-expanded={dropdownOpen}
+        aria-label={t('header.language', 'Language')}
+        title={t('header.language', 'Language')}
       >
-        <FiGlobe className="globe-icon" />
-        <span className="lang-label">{currentLang.flag} {currentLang.label}</span>
-        <FiChevronDown className={`chevron-icon ${dropdownOpen ? 'rotated' : ''}`} />
+        <div className="header-icon-wrapper">
+          <FiSettings className="header-icon" aria-hidden="true" />
+        </div>
       </button>
 
       {dropdownOpen && (
