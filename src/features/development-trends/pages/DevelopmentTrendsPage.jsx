@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import DashboardGrid from '../../../shared/components/layout/DashboardGrid';
 import DashboardSection from '../../../shared/components/layout/DashboardSection';
 import PublicationTrendCard from '../components/PublicationTrendCard';
@@ -28,6 +29,7 @@ const placeholderStyle = {
 };
 
 export default function DevelopmentTrendsPage() {
+  const { t } = useTranslation();
   const { projectId, filters, refreshTrigger, refreshData } = useDashboardContext();
 
   const { data: publicationTrend, isLoading: isPubLoading, error: pubError } = usePublicationTrendQuery(projectId, filters, refreshTrigger);
@@ -43,7 +45,7 @@ export default function DevelopmentTrendsPage() {
     return (
       <div style={{ ...placeholderStyle, height: '400px', flexDirection: 'column', gap: '16px' }}>
         <div className="update-icon spin" style={{ width: '24px', height: '24px', border: '3px solid var(--color-primary-orange)', borderTopColor: 'transparent', borderRadius: '50%' }}></div>
-        <div>Loading Development Trends...</div>
+        <div>{t('common.loading', 'Loading Development Trends...')}</div>
       </div>
     );
   }
@@ -51,8 +53,8 @@ export default function DevelopmentTrendsPage() {
   if (hasError) {
     return (
       <ErrorStateSection 
-        title="Không thể tải dữ liệu"
-        message="Không thể tải dữ liệu phân tích phát triển và xu hướng. Vui lòng kiểm tra lại kết nối hoặc thử lại."
+        title={t('common.error', 'Không thể tải dữ liệu')}
+        message={t('dashboard.loadingFailedDesc', 'Không thể tải dữ liệu phân tích phát triển và xu hướng. Vui lòng kiểm tra lại kết nối hoặc thử lại.')}
         onRetry={refreshData}
         minHeight={400}
       />
@@ -61,7 +63,7 @@ export default function DevelopmentTrendsPage() {
 
   return (
     <>
-      <DashboardSection title="Analytics Dashboard" className="dashboard-analytics-section">
+      <DashboardSection title={t('dashboard.analyticsTitle', 'Analytics Dashboard')} className="dashboard-analytics-section">
         <DashboardGrid columns={2}>
           <PublicationTrendCard data={publicationTrend} />
           <CitationMirroringCard data={citationMirroring} />
@@ -70,7 +72,7 @@ export default function DevelopmentTrendsPage() {
         </DashboardGrid>
       </DashboardSection>
 
-      <DashboardSection title="Future Forecast Insights" className="dashboard-insights-section">
+      <DashboardSection title={t('dashboard.forecastTitle', 'Future Forecast Insights')} className="dashboard-insights-section">
         <FutureForecastInsights data={forecastInsights} />
       </DashboardSection>
     </>

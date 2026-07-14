@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import Card from '../../../shared/components/common/Card';
 import InlineErrorState from '../../../shared/components/common/InlineErrorState';
 
@@ -27,6 +28,7 @@ const DonutSegment = ({ percentage, offset, colorClass, isMounted }) => {
 };
 
 const QuartileDistributionCard = ({ data, loading, error, onRetry }) => {
+  const { t } = useTranslation();
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -54,25 +56,25 @@ const QuartileDistributionCard = ({ data, loading, error, onRetry }) => {
 
   return (
     <Card 
-      title="Quartile Distribution" 
-      subtitle="Portfolio concentration by Scimago Quartile" 
+      title={t('journals.quartileDistribution', 'Quartile Distribution')} 
+      subtitle={t('journals.portfolioConcentration', 'Portfolio concentration by Scimago Quartile')} 
       className="qdc-card"
     >
       {loading ? (
         <div style={{ padding: '20px', textAlign: 'center', color: 'var(--color-neutral-500)', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
           <div className="update-icon spin" style={{ width: '24px', height: '24px', border: '3px solid var(--color-primary-orange)', borderTopColor: 'transparent', borderRadius: '50%', margin: '0 auto 10px' }}></div>
-          Loading quartile data...
+          {t('common.loading', 'Loading quartile data...')}
         </div>
       ) : error ? (
         <InlineErrorState 
-          title="Network Error"
-          message={error.toLowerCase().includes('not found') || error.toLowerCase().includes('404') ? 'No quartile data available for this project.' : error}
+          title={t('common.error', 'Network Error')}
+          message={error.toLowerCase().includes('not found') || error.toLowerCase().includes('404') ? t('journals.noQuartileData', 'No quartile data available for this project.') : error}
           onRetry={error.toLowerCase().includes('not found') || error.toLowerCase().includes('404') ? null : onRetry}
           minHeight={200}
         />
       ) : !data || !data.distribution || data.totalJournals === 0 ? (
         <div style={{ padding: '20px', textAlign: 'center', color: 'var(--color-neutral-500)', display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%' }}>
-          No journal data available for the selected filters.
+          {t('journals.noDataAvailable', 'No journal data available for the selected filters.')}
         </div>
       ) : (
         <div className="qdc-content">
@@ -99,7 +101,7 @@ const QuartileDistributionCard = ({ data, loading, error, onRetry }) => {
               </svg>
               <div className="qdc-center">
                 <span className="qdc-center-value">{formatTotal(data.totalJournals)}</span>
-                <span className="qdc-center-label">TOTAL JOURNALS</span>
+                <span className="qdc-center-label">{t('journals.totalJournalsUpper', 'TOTAL JOURNALS')}</span>
               </div>
             </div>
           </div>
@@ -112,8 +114,13 @@ const QuartileDistributionCard = ({ data, loading, error, onRetry }) => {
                   <div className="qdc-legend-item" key={item.group} role="listitem">
                     <div className={`qdc-legend-color qdc-bg-${getColorToken(quartileCode)}`} aria-hidden="true"></div>
                     <div className="qdc-legend-text">
-                      <span className="qdc-legend-title">{item.group}</span>
-                      <span className="qdc-legend-percentage">{item.percentage}% of Portfolio</span>
+                      <span className="qdc-legend-title">{t(`journals.groups.${item.group}`, item.group)}</span>
+                      <span className="qdc-legend-percentage">
+                        {t('journals.pctOfPortfolio', { 
+                          percentage: item.percentage, 
+                          defaultValue: `${item.percentage}% of Portfolio` 
+                        })}
+                      </span>
                     </div>
                   </div>
                 );

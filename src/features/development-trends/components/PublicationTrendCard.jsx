@@ -1,13 +1,15 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const CustomTooltip = ({ active, payload, label }) => {
+  const { t } = useTranslation();
   if (active && payload && payload.length) {
     return (
       <div className="trend-tooltip">
         <p className="trend-tooltip-year">{label}</p>
         <p className="trend-tooltip-value">
-          Publications: <span className="trend-tooltip-number">{payload[0].value}</span>
+          {t('dashboard.publications', 'Publications')}: <span className="trend-tooltip-number">{payload[0].value}</span>
         </p>
       </div>
     );
@@ -16,6 +18,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 };
 
 export default function PublicationTrendCard({ data }) {
+  const { t } = useTranslation();
   const chartData = data?.data || [];
   const growthRate = data?.growthRate;
   const unit = data?.unit || 'YoY';
@@ -29,16 +32,16 @@ export default function PublicationTrendCard({ data }) {
       <div className="analytics-card-header">
         <div className="analytics-card-title-group">
           <h3 className="analytics-card-title">
-            Publication Trend
+            {t('dashboard.publicationTrend', 'Publication Trend')}
             {yoyText && <span className="yoy-badge">{yoyText}</span>}
           </h3>
-          <p className="analytics-card-subtitle">Growth of scholarly output over time</p>
+          <p className="analytics-card-subtitle">{t('dashboard.publicationTrendSub', 'Growth of scholarly output over time')}</p>
         </div>
       </div>
       <div className="analytics-card-body">
         {chartData.length === 0 ? (
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--color-neutral-500)', fontSize: 'var(--font-size-body)' }}>
-            Không có dữ liệu phù hợp với bộ lọc hiện tại.
+            {t('dashboard.noDataForFilters', 'No data matches the current filters.')}
           </div>
         ) : (
           <div className="publication-trend-chart-wrapper" aria-label="Publication Trend Line Chart">

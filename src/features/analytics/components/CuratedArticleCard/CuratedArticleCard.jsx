@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import styles from '../../styles/curatedArticles.module.css';
 import { AccessBadge } from '../../../../shared/components/common/AccessBadge';
 
@@ -10,6 +11,8 @@ import { AccessBadge } from '../../../../shared/components/common/AccessBadge';
  * @param {Object} props.article - Article data object
  */
 export const CuratedArticleCard = ({ article }) => {
+  const { t } = useTranslation();
+
   return (
     <div className={styles.articleCard}>
       <div className={styles.cardHeader}>
@@ -20,25 +23,19 @@ export const CuratedArticleCard = ({ article }) => {
           </svg>
         </div>
       </div>
-      
+
       <div>
         <h3 className={styles.cardTitle}>{article.title}</h3>
         <p className={styles.authors}>{article.authors}</p>
       </div>
-      
+
       <p className={styles.description}>{article.description}</p>
-      
+
       <div className={styles.cardFooter}>
-        <span className={styles.publishedYear}>Published {article.publishedYear}</span>
-        <button 
-          className={styles.viewBtn}
-          onClick={() => {
-            const coreUrl = import.meta.env.VITE_CORE_FE_URL || 'http://localhost:5173';
-            window.location.href = `${coreUrl}/articles/${article.id}/visual`;
-          }}
-        >
-          View Details
-        </button>
+        <span className={styles.publishedYear}>
+          {t('analytics.publishedAt', { year: article.publishedYear, defaultValue: `Published ${article.publishedYear}` })}
+        </span>
+        <button className={styles.viewBtn}>{t('analytics.viewDetails', 'View Details')}</button>
       </div>
     </div>
   );

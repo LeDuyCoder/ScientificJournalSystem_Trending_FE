@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import styles from '../../styles/Analytics.module.css';
 
 /**
@@ -43,6 +44,7 @@ const Sparkline = ({ data }) => {
  * @param {Array<Object>} journals - List of journal data
  */
 export const JournalTable = ({ journals, page = 1, limit = 4, totalCount = 0, onPrevPage, onNextPage }) => {
+  const { t } = useTranslation();
   const startIndex = totalCount === 0 ? 0 : (page - 1) * limit + 1;
   const endIndex = Math.min(totalCount, page * limit);
   const hasPrev = page > 1;
@@ -53,12 +55,12 @@ export const JournalTable = ({ journals, page = 1, limit = 4, totalCount = 0, on
       <table className={styles.journalTable}>
         <thead>
           <tr>
-            <th>Journal Name</th>
-            <th>ISSN</th>
-            <th>Impact Factor</th>
-            <th>SJR Rank</th>
-            <th>Trend</th>
-            <th>Actions</th>
+            <th>{t('analytics.journalName', 'Journal Name')}</th>
+            <th>{t('analytics.issn', 'ISSN')}</th>
+            <th>{t('analytics.impactFactor', 'Impact Factor')}</th>
+            <th>{t('analytics.sjrRank', 'SJR Rank')}</th>
+            <th>{t('analytics.trend', 'Trend')}</th>
+            <th>{t('analytics.actions', 'Actions')}</th>
           </tr>
         </thead>
         <tbody>
@@ -73,7 +75,7 @@ export const JournalTable = ({ journals, page = 1, limit = 4, totalCount = 0, on
                   </div>
                   <div>
                     <h3 className={styles.journalTitle}>{journal.name}</h3>
-                    <p className={styles.journalPublisher}>Published by {journal.publisher}</p>
+                    <p className={styles.journalPublisher}>{t('analytics.publishedBy', 'Published by')} {journal.publisher}</p>
                   </div>
                 </div>
               </td>
@@ -86,15 +88,7 @@ export const JournalTable = ({ journals, page = 1, limit = 4, totalCount = 0, on
                 <Sparkline data={journal.trend} />
               </td>
               <td>
-                <button 
-                  className={`${styles.btn} ${styles.btnPrimary}`} 
-                  onClick={() => {
-                    const coreUrl = import.meta.env.VITE_CORE_FE_URL || 'http://localhost:5173';
-                    window.location.href = `${coreUrl}/journals/${journal.id}`;
-                  }}
-                >
-                  View
-                </button>
+                <button className={`${styles.btn} ${styles.btnPrimary}`} onClick={() => console.log('View detail:', journal.id)}>{t('common.view', 'View')}</button>
               </td>
             </tr>
           ))}
@@ -102,7 +96,14 @@ export const JournalTable = ({ journals, page = 1, limit = 4, totalCount = 0, on
       </table>
 
       <div className={styles.pagination}>
-        <span className={styles.paginationText}>Showing {startIndex}-{endIndex} of {totalCount} tracked journals</span>
+        <span className={styles.paginationText}>
+          {t('analytics.showingTracked', {
+            start: startIndex,
+            end: endIndex,
+            total: totalCount,
+            defaultValue: `Showing ${startIndex}-${endIndex} of ${totalCount} tracked journals`
+          })}
+        </span>
         <div className={styles.paginationControls}>
           <button
             className={`${styles.btn} ${styles.btnOutline}`}
@@ -110,7 +111,7 @@ export const JournalTable = ({ journals, page = 1, limit = 4, totalCount = 0, on
             disabled={!hasPrev}
             style={{ opacity: hasPrev ? 1 : 0.5, cursor: hasPrev ? 'pointer' : 'not-allowed' }}
           >
-            Previous
+            {t('common.previous', 'Previous')}
           </button>
           <button
             className={`${styles.btn} ${styles.btnOutline}`}
@@ -118,7 +119,7 @@ export const JournalTable = ({ journals, page = 1, limit = 4, totalCount = 0, on
             disabled={!hasNext}
             style={{ opacity: hasNext ? 1 : 0.5, cursor: hasNext ? 'pointer' : 'not-allowed' }}
           >
-            Next
+            {t('common.next', 'Next')}
           </button>
         </div>
       </div>

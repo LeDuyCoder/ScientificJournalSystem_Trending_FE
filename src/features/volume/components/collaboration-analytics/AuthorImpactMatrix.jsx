@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import './CollaborationAnalytics.css';
 
 const AuthorImpactMatrix = ({ data }) => {
+  const { t } = useTranslation();
   const [tooltip, setTooltip] = useState(null);
 
   if (!Array.isArray(data)) {
     return (
       <div className="ca-card">
         <div className="ca-card-header">
-          <h3 className="ca-card-title">Author Productivity vs Impact Matrix</h3>
+          <h3 className="ca-card-title">{t('volume.authorProductivityVsImpact', 'Author Productivity vs Impact Matrix')}</h3>
         </div>
         <div style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>
-          No data available for this project.
+          {t('volume.noData', 'No data available for this project.')}
         </div>
       </div>
     );
@@ -20,7 +22,7 @@ const AuthorImpactMatrix = ({ data }) => {
   return (
     <div className="ca-card" style={{ position: 'relative' }}>
       <div className="ca-card-header">
-        <h3 className="ca-card-title">Author Productivity vs Impact Matrix</h3>
+        <h3 className="ca-card-title">{t('volume.authorProductivityVsImpact', 'Author Productivity vs Impact Matrix')}</h3>
       </div>
       
       <div className="ca-matrix-container">
@@ -97,20 +99,20 @@ const AuthorImpactMatrix = ({ data }) => {
                 fontSize: '13px',
                 color: '#1e293b',
               }}>
-                {point.authorName || `Author ID: ${point.authorId}`}
+                {point.authorName || `${t('volume.authorId', 'Author ID')}: ${point.authorId}`}
               </div>
               {/* Rows */}
               <div style={{ padding: '8px 14px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
-                  <span style={{ color: '#64748b' }}>Type</span>
-                  <span style={{ fontWeight: 700, color: '#1e293b' }}>Author</span>
+                  <span style={{ color: '#64748b' }}>{t('volume.type', 'Type')}</span>
+                  <span style={{ fontWeight: 700, color: '#1e293b' }}>{t('volume.authorLabel', 'Author')}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
-                  <span style={{ color: '#64748b' }}>H-Index</span>
+                  <span style={{ color: '#64748b' }}>{t('volume.hIndex', 'H-Index')}</span>
                   <span style={{ fontWeight: 700, color: '#1e293b' }}>{point.hIndex}</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px' }}>
-                  <span style={{ color: '#64748b' }}>Article Output (Yearly)</span>
+                  <span style={{ color: '#64748b' }}>{t('volume.articleOutputYearly', 'Article Output (Yearly)')}</span>
                   <span style={{ fontWeight: 700, color: '#ff6b00' }}>{point.yearlyOutput}</span>
                 </div>
               </div>
@@ -118,8 +120,8 @@ const AuthorImpactMatrix = ({ data }) => {
           );
         })()}
 
-        <div className="ca-matrix-axis-x">ARTICLE OUTPUT (YEARLY)</div>
-        <div className="ca-matrix-axis-y">IMPACT FACTOR (H-INDEX)</div>
+        <div className="ca-matrix-axis-x">{t('volume.articleOutputYearlyUpper', 'ARTICLE OUTPUT (YEARLY)')}</div>
+        <div className="ca-matrix-axis-y">{t('volume.impactFactorHindexUpper', 'IMPACT FACTOR (H-INDEX)')}</div>
       </div>
     </div>
   );

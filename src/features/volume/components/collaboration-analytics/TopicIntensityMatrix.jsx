@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import './CollaborationAnalytics.css';
 
 const TopicIntensityMatrix = ({ data, type, onTypeChange }) => {
+  const { t } = useTranslation();
+
   const getIntensityColor = (value) => {
     // scale from #f1f5f9 to #ff6b00
     if (!value || value === 0) return '#f1f5f9';
@@ -14,10 +17,10 @@ const TopicIntensityMatrix = ({ data, type, onTypeChange }) => {
     return (
       <div className="ca-card">
         <div className="ca-card-header">
-          <h3 className="ca-card-title">Topic Intensity Matrix</h3>
+          <h3 className="ca-card-title">{t('volume.topicIntensityMatrix', 'Topic Intensity Matrix')}</h3>
         </div>
         <div style={{ padding: '20px', textAlign: 'center', color: '#64748b' }}>
-          No data available for this project.
+          {t('volume.noData', 'No data available for this project.')}
         </div>
       </div>
     );
@@ -26,19 +29,19 @@ const TopicIntensityMatrix = ({ data, type, onTypeChange }) => {
   return (
     <div className="ca-card" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
       <div className="ca-card-header">
-        <h3 className="ca-card-title">Topic Intensity Matrix</h3>
+        <h3 className="ca-card-title">{t('volume.topicIntensityMatrix', 'Topic Intensity Matrix')}</h3>
         <div className="kn-toggle-group">
           <button 
             className={`kn-toggle-btn ${type === 'author' ? 'active' : ''}`}
             onClick={() => onTypeChange('author')}
           >
-            AUTHORS
+            {t('volume.authors', 'AUTHORS')}
           </button>
           <button 
             className={`kn-toggle-btn ${type === 'institution' ? 'active' : ''}`}
             onClick={() => onTypeChange('institution')}
           >
-            INSTITUTIONS
+            {t('volume.institutions', 'INSTITUTIONS')}
           </button>
         </div>
       </div>
@@ -87,9 +90,9 @@ const TopicIntensityMatrix = ({ data, type, onTypeChange }) => {
       </div>
 
       <div className="ca-intensity-legend" style={{ marginTop: 'auto' }}>
-        <span>LOW ACTIVITY</span>
+        <span>{t('volume.lowActivity', 'LOW ACTIVITY')}</span>
         <div className="ca-intensity-gradient"></div>
-        <span>HIGH IMPACT</span>
+        <span>{t('volume.highImpact', 'HIGH IMPACT')}</span>
       </div>
     </div>
   );

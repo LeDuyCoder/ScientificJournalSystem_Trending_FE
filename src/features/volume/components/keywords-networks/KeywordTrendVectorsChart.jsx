@@ -1,31 +1,34 @@
+import { useTranslation } from 'react-i18next';
 import { BarChart, Bar, XAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
 const KeywordTrendVectorsChart = ({ data, timeframe, onTimeframeChange }) => {
+  const { t } = useTranslation();
+
   if (!data || data.length === 0) {
     return (
       <div className="kn-card">
         <div className="kn-card-header">
           <div>
-            <h2 className="kn-card-title">Keyword Trend Vectors</h2>
-            <p className="kn-card-subtitle">Frontier topic acceleration over the last 12 months</p>
+            <h2 className="kn-card-title">{t('volume.keywordTrendVectors', 'Keyword Trend Vectors')}</h2>
+            <p className="kn-card-subtitle">{t('volume.frontierTopicAcceleration', 'Frontier topic acceleration over the last 12 months')}</p>
           </div>
           <div className="kn-toggle-group">
             <button 
               className={`kn-toggle-btn ${timeframe === 'daily' ? 'active' : ''}`}
               onClick={() => onTimeframeChange('daily')}
             >
-              Daily
+              {t('volume.daily', 'Daily')}
             </button>
             <button 
               className={`kn-toggle-btn ${timeframe === 'monthly' ? 'active' : ''}`}
               onClick={() => onTimeframeChange('monthly')}
             >
-              Monthly
+              {t('volume.monthly', 'Monthly')}
             </button>
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: 250, color: 'var(--color-neutral-400)', fontSize: '0.875rem' }}>
-          No trend vector data available for the selected timeframe.
+          {t('volume.noTrendVectorData', 'No trend vector data available for the selected timeframe.')}
         </div>
       </div>
     );
@@ -40,21 +43,21 @@ const KeywordTrendVectorsChart = ({ data, timeframe, onTimeframeChange }) => {
     <div className="kn-card">
       <div className="kn-card-header">
         <div>
-          <h2 className="kn-card-title">Keyword Trend Vectors</h2>
-          <p className="kn-card-subtitle">Frontier topic acceleration over the last 12 months</p>
+          <h2 className="kn-card-title">{t('volume.keywordTrendVectors', 'Keyword Trend Vectors')}</h2>
+          <p className="kn-card-subtitle">{t('volume.frontierTopicAcceleration', 'Frontier topic acceleration over the last 12 months')}</p>
         </div>
         <div className="kn-toggle-group">
           <button 
             className={`kn-toggle-btn ${timeframe === 'daily' ? 'active' : ''}`}
             onClick={() => onTimeframeChange('daily')}
           >
-            Daily
+            {t('volume.daily', 'Daily')}
           </button>
           <button 
             className={`kn-toggle-btn ${timeframe === 'monthly' ? 'active' : ''}`}
             onClick={() => onTimeframeChange('monthly')}
           >
-            Monthly
+            {t('volume.monthly', 'Monthly')}
           </button>
         </div>
       </div>

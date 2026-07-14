@@ -4,6 +4,7 @@
  * File: shared/components/chatbot/ChatbotWidget.jsx
  */
 import React, { useRef, useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocation } from 'react-router-dom';
 import { FaPaperPlane } from 'react-icons/fa';
@@ -32,16 +33,9 @@ const CHAT_HISTORY_LIMIT = 10;
 const initialAssistantMessage = {
   id: 'chatbot-welcome-message',
   role: 'assistant',
-  answer:
-    'Xin chào! Tôi là AI Research Assistant. Hãy hỏi tôi về bài báo, tạp chí, xếp hạng Q1-Q4 hoặc dữ liệu trong dự án của bạn.',
+  answer: '',
   table: null,
 };
-
-const suggestedPrompts = [
-  'Tìm giúp tôi top các bài báo trong dự án này',
-  'Danh sách tạp chí Q1 năm 2024',
-  'Bài báo nào có lượt trích dẫn cao nhất?',
-];
 
 function getProjectIdFromUrl() {
   const match = window.location.pathname.match(/\/projects?\/(\d+)/);
@@ -83,6 +77,7 @@ function renderMarkdownLite(text) {
 }
 
 export default function ChatbotWidget() {
+  const { t } = useTranslation();
   const location = useLocation();
   const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
@@ -92,6 +87,12 @@ export default function ChatbotWidget() {
   const [messages, setMessages] = useState([initialAssistantMessage]);
   const [loadedProjectId, setLoadedProjectId] = useState(null);
   const scrollAnchorRef = useRef(null);
+
+  const suggestedPrompts = [
+    t('chatbot.suggestedPrompt1', 'Tìm giúp tôi top các bài báo trong dự án này'),
+    t('chatbot.suggestedPrompt2', 'Danh sách tạp chí Q1 năm 2024'),
+    t('chatbot.suggestedPrompt3', 'Bài báo nào có lượt trích dẫn cao nhất?'),
+  ];
 
   const scrollToBottom = () => {
     requestAnimationFrame(() => {
@@ -122,9 +123,17 @@ export default function ChatbotWidget() {
     retry: 1,
   });
 
-  const historyError = !projectId && isOpen
-    ? 'Vui lòng chọn dự án trước khi xem lịch sử chat.'
-    : historyQueryError?.message || '';
+  let historyError = '';
+  if (!projectId && isOpen) {
+    historyError = t('chatbot.selectProjectHistory', 'Please select a project before viewing chat history.');
+  } else if (historyQueryError) {
+    const errMsg = historyQueryError.message || '';
+    if (errMsg.includes('đăng nhập') || errMsg.includes('login') || errMsg.includes('401') || errMsg.includes('Unauthorized') || errMsg.includes('unauthorized')) {
+      historyError = t('chatbot.pleaseLogin', 'Please login to continue.');
+    } else {
+      historyError = errMsg;
+    }
+  }
 
   useEffect(() => {
     if (!isOpen) {
@@ -159,7 +168,10 @@ export default function ChatbotWidget() {
         {
           id: crypto.randomUUID(),
           role: 'assistant',
-          answer: `Tin nhắn của bạn đang dài ${cleanText.length.toLocaleString('vi-VN')} ký tự. Vui lòng rút gọn còn tối đa ${MAX_CHAT_MESSAGE_LENGTH.toLocaleString('vi-VN')} ký tự trước khi gửi.`,
+          answer: t('chatbot.messageTooLong', 'Your message is {{length}} characters. Please shorten to a maximum of {{maxLength}} characters.', {
+            length: cleanText.length.toLocaleString(),
+            maxLength: MAX_CHAT_MESSAGE_LENGTH.toLocaleString()
+          }),
           table: null,
           isError: true,
         },
@@ -187,7 +199,7 @@ export default function ChatbotWidget() {
           {
             id: crypto.randomUUID(),
             role: 'assistant',
-            answer: 'Vui lòng chọn dự án trước khi hỏi AI.',
+            answer: t('chatbot.selectProjectAsk', 'Please select a project before asking AI.'),
             table: null,
           },
         ]);
@@ -208,7 +220,7 @@ export default function ChatbotWidget() {
         {
           id: crypto.randomUUID(),
           role: 'assistant',
-          answer: data?.answer || 'Tôi đã nhận phản hồi nhưng chưa có nội dung trả lời.',
+          answer: data?.answer || t('chatbot.emptyAnswer', 'I received a response, but it contains no answer text.'),
           table: data?.table || null,
         },
       ]);
@@ -222,9 +234,12 @@ export default function ChatbotWidget() {
         {
           id: crypto.randomUUID(),
           role: 'assistant',
-          answer: error.message?.includes('đăng nhập')
-            ? `🔐 ${error.message}`
-            : `Xin lỗi, tôi chưa thể kết nối tới API chatbot.\n\n**Chi tiết lỗi**: ${error.message}\n**Đang gọi tới**: ${chatbotApi.url}\n\nVui lòng kiểm tra tab Network để xem có bị CORS hoặc sai cổng Backend không.`,
+          answer: error.message?.includes('đăng nhập') || error.message?.includes('login')
+            ? `🔐 ${t('chatbot.pleaseLogin', 'Please login to continue.')}`
+            : t('chatbot.connectionError', 'Sorry, I could not connect to the chatbot API.\n\n**Error Details**: {{error}}\n**Calling**: {{url}}', {
+                error: error.message,
+                url: chatbotApi.url
+              }),
           table: null,
           isError: true,
         },
@@ -246,7 +261,7 @@ export default function ChatbotWidget() {
   return (
     <section className={`rp-chatbot ${isOpen ? 'is-open' : ''}`} aria-live="polite">
       {isOpen && (
-        <div className="rp-chatbot__panel" role="dialog" aria-label="AI Research Assistant">
+        <div className="rp-chatbot__panel" role="dialog" aria-label={t('chatbot.title', 'AI Research Assistant')}>
           <header className="rp-chatbot__header">
             <div className="rp-chatbot__identity">
               <div className="rp-chatbot__avatar">
@@ -254,7 +269,7 @@ export default function ChatbotWidget() {
               </div>
               <div>
                 <p className="rp-chatbot__eyebrow">ResearchPulse RAG</p>
-                <h2>AI Research Assistant</h2>
+                <h2>{t('chatbot.title', 'AI Research Assistant')}</h2>
               </div>
             </div>
             <button
@@ -262,19 +277,17 @@ export default function ChatbotWidget() {
               className="rp-chatbot__icon-btn"
               type="button"
               onClick={() => setIsOpen(false)}
-              aria-label="Đóng chatbot"
+              aria-label={t('chatbot.close', 'Close chatbot')}
             >
               <IoMdClose size={20} />
             </button>
           </header>
 
-
-
           <div className="rp-chatbot__messages">
             {isHistoryLoading ? (
-              <div className="rp-chatbot__history-loading" aria-label="Đang tải lịch sử chat">
+              <div className="rp-chatbot__history-loading" aria-label={t('chatbot.loadingHistory', 'Loading chat history...')}>
                 <span className="rp-chatbot__history-spinner" />
-                <p>Đang tải lịch sử chat...</p>
+                <p>{t('chatbot.loadingHistory', 'Loading chat history...')}</p>
               </div>
             ) : (
               <>
@@ -284,53 +297,61 @@ export default function ChatbotWidget() {
                   </article>
                 )}
 
-                {messages.map((item) => (
-                  <article
-                    key={item.id}
-                    className={`rp-chatbot__message rp-chatbot__message--${item.role} ${
-                      item.isError ? 'is-error' : ''
-                    }`}
-                  >
-                    <div className="rp-chatbot__bubble">{renderMarkdownLite(item.answer)}</div>
+                {messages.map((item) => {
+                  const answerText = item.id === 'chatbot-welcome-message'
+                    ? t('chatbot.welcome', 'Xin chào! Tôi là AI Research Assistant. Hãy hỏi tôi về bài báo, tạp chí, xếp hạng Q1-Q4 hoặc dữ liệu trong dự án của bạn.')
+                    : item.answer;
 
-                    {item.table && (
-                      <div className="rp-chatbot__table-card">
-                        <div className="rp-chatbot__table-head">
-                          <span>Bảng dữ liệu</span>
-                          <small>{item.table.data?.length || 0} dòng</small>
-                        </div>
-                        <div className="rp-chatbot__table-wrap">
-                          <table>
-                            <thead>
-                              <tr>
-                                {item.table.columns?.map((column) => (
-                                  <th key={column.key}>{column.label}</th>
-                                ))}
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {item.table.data?.map((row, rowIndex) => (
-                                <tr key={row.article_id || row.journal_id || `row-${rowIndex}`}>
+                  return (
+                    <article
+                      key={item.id}
+                      className={`rp-chatbot__message rp-chatbot__message--${item.role} ${
+                        item.isError ? 'is-error' : ''
+                      }`}
+                    >
+                      <div className="rp-chatbot__bubble">{renderMarkdownLite(answerText)}</div>
+
+                      {item.table && (
+                        <div className="rp-chatbot__table-card">
+                          <div className="rp-chatbot__table-head">
+                            <span>{t('chatbot.dataTable', 'Data Table')}</span>
+                            <small>
+                              {t('chatbot.rows', '{{count}} rows', { count: item.table.data?.length || 0 })}
+                            </small>
+                          </div>
+                          <div className="rp-chatbot__table-wrap">
+                            <table>
+                              <thead>
+                                <tr>
                                   {item.table.columns?.map((column) => (
-                                    <td
-                                      key={`${rowIndex}-${column.key}`}
-                                      className={numberLikeColumns.has(column.key) ? 'is-number' : ''}
-                                    >
-                                      {row[column.key] ?? '—'}
-                                    </td>
+                                    <th key={column.key}>{column.label}</th>
                                   ))}
                                 </tr>
-                              ))}
-                            </tbody>
-                          </table>
+                              </thead>
+                              <tbody>
+                                {item.table.data?.map((row, rowIndex) => (
+                                  <tr key={row.article_id || row.journal_id || `row-${rowIndex}`}>
+                                    {item.table.columns?.map((column) => (
+                                      <td
+                                        key={`${rowIndex}-${column.key}`}
+                                        className={numberLikeColumns.has(column.key) ? 'is-number' : ''}
+                                      >
+                                        {row[column.key] ?? '—'}
+                                      </td>
+                                    ))}
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
                         </div>
-                      </div>
-                    )}
-                  </article>
-                ))}
+                      )}
+                    </article>
+                  );
+                })}
 
                 {isLoading && (
-                  <div className="rp-chatbot__typing" aria-label="AI đang trả lời">
+                  <div className="rp-chatbot__typing" aria-label={t('chatbot.typing', 'AI is typing...')}>
                     <span />
                     <span />
                     <span />
@@ -342,7 +363,7 @@ export default function ChatbotWidget() {
           </div>
 
           {messages.length <= 1 && (
-            <div className="rp-chatbot__suggestions" aria-label="Gợi ý câu hỏi">
+            <div className="rp-chatbot__suggestions" aria-label={t('chatbot.suggestions', 'Suggested questions')}>
               {suggestedPrompts.map((prompt) => (
                 <button
                   key={prompt}
@@ -370,11 +391,11 @@ export default function ChatbotWidget() {
                 maxLength={MAX_CHAT_MESSAGE_LENGTH}
                 onChange={(event) => setMessage(event.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="Nhập câu hỏi về bài báo, tạp chí, xếp hạng Q1-Q4..."
+                placeholder={t('chatbot.placeholder', 'Ask a question about articles, journals, Q1-Q4 rankings...')}
                 rows="2"
               />
               <span className={`rp-chatbot__char-count ${message.length >= MAX_CHAT_MESSAGE_LENGTH ? 'is-limit' : ''}`}>
-                {message.length.toLocaleString('vi-VN')}/{MAX_CHAT_MESSAGE_LENGTH.toLocaleString('vi-VN')}
+                {message.length.toLocaleString()}/{MAX_CHAT_MESSAGE_LENGTH.toLocaleString()}
               </span>
             </div>
             <button id="chatbot-send-button" type="submit" disabled={isLoading || !message.trim()}>
@@ -389,7 +410,7 @@ export default function ChatbotWidget() {
         className="rp-chatbot__launcher"
         type="button"
         onClick={() => setIsOpen((current) => !current)}
-        aria-label={isOpen ? 'Thu nhỏ chatbot' : 'Mở chatbot AI'}
+        aria-label={isOpen ? t('chatbot.minimize', 'Minimize chatbot') : t('chatbot.launcher', 'Open AI chatbot')}
       >
         <span className="rp-chatbot__pulse" />
         <span className="rp-chatbot__launcher-icon">

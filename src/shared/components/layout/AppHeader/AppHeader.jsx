@@ -1,9 +1,12 @@
 import { useState } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+import { FiBell, FiHelpCircle } from 'react-icons/fi';
 import SearchInput from './SearchInput';
 import IconButton from './IconButton';
 import { headerConfig } from './header.config';
 import { useDashboardSearchQuery } from '../../../hooks/useDashboardSearch';
+import LanguageSelector from '../../common/LanguageSelector';
 import './Header.css';
 
 /**
@@ -15,6 +18,7 @@ const AppHeader = ({
   sticky = true,
   onSearch,
 }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const { id } = useParams();
@@ -74,7 +78,7 @@ const AppHeader = ({
         <SearchInput 
           value={canSearchInProject ? searchValue : ''} 
           onChange={handleSearchChange} 
-          placeholder={canSearchInProject ? headerConfig.searchPlaceholder : 'Chọn project để tìm kiếm'}
+          placeholder={canSearchInProject ? t('header.searchPlaceholder') : t('header.selectProject')}
           disabled={!canSearchInProject}
           results={searchResults}
           counts={searchCounts}
@@ -94,15 +98,18 @@ const AppHeader = ({
       </div>
       <div className="header-right">
         <div className="header-actions">
-          {headerConfig.icons.map((iconConfig) => (
-            <IconButton 
-              key={iconConfig.id}
-              icon={iconConfig.icon} 
-              onClick={() => console.log(`${iconConfig.id} clicked`)} 
-              ariaLabel={iconConfig.ariaLabel} 
-              badge={iconConfig.badge}
-            />
-          ))}
+          <IconButton 
+            icon={FiBell} 
+            onClick={() => console.log('notifications clicked')} 
+            ariaLabel={t('header.notifications')} 
+            badge={3}
+          />
+          <LanguageSelector />
+          <IconButton 
+            icon={FiHelpCircle} 
+            onClick={() => console.log('help clicked')} 
+            ariaLabel={t('header.help')} 
+          />
         </div>
       </div>
     </header>

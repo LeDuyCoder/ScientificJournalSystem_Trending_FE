@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { FiChevronDown, FiSearch } from 'react-icons/fi';
 import './FilterDropdown.css';
 
@@ -13,6 +14,7 @@ export default function FilterDropdown({
   defaultValue,
   searchable = true
 }) {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const dropdownRef = useRef(null);
@@ -31,7 +33,8 @@ export default function FilterDropdown({
   // Filter options based on search query
   const filteredOptions = options.filter(opt => {
     const label = typeof opt === 'string' ? opt : opt.name;
-    return label.toLowerCase().includes(searchQuery.toLowerCase());
+    const translatedLabel = t(`dashboard.filters.${label}`, label);
+    return translatedLabel.toLowerCase().includes(searchQuery.toLowerCase());
   });
 
   const handleSelect = (optValue) => {
@@ -45,7 +48,7 @@ export default function FilterDropdown({
     setIsOpen(false);
   };
 
-  const displayLabel = typeof value === 'string' ? value : value;
+  const displayLabel = typeof value === 'string' ? t(`dashboard.filters.${value}`, value) : value;
 
   return (
     <div className="filter-dropdown-container" ref={dropdownRef}>
@@ -65,7 +68,7 @@ export default function FilterDropdown({
             <span className="filter-dropdown-title">{title}</span>
             {value !== defaultValue && (
               <button type="button" className="filter-dropdown-reset" onClick={handleReset}>
-                Reset
+                {t('common.reset', 'Reset')}
               </button>
             )}
           </div>
@@ -76,7 +79,7 @@ export default function FilterDropdown({
               <input
                 type="text"
                 className="filter-dropdown-search-input"
-                placeholder="Search values"
+                placeholder={t('dashboard.filters.searchPlaceholder', 'Search values')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 autoFocus
@@ -89,6 +92,7 @@ export default function FilterDropdown({
               const optVal = typeof opt === 'string' ? opt : opt.name;
               const optId = typeof opt === 'string' ? opt : opt.id;
               const isChecked = value === optVal;
+              const optLabel = t(`dashboard.filters.${optVal}`, optVal);
 
               return (
                 <div
@@ -99,12 +103,12 @@ export default function FilterDropdown({
                   <div className={`filter-dropdown-custom-checkbox ${isChecked ? 'checked' : ''}`}>
                     {isChecked && <span className="checkmark">✓</span>}
                   </div>
-                  <span className="filter-dropdown-option-label">{optVal}</span>
+                  <span className="filter-dropdown-option-label">{optLabel}</span>
                 </div>
               );
             })}
             {filteredOptions.length === 0 && (
-              <div className="filter-dropdown-no-results">No values found</div>
+              <div className="filter-dropdown-no-results">{t('dashboard.filters.noValues', 'No values found')}</div>
             )}
           </div>
         </div>
