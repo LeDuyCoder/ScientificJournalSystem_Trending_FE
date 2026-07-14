@@ -49,7 +49,7 @@ const TopJournalRankingCard = ({ data, loading, error, onRetry }) => {
         </div>
       ) : (
         <div className="tjr-list" role="list" aria-label="List of top journals by impact factor">
-          {data.map((journal, index) => {
+          {data.slice(0, 5).map((journal, index) => {
             const maxImpactFactor = Math.max(...data.map(j => j.impactFactor || 0));
             const impactFactor = journal.impactFactor || 0;
             const targetWidth = maxImpactFactor > 0 ? (impactFactor / maxImpactFactor) * 100 : 0;

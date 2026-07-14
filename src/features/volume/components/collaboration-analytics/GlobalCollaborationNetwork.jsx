@@ -158,9 +158,9 @@ const GlobalCollaborationNetwork = ({ data }) => {
               }}
               linkWidth={link => {
                 if (hoverNode) {
-                  return highlightLinks.has(link) ? Math.max(1.5, link.weight * 2.5) : 0.2;
+                  return highlightLinks.has(link) ? 1.5 : 0.2;
                 }
-                return Math.max(0.5, link.weight * 2);
+                return 1;
               }}
               enableNodeDrag={true}
               enableZoomPanInteraction={true}
