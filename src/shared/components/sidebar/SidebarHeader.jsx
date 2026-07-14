@@ -24,6 +24,7 @@ const normalizeProjectsResponse = (response) => {
       return {
         id: id != null ? String(id) : '',
         title,
+        status: project.status || 'ACTIVE',
         domain: String(domain).toUpperCase(),
         articleCount: project.article_count ?? 0,
         journalCount: project.journal_count ?? 0,
@@ -85,6 +86,12 @@ const SidebarHeader = ({ collapsed }) => {
     document.addEventListener('pointerdown', handlePointerDown);
     return () => document.removeEventListener('pointerdown', handlePointerDown);
   }, [projectMenuOpen]);
+
+  useEffect(() => {
+    if (selectedProject && selectedProject.status === 'INACTIVE') {
+      navigate(`/${currentLang}/projects`, { replace: true });
+    }
+  }, [selectedProject, currentLang, navigate]);
 
   const handleHeaderClick = () => {
     if (collapsed) {
@@ -154,13 +161,18 @@ const SidebarHeader = ({ collapsed }) => {
             ) : (
               projects.map((item) => {
                 const selected = item.id === String(id);
+                const isInactive = item.status === 'INACTIVE';
                 return (
                   <button
                     key={item.id}
                     type="button"
-                    className={`sidebar-project-option ${selected ? 'selected' : ''}`}
-                    onClick={() => handleProjectSelect(item.id)}
+                    className={`sidebar-project-option ${selected ? 'selected' : ''} ${isInactive ? 'inactive' : ''}`}
+                    onClick={() => {
+                      if (!isInactive) handleProjectSelect(item.id);
+                    }}
                     role="menuitem"
+                    disabled={isInactive}
+                    title={isInactive ? t('dashboard.inactiveTooltip', 'This project is inactive and cannot be accessed.') : undefined}
                   >
                     <span className="sidebar-project-option-avatar">
                       {getProjectInitials(item.title)}
@@ -169,6 +181,7 @@ const SidebarHeader = ({ collapsed }) => {
                       <span className="sidebar-project-option-title">{item.title}</span>
                       <span className="sidebar-project-option-domain">{item.domain}</span>
                     </span>
+                    {isInactive && <span className="sidebar-project-inactive-badge">🔒 {t('dashboard.inactive', 'Inactive')}</span>}
                   </button>
                 );
               })
