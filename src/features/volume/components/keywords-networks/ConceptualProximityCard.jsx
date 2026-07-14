@@ -59,8 +59,8 @@ const ConceptualProximityCard = ({ data }) => {
           x2={targetNode.x} 
           y2={targetNode.y} 
           stroke="var(--color-primary-orange)" 
-          strokeWidth={0.5 + (edge.weight || 1) * 2} 
-          strokeOpacity={0.25 + (edge.weight || 1) * 0.55}
+          strokeWidth={1} 
+          strokeOpacity={0.4}
         />
       );
     }

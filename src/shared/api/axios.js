@@ -6,7 +6,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
   withCredentials: true, // This ensures cookies (access_token, refresh_token) are automatically sent
-  timeout: 5000,
+  timeout: 60000,
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',
@@ -84,7 +84,7 @@ apiClient.interceptors.response.use(
 export const coreApiClient = axios.create({
   baseURL: import.meta.env.VITE_API_CORE_URL || 'http://localhost:3000',
   withCredentials: true,
-  timeout: 5000,
+  timeout: 60000,
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',
