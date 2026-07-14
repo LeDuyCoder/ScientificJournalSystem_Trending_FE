@@ -322,6 +322,35 @@
   box-shadow: none;
 }
 
+.sidebar-project-option.inactive {
+  opacity: 0.45;
+  filter: grayscale(100%);
+  cursor: not-allowed;
+}
+
+.sidebar-project-option.inactive .sidebar-project-option-avatar {
+  background-color: var(--color-neutral-400);
+}
+
+.sidebar-project-option.inactive:hover {
+  background: rgba(255, 255, 255, 0.72);
+  border-color: transparent;
+}
+
+.sidebar-project-inactive-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background-color: var(--color-neutral-100);
+  color: var(--color-neutral-600);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  font-size: 10px;
+  font-weight: var(--font-weight-bold);
+  white-space: nowrap;
+  margin-left: auto;
+}
+
 .sidebar-project-option.selected::before {
   /* bỏ line cam bên trái khi chọn */
   background: transparent;

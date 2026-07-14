@@ -19,9 +19,9 @@ const mapProjectFromApi = (project) => {
     status: project.status || 'ACTIVE',
     domain: String(subjectArea).toUpperCase(),
     tags: [
-      `JOURNALS: ${project.journal_count ?? 0}`,
-      `KEYWORDS: ${project.keyword_count ?? 0}`,
-      `ARTICLES: ${project.article_count ?? 0}`,
+      { key: 'journalsCount', value: project.journal_count ?? 0 },
+      { key: 'keywordsCount', value: project.keyword_count ?? 0 },
+      { key: 'articlesCount', value: project.article_count ?? 0 },
     ],
     creator: {
       name: 'ResearchPulse',
@@ -66,7 +66,7 @@ export default function ProjectsPage() {
       setProjects(mapped);
     } catch (err) {
       console.error('Failed to fetch projects:', err);
-      setError(err.message || 'Không thể tải danh sách dự án');
+      setError(err.message || t('common.error'));
     } finally {
       setLoading(false);
     }
@@ -254,14 +254,14 @@ export default function ProjectsPage() {
                   if (isInactive) return;
                   handleProjectClick(project.id);
                 }}
-                title={isInactive ? "This project is inactive and cannot be accessed." : undefined}
+                title={isInactive ? t('dashboard.inactiveTooltip') : undefined}
                 aria-disabled={isInactive}
                 tabIndex={isInactive ? -1 : 0}
               >
                 <div className="project-card-header">
                   <span className="project-domain-tag">{project.domain}</span>
                   {isInactive && (
-                    <span className="inactive-badge">🔒 Inactive</span>
+                    <span className="inactive-badge">🔒 {t('dashboard.inactive')}</span>
                   )}
                 </div>
 
@@ -272,7 +272,7 @@ export default function ProjectsPage() {
                 <div className="project-tags-list">
                   {project.tags.map((tag, idx) => (
                     <span key={idx} className="project-sub-tag">
-                      {tag}
+                      {typeof tag === 'object' ? `${t(`dashboard.${tag.key}`)}: ${tag.value}` : tag}
                     </span>
                   ))}
                 </div>
@@ -299,7 +299,7 @@ export default function ProjectsPage() {
                   <div className="inactive-overlay">
                     <div className="inactive-overlay-content">
                       <span className="inactive-overlay-divider">────────────────────────</span>
-                      <p>This project is not activated yet.<br />Contact the administrator to activate it.</p>
+                      <p>{t('dashboard.inactiveMessage1')}<br />{t('dashboard.inactiveMessage2')}</p>
                       <span className="inactive-overlay-divider">────────────────────────</span>
                     </div>
                   </div>
