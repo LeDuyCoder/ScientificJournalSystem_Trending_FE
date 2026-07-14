@@ -1,0 +1,20 @@
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--color-background);
+}
+
+.app-main-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  margin-left: 240px;
+}
+
+.app-main-content {
+  flex: 1;
+  /* Removed padding to allow full-width headers and footers */
+  display: flex;
+  flex-direction: column;
+}

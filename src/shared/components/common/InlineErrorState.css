@@ -1,0 +1,69 @@
+.inline-error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+  min-height: var(--inline-error-min-height, 180px);
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  background-color: var(--color-surface, #ffffff);
+}
+
+.inline-error-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background-color: #fef2f2;
+  border-radius: 50%;
+  margin-bottom: 12px;
+}
+
+.inline-error-icon {
+  font-size: 22px;
+  color: #ef4444;
+}
+
+.inline-error-copy h4 {
+  margin: 0 0 4px 0;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--color-neutral-900, #111827);
+}
+
+.inline-error-copy p {
+  margin: 0 0 16px 0;
+  font-size: 13px;
+  color: var(--color-neutral-500, #6b7280);
+  line-height: 1.4;
+  max-width: 280px;
+}
+
+.inline-error-retry {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  background-color: var(--color-primary-orange, #ff6b00);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.inline-error-retry:hover {
+  background-color: var(--color-primary-orange-hover, #e66000);
+  box-shadow: 0 2px 4px rgba(255, 107, 0, 0.15);
+}
+
+.inline-error-retry:active {
+  transform: translateY(1px);
+}

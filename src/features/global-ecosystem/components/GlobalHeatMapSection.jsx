@@ -1,0 +1,384 @@
+import React, { useMemo, useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
+import { FiSearch, FiX } from 'react-icons/fi';
+
+const geoUrl = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
+
+// Comprehensive ISO 3166-1 alpha-2 → react-simple-maps country name mapping
+const NAME_MAP = {
+  'US': 'United States of America',
+  'GB': 'United Kingdom',
+  'UK': 'United Kingdom',
+  'VN': 'Vietnam',
+  'CN': 'China',
+  'JP': 'Japan',
+  'KR': 'South Korea',
+  'DE': 'Germany',
+  'FR': 'France',
+  'IT': 'Italy',
+  'ES': 'Spain',
+  'PT': 'Portugal',
+  'NL': 'Netherlands',
+  'BE': 'Belgium',
+  'CH': 'Switzerland',
+  'AT': 'Austria',
+  'SE': 'Sweden',
+  'NO': 'Norway',
+  'DK': 'Denmark',
+  'FI': 'Finland',
+  'PL': 'Poland',
+  'CZ': 'Czech Republic',
+  'RO': 'Romania',
+  'HU': 'Hungary',
+  'GR': 'Greece',
+  'IE': 'Ireland',
+  'RU': 'Russia',
+  'UA': 'Ukraine',
+  'TR': 'Turkey',
+  'IN': 'India',
+  'PK': 'Pakistan',
+  'BD': 'Bangladesh',
+  'TH': 'Thailand',
+  'MY': 'Malaysia',
+  'SG': 'Singapore',
+  'ID': 'Indonesia',
+  'PH': 'Philippines',
+  'TW': 'Taiwan',
+  'AU': 'Australia',
+  'NZ': 'New Zealand',
+  'CA': 'Canada',
+  'MX': 'Mexico',
+  'BR': 'Brazil',
+  'AR': 'Argentina',
+  'CL': 'Chile',
+  'CO': 'Colombia',
+  'PE': 'Peru',
+  'ZA': 'South Africa',
+  'EG': 'Egypt',
+  'NG': 'Nigeria',
+  'KE': 'Kenya',
+  'SA': 'Saudi Arabia',
+  'AE': 'United Arab Emirates',
+  'IL': 'Israel',
+  'IR': 'Iran',
+  'IQ': 'Iraq',
+};
+
+const REVERSE_NAME_MAP = Object.entries(NAME_MAP).reduce((acc, [code, name]) => {
+  if (!acc[name]) acc[name] = code;
+  return acc;
+}, {});
+
+const INTENSITY_COLORS = {
+  PEAK: '#EA580C',
+  HIGH: '#F97316',
+  MEDIUM: '#FB923C',
+  LOW: '#FDBA74'
+};
+
+const getIntensityColor = (intensity) => {
+  if (typeof intensity === 'number') {
+    if (intensity > 80) return '#EA580C';
+    if (intensity > 60) return '#F97316';
+    if (intensity > 40) return '#FB923C';
+    return '#FDBA74';
+  }
+  return INTENSITY_COLORS[String(intensity)?.toUpperCase()] || '#6B7280';
+};
+
+const getIntensityInfo = (intensity) => {
+  const color = getIntensityColor(intensity);
+  if (typeof intensity === 'number') {
+    if (intensity > 80) return { label: 'PEAK', color };
+    if (intensity > 60) return { label: 'HIGH', color };
+    if (intensity > 40) return { label: 'MEDIUM', color };
+    if (intensity > 0) return { label: 'LOW', color };
+    return { label: 'No Data', color: '#9CA3AF' };
+  }
+  return { label: intensity || 'No Data', color };
+};
+
+export default function GlobalHeatMapSection({
+  mapData = [],
+  regionalData = [],
+  selectedCountryCode = '',
+  onCountryChange,
+  isGeoLoading = false
+}) {
+  const { t } = useTranslation();
+  const [selectedCountryName, setSelectedCountryName] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [availableCountries, setAvailableCountries] = useState([]);
+
+  // When selected country code is active, regional data is passed via props 'data'
+  const isRegionMode = Boolean(selectedCountryCode);
+
+  // Parse global distribution list. This always uses mapData so clicking a country
+  // only updates the detail box, not the whole map coloring/layout.
+  const heatMapData = useMemo(() => {
+    return mapData.reduce((acc, item) => {
+      const code = item.countryCode || item.country;
+      const name = NAME_MAP[code] || code;
+      acc[name] = {
+        intensity: item.intensity,
+        count: item.count,
+        intensityLabel: item.intensityLabel
+      };
+      return acc;
+    }, {});
+  }, [mapData]);
+
+  // Extract unique country options with data for the dropdown selector
+  useEffect(() => {
+    if (mapData && mapData.length > 0) {
+      const mapped = mapData.map(item => {
+        const code = item.countryCode || item.country;
+        return { code, name: NAME_MAP[code] || code };
+      }).filter(c => c.code);
+      const unique = Array.from(new Map(mapped.map(item => [item.code, item])).values());
+      unique.sort((a, b) => a.name.localeCompare(b.name));
+      setAvailableCountries(unique);
+    }
+  }, [mapData]);
+
+  // Sync state with parent country code parameter
+  useEffect(() => {
+    if (selectedCountryCode) {
+      const name = NAME_MAP[selectedCountryCode] || selectedCountryCode;
+      setSelectedCountryName(name);
+      setSearchQuery(name);
+    } else {
+      setSelectedCountryName('');
+      setSearchQuery('');
+    }
+  }, [selectedCountryCode]);
+
+  const getFillColor = (geoName) => {
+    const code = REVERSE_NAME_MAP[geoName];
+    if (selectedCountryCode && code === selectedCountryCode) {
+      return '#EA580C'; // Highlight selected country
+    }
+    const item = heatMapData[geoName];
+    if (!item?.intensity) return '#444F5D'; // Dark slate blue/gray for countries without data
+    return getIntensityColor(item.intensity);
+  };
+
+  const handleCountryClick = (geo) => {
+    const geoName = geo.properties.name;
+    const alpha2 = REVERSE_NAME_MAP[geoName];
+    if (!alpha2) return;
+
+    if (selectedCountryCode === alpha2) {
+      onCountryChange('');
+    } else {
+      onCountryChange(alpha2);
+    }
+  };
+
+  const handleReset = () => {
+    onCountryChange('');
+  };
+
+  const handleSearchSubmit = () => {
+    const query = searchQuery.trim().toLowerCase();
+    if (!query) {
+      onCountryChange('');
+      return;
+    }
+    const match = availableCountries.find(
+      c => c.code.toLowerCase() === query || c.name.toLowerCase().includes(query)
+    );
+    if (match) {
+      onCountryChange(match.code);
+    }
+  };
+
+  // Find max count for rendering progress track percentages
+  const maxRegionCount = useMemo(() => {
+    if (!isRegionMode || !Array.isArray(regionalData) || regionalData.length === 0) return 0;
+    return Math.max(...regionalData.map(item => Number(item.count) || 0));
+  }, [regionalData, isRegionMode]);
+
+  const globalTotalCount = useMemo(() => {
+    if (!Array.isArray(mapData)) return 0;
+    return mapData.reduce((sum, item) => sum + (Number(item.count) || 0), 0);
+  }, [mapData]);
+
+  return (
+    <div className="world-heatmap-container dashboard-card">
+      <div className="world-heatmap-header">
+        <div>
+          <h2 className="world-heatmap-title">{t('dashboard.geoHeatMap', 'Geographical Heat Map')}</h2>
+          <p className="world-heatmap-subtitle">
+            {selectedCountryCode
+              ? `${t('dashboard.viewingDetails', 'Viewing details')}: ${selectedCountryName}`
+              : t('dashboard.geoHeatMapSub', 'Global research output intensity by jurisdiction')}
+          </p>
+        </div>
+        <div className="world-heatmap-actions">
+          <div className="country-search-wrapper">
+            <FiSearch className="search-icon" onClick={handleSearchSubmit} />
+            <input
+              type="text"
+              placeholder={t('dashboard.searchCountry', 'Search country...')}
+              className="country-search-input"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleSearchSubmit();
+              }}
+            />
+            {searchQuery && (
+              <button type="button" className="search-clear-btn" onClick={handleReset}>
+                <FiX />
+              </button>
+            )}
+          </div>
+
+          <div className="country-select-wrapper">
+            <select
+              value={selectedCountryCode || ''}
+              onChange={(e) => onCountryChange(e.target.value)}
+              className="country-select-dropdown"
+            >
+              <option value="">{t('dashboard.allCountries', 'All Countries')}</option>
+              {availableCountries.map((c) => (
+                <option key={c.code} value={c.code}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div className="world-heatmap-content">
+        <div className="map-wrapper" style={{ position: 'relative' }}>
+          <ComposableMap
+            projection="geoEqualEarth"
+            className="react-simple-map"
+            width={800}
+            height={450}
+            projectionConfig={{
+              scale: 160,
+              center: [0, 0]
+            }}
+          >
+            <Geographies geography={geoUrl}>
+              {({ geographies }) =>
+                geographies.map((geo) => {
+                  const geoName = geo.properties.name;
+                  const alpha2 = REVERSE_NAME_MAP[geoName];
+                  const isSelected = selectedCountryCode && alpha2 === selectedCountryCode;
+
+                  return (
+                    <Geography
+                      key={geo.rsmKey}
+                      geography={geo}
+                      fill={getFillColor(geoName)}
+                      stroke="#2B333F"
+                      strokeWidth={0.5}
+                      onClick={() => handleCountryClick(geo)}
+                      style={{
+                        default: {
+                          outline: 'none',
+                          opacity: 1,
+                          transition: 'opacity 0.2s ease, fill 0.2s ease'
+                        },
+                        hover: {
+                          fill: isSelected ? '#EA580C' : '#F97316',
+                          outline: 'none',
+                          cursor: 'pointer',
+                          opacity: 1
+                        },
+                        pressed: {
+                          fill: '#EA580C',
+                          outline: 'none'
+                        },
+                      }}
+                    />
+                  );
+                })
+              }
+            </Geographies>
+          </ComposableMap>
+
+          {/* Top-Right Info Card Overlay */}
+          {selectedCountryCode && selectedCountryName && (
+            <div className="country-detail-card font-sans">
+              <div className="country-detail-header">
+                <div className="country-detail-flag-code">{selectedCountryCode}</div>
+                <button
+                  className="country-detail-close"
+                  onClick={handleReset}
+                  aria-label="Close details"
+                >
+                  <FiX />
+                </button>
+              </div>
+              <div className="country-detail-name">{selectedCountryName}</div>
+              <div className="country-detail-divider"></div>
+
+              {isGeoLoading ? (
+                <div className="py-6 flex flex-col items-center justify-center gap-2">
+                  <div className="province-spinner"></div>
+                  <span className="text-xs text-neutral-400">{t('dashboard.loadingRegionalDetails', 'Loading regional details...')}</span>
+                </div>
+              ) : regionalData.length === 0 ? (
+                <div className="py-8 text-center text-xs text-neutral-400">
+                  {t('dashboard.noRegionalData', 'No regional data found for this country.')}
+                </div>
+              ) : (
+                <div className="region-map-list-preview max-h-56 overflow-y-auto pr-1">
+                  {regionalData.map((item, index) => {
+                    const color = getIntensityColor(item.intensityLabel || item.intensity);
+                    const percentage = maxRegionCount
+                      ? Math.max(6, ((Number(item.count) || 0) / maxRegionCount) * 100)
+                      : 6;
+
+                    return (
+                      <div className="region-map-mini-row" key={item.regionCode || index}>
+                        <div className="region-map-mini-label">
+                          <span title={item.regionName || item.regionCode}>
+                            {item.regionName || item.regionCode || 'Unknown'}
+                          </span>
+                          <small>{item.count?.toLocaleString() || 0}</small>
+                        </div>
+                        <div className="region-map-mini-track">
+                          <div
+                            className="region-map-mini-fill"
+                            style={{
+                              width: `${percentage}%`,
+                              background: color
+                            }}
+                          ></div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              <p className="country-detail-hint">Click close or click country to zoom out</p>
+            </div>
+          )}
+
+          <div className="activity-density-legend">
+            <span className="legend-title">ACTIVITY DENSITY</span>
+            <div className="legend-gradient">
+              <div className="gradient-step" style={{ background: '#FDBA74' }}></div>
+              <div className="gradient-step" style={{ background: '#FB923C' }}></div>
+              <div className="gradient-step" style={{ background: '#F97316' }}></div>
+              <div className="gradient-step" style={{ background: '#EA580C' }}></div>
+            </div>
+            <div className="legend-labels">
+              <span>LOW</span>
+              <span>PEAK</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
