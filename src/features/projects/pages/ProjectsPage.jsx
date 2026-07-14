@@ -16,6 +16,7 @@ const mapProjectFromApi = (project) => {
   return {
     id: String(projectId),
     title,
+    status: project.status || 'ACTIVE',
     domain: String(subjectArea).toUpperCase(),
     tags: [
       `JOURNALS: ${project.journal_count ?? 0}`,
@@ -36,7 +37,7 @@ export default function ProjectsPage() {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   const [selectedDomain, setSelectedDomain] = useState('ALL');
   const [sortOrder, setSortOrder] = useState('NEWEST'); // NEWEST, OLDEST, A-Z
   const [showFilterDropdown, setShowFilterDropdown] = useState(false);
@@ -57,10 +58,10 @@ export default function ProjectsPage() {
     setError(null);
     try {
       const response = await coreApiClient.get('/api/v1/projects');
-      const items = Array.isArray(response?.data) 
-        ? response.data 
+      const items = Array.isArray(response?.data)
+        ? response.data
         : (Array.isArray(response?.data?.data) ? response.data.data : []);
-      
+
       const mapped = items.map(mapProjectFromApi);
       setProjects(mapped);
     } catch (err) {
@@ -141,7 +142,7 @@ export default function ProjectsPage() {
         <div className="projects-actions-block">
           {/* Filter Dropdown */}
           <div className="dropdown-wrapper">
-            <button 
+            <button
               className={`projects-action-btn ${selectedDomain !== 'ALL' ? 'active' : ''}`}
               onClick={() => {
                 setShowFilterDropdown(!showFilterDropdown);
@@ -155,8 +156,8 @@ export default function ProjectsPage() {
             {showFilterDropdown && (
               <div className="dropdown-menu">
                 {domains.map(d => (
-                  <button 
-                    key={d} 
+                  <button
+                    key={d}
                     className={`dropdown-item ${selectedDomain === d ? 'selected' : ''}`}
                     onClick={() => {
                       setSelectedDomain(d);
@@ -173,7 +174,7 @@ export default function ProjectsPage() {
 
           {/* Sort Dropdown */}
           <div className="dropdown-wrapper">
-            <button 
+            <button
               className="projects-action-btn"
               onClick={() => {
                 setShowSortDropdown(!showSortDropdown);
@@ -186,7 +187,7 @@ export default function ProjectsPage() {
             </button>
             {showSortDropdown && (
               <div className="dropdown-menu">
-                <button 
+                <button
                   className={`dropdown-item ${sortOrder === 'NEWEST' ? 'selected' : ''}`}
                   onClick={() => {
                     setSortOrder('NEWEST');
@@ -196,7 +197,7 @@ export default function ProjectsPage() {
                   <span>{t('dashboard.newest')}</span>
                   {sortOrder === 'NEWEST' && <FiCheck className="check-icon" />}
                 </button>
-                <button 
+                <button
                   className={`dropdown-item ${sortOrder === 'OLDEST' ? 'selected' : ''}`}
                   onClick={() => {
                     setSortOrder('OLDEST');
@@ -206,7 +207,7 @@ export default function ProjectsPage() {
                   <span>{t('dashboard.oldest')}</span>
                   {sortOrder === 'OLDEST' && <FiCheck className="check-icon" />}
                 </button>
-                <button 
+                <button
                   className={`dropdown-item ${sortOrder === 'A-Z' ? 'selected' : ''}`}
                   onClick={() => {
                     setSortOrder('A-Z');
@@ -231,7 +232,7 @@ export default function ProjectsPage() {
           </div>
         ) : error ? (
           <div style={{ gridColumn: '1 / -1' }}>
-            <ErrorStateSection 
+            <ErrorStateSection
               title={t('common.error')}
               message={error}
               onRetry={fetchProjects}
@@ -243,62 +244,70 @@ export default function ProjectsPage() {
             <h3>{t('dashboard.noProjects')}</h3>
           </div>
         ) : (
-          sortedProjects.map(project => (
-          <div 
-            key={project.id} 
-            className="project-card real-project-card"
-            onClick={() => handleProjectClick(project.id)}
-          >
-            <div className="project-card-header">
-              <span className="project-domain-tag">{project.domain}</span>
-            </div>
-            
-            <h3 className="project-title" title={project.title}>
-              {project.title}
-            </h3>
+          sortedProjects.map(project => {
+            const isInactive = project.status === 'INACTIVE';
+            return (
+              <div
+                key={project.id}
+                className={`project-card real-project-card ${isInactive ? 'inactive-project-card' : ''}`}
+                onClick={() => {
+                  if (isInactive) return;
+                  handleProjectClick(project.id);
+                }}
+                title={isInactive ? "This project is inactive and cannot be accessed." : undefined}
+                aria-disabled={isInactive}
+                tabIndex={isInactive ? -1 : 0}
+              >
+                <div className="project-card-header">
+                  <span className="project-domain-tag">{project.domain}</span>
+                  {isInactive && (
+                    <span className="inactive-badge">🔒 Inactive</span>
+                  )}
+                </div>
 
-            <div className="project-tags-list">
-              {project.tags.map((tag, idx) => {
-                const parts = tag.split(': ');
-                if (parts.length === 2) {
-                  const key = parts[0];
-                  const val = parts[1];
-                  const label = key === 'JOURNALS' ? t('dashboard.journalsCount') : 
-                                key === 'KEYWORDS' ? t('dashboard.keywordsCount') : 
-                                key === 'ARTICLES' ? t('dashboard.articlesCount') : key;
-                  return (
+                <h3 className="project-title" title={project.title}>
+                  {project.title}
+                </h3>
+
+                <div className="project-tags-list">
+                  {project.tags.map((tag, idx) => (
                     <span key={idx} className="project-sub-tag">
-                      {label}: {val}
+                      {tag}
                     </span>
-                  );
-                }
-                return (
-                  <span key={idx} className="project-sub-tag">
-                    {tag}
-                  </span>
-                );
-              })}
-            </div>
+                  ))}
+                </div>
 
-            <div className="project-card-footer">
-              <div className="project-creator">
-                <img 
-                  src={project.creator.avatar} 
-                  alt={project.creator.name} 
-                  className="creator-avatar"
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(project.creator.name)}&background=F97316&color=fff`;
-                  }}
-                />
-                <span className="creator-name">{project.creator.name}</span>
+                <div className="project-card-footer">
+                  <div className="project-creator">
+                    <img
+                      src={project.creator.avatar}
+                      alt={project.creator.name}
+                      className="creator-avatar"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(project.creator.name)}&background=F97316&color=fff`;
+                      }}
+                    />
+                    <span className="creator-name">{project.creator.name}</span>
+                  </div>
+                  <span className="project-date">
+                    {formatDate(project.modifiedAt)}
+                  </span>
+                </div>
+
+                {isInactive && (
+                  <div className="inactive-overlay">
+                    <div className="inactive-overlay-content">
+                      <span className="inactive-overlay-divider">────────────────────────</span>
+                      <p>This project is not activated yet.<br />Contact the administrator to activate it.</p>
+                      <span className="inactive-overlay-divider">────────────────────────</span>
+                    </div>
+                  </div>
+                )}
               </div>
-              <span className="project-date">
-                {formatDate(project.modifiedAt)}
-              </span>
-            </div>
-          </div>
-        )))}
+            );
+          })
+        )}
       </div>
 
       {/* Create Modal */}
@@ -314,10 +323,10 @@ export default function ProjectsPage() {
             <form onSubmit={handleCreateProject} className="modal-form">
               <div className="form-group">
                 <label className="form-label" htmlFor="proj-title">{t('dashboard.projectName')} *</label>
-                <input 
+                <input
                   id="proj-title"
-                  type="text" 
-                  className="form-input" 
+                  type="text"
+                  className="form-input"
                   value={newProject.title}
                   onChange={e => setNewProject({ ...newProject, title: e.target.value })}
                   placeholder={t('dashboard.projectName')}
@@ -328,7 +337,7 @@ export default function ProjectsPage() {
 
               <div className="form-group">
                 <label className="form-label" htmlFor="proj-domain">{t('dashboard.subjectArea')}</label>
-                <select 
+                <select
                   id="proj-domain"
                   className="form-select"
                   value={newProject.domain}
@@ -342,10 +351,10 @@ export default function ProjectsPage() {
 
               <div className="form-group">
                 <label className="form-label" htmlFor="proj-tags">{t('dashboard.keywords')}</label>
-                <input 
+                <input
                   id="proj-tags"
-                  type="text" 
-                  className="form-input" 
+                  type="text"
+                  className="form-input"
                   value={newProject.tagsStr}
                   onChange={e => setNewProject({ ...newProject, tagsStr: e.target.value })}
                   placeholder="DEEP LEARNING, GNN, LSTM..."
