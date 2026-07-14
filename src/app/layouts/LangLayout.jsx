@@ -6,7 +6,7 @@ import { isValidLanguage, DEFAULT_LANGUAGE, buildLocalizedPath } from '../routes
 
 export default function LangLayout() {
   const { lang } = useParams();
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
   const { i18n } = useTranslation();
 
   // Sync language with i18next and localStorage when valid prefix is matched
@@ -22,7 +22,7 @@ export default function LangLayout() {
   // If language prefix is invalid, redirect to the default language prefix with preserved path
   if (!isValidLanguage(lang)) {
     const fallbackPath = buildLocalizedPath(DEFAULT_LANGUAGE, pathname);
-    return <Navigate to={fallbackPath} replace />;
+    return <Navigate to={{ pathname: fallbackPath, search }} replace />;
   }
 
   return <Outlet />;
