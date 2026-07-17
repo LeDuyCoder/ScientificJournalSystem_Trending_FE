@@ -26,7 +26,9 @@ export default function JournalsPage() {
   const { t } = useTranslation();
   const { data, loading, error, topRanking, quartile, impactMatrix, migration, refetch } = useJournalsData();
 
-  if (loading && !data) {
+  const isAnyLoading = loading || topRanking.loading || quartile.loading || impactMatrix.loading || migration.loading;
+  
+  if (isAnyLoading) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%', padding: '24px' }}>
         <div style={{ ...placeholderStyle, height: '400px', flexDirection: 'column', gap: '16px' }}>
@@ -37,7 +39,9 @@ export default function JournalsPage() {
     );
   }
 
-  if (error && !data) {
+  const hasAnyError = error || topRanking.error || quartile.error || impactMatrix.error || migration.error;
+
+  if (hasAnyError && !data) {
     return (
       <ErrorStateSection 
         title={t('common.error', 'Data Loading Failed')}

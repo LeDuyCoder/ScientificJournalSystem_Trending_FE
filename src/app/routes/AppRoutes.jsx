@@ -51,7 +51,7 @@ export default function AppRoutes() {
         </Route>
 
         <Route path="embed/article-graph" element={<ArticleGraphEmbedPage />} />
-        
+
         {/* Localized fallback */}
         <Route path="*" element={<NotFoundPage />} />
       </Route>

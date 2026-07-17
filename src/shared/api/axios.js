@@ -5,8 +5,8 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '';
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
-  withCredentials: true, // This ensures cookies (access_token, refresh_token) are automatically sent
-  timeout: 60000,
+  withCredentials: true,
+  timeout: 120000,
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',
@@ -27,13 +27,42 @@ const processQueue = (error) => {
   failedQueue = [];
 };
 
-// No request interceptor needed to inject headers, browser handles HTTP-only cookies.
+// --- START CONCURRENCY LIMITER ---
+const MAX_CONCURRENT_REQUESTS = 4; // Giới hạn 4 request gửi xuống BE cùng lúc
+let activeRequests = 0;
+const requestQueue = [];
+
+apiClient.interceptors.request.use((config) => {
+  return new Promise((resolve) => {
+    const executeRequest = () => {
+      activeRequests++;
+      resolve(config);
+    };
+
+    if (activeRequests < MAX_CONCURRENT_REQUESTS) {
+      executeRequest();
+    } else {
+      requestQueue.push(executeRequest);
+    }
+  });
+});
+
+const onResponseComplete = () => {
+  activeRequests--;
+  if (requestQueue.length > 0) {
+    const nextRequest = requestQueue.shift();
+    nextRequest();
+  }
+};
+// --- END CONCURRENCY LIMITER ---
 
 apiClient.interceptors.response.use(
   (response) => {
+    onResponseComplete();
     return response.data;
   },
   async (error) => {
+    onResponseComplete();
     const originalRequest = error.config;
 
     // If 401 and not already retried
@@ -60,10 +89,7 @@ apiClient.interceptors.response.use(
             withCredentials: true,
           });
 
-          // If success, backend automatically sets new access_token cookie.
-          // We don't need to manually extract it or set it in headers.
-          useAuthStore.getState().loginSuccess(null); // Just update auth state to logged in if needed
-
+          useAuthStore.getState().loginSuccess(null); 
           processQueue(null);
           resolve(apiClient(originalRequest));
         } catch (refreshError) {
@@ -84,7 +110,7 @@ apiClient.interceptors.response.use(
 export const coreApiClient = axios.create({
   baseURL: import.meta.env.VITE_API_CORE_URL || 'http://localhost:3000',
   withCredentials: true,
-  timeout: 60000,
+  timeout: 120000,
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',
