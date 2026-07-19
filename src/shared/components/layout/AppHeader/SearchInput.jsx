@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   FiBookOpen,
   FiBriefcase,
@@ -87,6 +88,7 @@ const SearchInput = ({
   onPageChange,
   onResultSelect,
 }) => {
+  const { t, i18n } = useTranslation();
   const containerRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const trimmedValue = value.trim();
@@ -131,25 +133,33 @@ const SearchInput = ({
     }
   };
 
+  const getFullDetailUrl = (detailPath) => {
+    if (!detailPath) return '#';
+    if (detailPath.startsWith('/')) {
+      const lang = i18n.language || 'vi';
+      const baseUrl = import.meta.env.VITE_PAGE_BASE_URL || '';
+      const sanitizedBaseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
+      return `${sanitizedBaseUrl}/${lang}${detailPath}`;
+    }
+    return detailPath;
+  };
+
   return (
     <div className="header-search-container" ref={containerRef}>
       <FiSearch className="header-search-icon" aria-hidden="true" />
       <input
-        type="text"
+        type="search"
         className="header-search-input"
         placeholder={placeholder}
         value={value}
-        disabled={disabled}
         onChange={handleChange}
-        onFocus={() => {
-          if (!disabled) setIsOpen(true);
-        }}
+        onFocus={() => setIsOpen(true)}
         onKeyDown={handleKeyDown}
-        aria-label="Tìm kiếm chung"
+        disabled={disabled}
         aria-expanded={shouldShowDropdown}
+        aria-haspopup="listbox"
         aria-controls="header-search-results"
       />
-
       {shouldShowDropdown && (
         <div className="header-search-dropdown" id="header-search-results">
           <div className="header-search-toolbar">
@@ -157,14 +167,13 @@ const SearchInput = ({
               {TYPE_FILTERS.map((filter) => {
                 const isActive = activeType === filter.value;
                 const filterCount = getTypeCount(filter.value);
-
                 return (
                   <button
                     key={filter.value}
                     type="button"
-                    className={`header-search-tab ${isActive ? 'active' : ''}`}
                     role="tab"
                     aria-selected={isActive}
+                    className={`header-search-tab ${isActive ? 'active' : ''}`}
                     onClick={() => onTypeChange?.(filter.value)}
                   >
                     <span>{filter.label}</span>
@@ -173,32 +182,31 @@ const SearchInput = ({
                 );
               })}
             </div>
-
             <label className="header-search-sort-label">
-              <span>Sắp xếp</span>
+              Sắp xếp
               <span className="header-search-select-wrap">
                 <select
                   className="header-search-sort"
                   value={sort}
-                  onChange={(event) => onSortChange?.(event.target.value)}
-                  aria-label="Sắp xếp kết quả tìm kiếm"
+                  onChange={(e) => onSortChange?.(e.target.value)}
                 >
-                  {SORT_OPTIONS.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
+                  {SORT_OPTIONS.map((opt) => (
+                    <option key={opt.value} value={opt.value}>
+                      {opt.label}
                     </option>
                   ))}
                 </select>
-                <FiChevronDown aria-hidden="true" />
+                <FiChevronDown className="header-search-select-icon" aria-hidden="true" />
               </span>
             </label>
           </div>
-
           <div className="header-search-status-row">
-            <span>
-              {countTotal > 0
-                ? `${formatCount(countTotal)} kết quả cho "${trimmedValue}"`
-                : `Tìm kiếm "${trimmedValue}"`}
+            <span className="header-search-results-summary" aria-live="polite">
+              {isLoading && !hasResults
+                ? 'Đang tìm kiếm...'
+                : hasResults
+                  ? `${formatCount(countTotal)} kết quả cho "${trimmedValue}"`
+                  : `Tìm kiếm "${trimmedValue}"`}
             </span>
             {isStreaming && (
               <span className="header-search-streaming">
@@ -228,7 +236,7 @@ const SearchInput = ({
                 return (
                   <a
                     key={`${item.type}-${item.id}`}
-                    href={item.detailPath || '#'}
+                    href={getFullDetailUrl(item.detailPath)}
                     className="header-search-result-card"
                     onClick={(event) => {
                       event.preventDefault();

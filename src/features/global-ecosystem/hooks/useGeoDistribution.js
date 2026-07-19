@@ -6,8 +6,8 @@ export const useGeoDistribution = (projectId, filters = {}, refreshTrigger) => {
         queryKey: ['geoDistribution', projectId, filters, refreshTrigger],
         queryFn: () => fetchGeoDistribution(projectId, filters),
         enabled: !!projectId,
-        staleTime: 5 * 60 * 1000, // 5 phút
-        gcTime: 10 * 60 * 1000,   // 10 phút
+        staleTime: 30 * 60 * 1000,
+        gcTime: 60 * 60 * 1000,   // 10 phút
         refetchOnWindowFocus: false,
         select: (response) => {
             return transformGeoData(response?.data);

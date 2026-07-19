@@ -1,6 +1,10 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { useDashboardContext } from '../../dashboard/contexts/DashboardContext';
+import { useCitationMirroringQuery } from '../hooks/useCitationMirroringQuery';
+import LoadingSkeleton from '../../../shared/components/common/LoadingSkeleton';
+import InlineErrorState from '../../../shared/components/common/InlineErrorState';
 
 const CustomTooltip = ({ active, payload, label }) => {
   const { t } = useTranslation();
@@ -22,8 +26,36 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-export default function CitationMirroringCard({ data }) {
+export default function CitationMirroringCard() {
   const { t } = useTranslation();
+  const { projectId, filters, refreshTrigger, refreshData } = useDashboardContext();
+  const { data, isLoading, error } = useCitationMirroringQuery(projectId, filters, refreshTrigger);
+
+  if (isLoading) {
+    return (
+      <div className="analytics-card">
+        <div className="analytics-card-header">
+          <div className="analytics-card-title-group">
+            <h3 className="analytics-card-title">{t('dashboard.citationMirroring', 'Citation Mirroring')}</h3>
+            <p className="analytics-card-subtitle">{t('dashboard.citationMirroringSub', 'Self-citation vs. External impact mapping')}</p>
+          </div>
+        </div>
+        <LoadingSkeleton height="300px" />
+      </div>
+    );
+  }
+
+  if (error || !data) {
+    return (
+      <div className="analytics-card">
+        <InlineErrorState 
+          message={t('dashboard.citationError', 'Failed to load citation data')}
+          onRetry={refreshData}
+        />
+      </div>
+    );
+  }
+
   const chartData = data?.data || [];
 
   return (

@@ -1,8 +1,11 @@
 import React from 'react';
 import DashboardGrid from '../../../shared/components/layout/DashboardGrid';
 import { FiTrendingUp, FiAlertTriangle, FiShare2 } from 'react-icons/fi';
-
 import { useTranslation } from 'react-i18next';
+import { useDashboardContext } from '../../dashboard/contexts/DashboardContext';
+import { useForecastInsightsQuery } from '../hooks/useForecastInsightsQuery';
+import LoadingSkeleton from '../../../shared/components/common/LoadingSkeleton';
+import InlineErrorState from '../../../shared/components/common/InlineErrorState';
 
 const getIcon = (type) => {
   const t = String(type || '').toLowerCase();
@@ -20,8 +23,34 @@ const getAccent = (type) => {
   return 'growth';
 };
 
-export default function FutureForecastInsights({ data }) {
+export default function FutureForecastInsights() {
   const { t } = useTranslation();
+  const { projectId, filters, refreshTrigger, refreshData } = useDashboardContext();
+  const { data, isLoading, error } = useForecastInsightsQuery(projectId, filters, refreshTrigger);
+
+  if (isLoading) {
+    return (
+      <div className="future-insights-wrapper" aria-label="Future Insights Section">
+        <DashboardGrid columns={3}>
+          <div className="insight-card"><LoadingSkeleton height="150px" /></div>
+          <div className="insight-card"><LoadingSkeleton height="150px" /></div>
+          <div className="insight-card"><LoadingSkeleton height="150px" /></div>
+        </DashboardGrid>
+      </div>
+    );
+  }
+
+  if (error || !data) {
+    return (
+      <div className="future-insights-wrapper">
+        <InlineErrorState 
+          message={t('dashboard.forecastError', 'Failed to load forecast insights')}
+          onRetry={refreshData}
+        />
+      </div>
+    );
+  }
+
   const insights = data || [];
 
   if (insights.length === 0) {

@@ -44,11 +44,18 @@ const Sparkline = ({ data }) => {
  * @param {Array<Object>} journals - List of journal data
  */
 export const JournalTable = ({ journals, page = 1, limit = 4, totalCount = 0, onPrevPage, onNextPage }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const startIndex = totalCount === 0 ? 0 : (page - 1) * limit + 1;
   const endIndex = Math.min(totalCount, page * limit);
   const hasPrev = page > 1;
   const hasNext = page * limit < totalCount;
+
+  const handleViewJournal = (journalId) => {
+    const lang = i18n.language || 'vi';
+    const baseUrl = import.meta.env.VITE_PAGE_BASE_URL || '';
+    const sanitizedBaseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
+    window.open(`${sanitizedBaseUrl}/${lang}/journals/${journalId}`, '_blank');
+  };
 
   return (
     <div className={styles.tableCardContainer}>
@@ -88,7 +95,12 @@ export const JournalTable = ({ journals, page = 1, limit = 4, totalCount = 0, on
                 <Sparkline data={journal.trend} />
               </td>
               <td>
-                <button className={`${styles.btn} ${styles.btnPrimary}`} onClick={() => console.log('View detail:', journal.id)}>{t('common.view', 'View')}</button>
+                <button 
+                  className={`${styles.btn} ${styles.btnPrimary}`} 
+                  onClick={() => handleViewJournal(journal.id)}
+                >
+                  {t('common.view', 'View')}
+                </button>
               </td>
             </tr>
           ))}

@@ -12,8 +12,8 @@ export const useForecastInsightsQuery = (projectId, filters = {}, refreshTrigger
     queryKey: ['developmentTrends', projectId, filters, refreshTrigger],
     queryFn: () => fetchDevelopmentTrendsData(projectId, filters),
     enabled: !!projectId,
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000,   // 10 minutes
+    staleTime: 30 * 60 * 1000, // 30 minutes
+    gcTime: 60 * 60 * 1000,   // 60 minutes
     refetchOnWindowFocus: false,
     select: (response) => response?.data?.forecastInsights,
   });

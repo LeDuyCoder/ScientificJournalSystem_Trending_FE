@@ -1,111 +1,131 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
-import { fetchJournalsData, getTopJournalRanking, getQuartileDistribution, getImpactMatrix, getMigrationAnalysis } from '../services/journals.service';
+import { useQuery } from '@tanstack/react-query';
+import { useDashboardContext } from '../../dashboard/contexts/DashboardContext';
+import { getTopJournalRanking, getQuartileDistribution, getImpactMatrix, getMigrationAnalysis } from '../services/journals.service';
+
+/**
+ * Helper to map frontend filters to API query params
+ */
+const mapFiltersToParams = (filters) => {
+  if (!filters) return {};
+  const queryParams = {};
+  
+  if (filters.subject_category && filters.subject_category !== 'All Categories') {
+    queryParams.subject_area = filters.subject_category;
+  } else if (filters.domain && filters.domain !== 'All Domains') {
+    queryParams.subject_area = filters.domain;
+  }
+  
+  const currentYear = new Date().getFullYear() - 1;
+  if (filters.timeframe) {
+    switch (filters.timeframe) {
+      case 'Last Year':
+        queryParams.from_year = currentYear - 1;
+        queryParams.to_year = currentYear;
+        break;
+      case 'Last 3 Years':
+        queryParams.from_year = currentYear - 3;
+        queryParams.to_year = currentYear;
+        break;
+      case 'Last 5 Years':
+        queryParams.from_year = currentYear - 5;
+        queryParams.to_year = currentYear;
+        break;
+      case 'Last 10 Years':
+        queryParams.from_year = currentYear - 10;
+        queryParams.to_year = currentYear;
+        break;
+      default:
+        break;
+    }
+  }
+  return queryParams;
+};
 
 export function useJournalsData() {
-  const { id } = useParams();
-  // Fallback 'default-id' to '1' to prevent 404/500 errors if user doesn't pass a valid ID
-  const projectId = id === 'default-id' ? '1' : id;
-  
-  // Create local states if filters/refresh are needed later, 
-  // for now we just use an empty object to satisfy the API
-  const filters = {};
-  const refreshTrigger = 0;
+  const { projectId, filters, refreshTrigger } = useDashboardContext();
+  const queryParams = mapFiltersToParams(filters);
 
-  // Global data for the mocked parts (for now)
-  const [data, setData] = useState(null);
-  
-  // Specific states
-  const [topRanking, setTopRanking] = useState({ data: null, loading: true, error: null });
-  const [quartile, setQuartile] = useState({ data: null, loading: true, error: null });
-  const [impactMatrix, setImpactMatrix] = useState({ data: null, loading: true, error: null });
-  const [migration, setMigration] = useState({ data: null, loading: true, error: null });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  const loadTopRanking = useCallback(async (currentFilters, currentProjectId) => {
-    setTopRanking(prev => ({ ...prev, loading: true, error: null }));
-    try {
-      const result = await getTopJournalRanking({ ...currentFilters, project_id: currentProjectId });
-      const items = Array.isArray(result) 
+  // 1. Top Journal Ranking Query
+  const topRankingQuery = useQuery({
+    queryKey: ['journals', 'ranking', projectId, queryParams, refreshTrigger],
+    queryFn: () => getTopJournalRanking({ ...queryParams, project_id: projectId }),
+    enabled: !!projectId,
+    staleTime: 30 * 60 * 1000,
+    gcTime: 60 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    select: (result) => {
+      return Array.isArray(result) 
         ? result 
-        : (Array.isArray(result.data) 
+        : (Array.isArray(result?.data) 
             ? result.data 
-            : (result.journals || result.data?.journals || []));
-      setTopRanking({ data: items, loading: false, error: null });
-    } catch (err) {
-      setTopRanking({ data: null, loading: false, error: err?.message || 'Failed to load top journal ranking' });
+            : (result?.journals || result?.data?.journals || []));
     }
-  }, []);
+  });
 
-  const loadQuartile = useCallback(async (currentFilters, currentProjectId) => {
-    setQuartile(prev => ({ ...prev, loading: true, error: null }));
-    try {
-      const result = await getQuartileDistribution({ ...currentFilters, project_id: currentProjectId });
-      setQuartile({ data: result.data || result, loading: false, error: null });
-    } catch (err) {
-      setQuartile({ data: null, loading: false, error: err?.message || 'Failed to load quartile distribution' });
-    }
-  }, []);
+  // 2. Quartile Distribution Query
+  const quartileQuery = useQuery({
+    queryKey: ['journals', 'quartiles', projectId, queryParams, refreshTrigger],
+    queryFn: () => getQuartileDistribution({ ...queryParams, project_id: projectId }),
+    enabled: !!projectId,
+    staleTime: 30 * 60 * 1000,
+    gcTime: 60 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    select: (result) => result?.data || result
+  });
 
-  const loadImpactMatrix = useCallback(async (currentFilters, currentProjectId) => {
-    setImpactMatrix(prev => ({ ...prev, loading: true, error: null }));
-    try {
-      const result = await getImpactMatrix({ ...currentFilters, project_id: currentProjectId });
-      const items = result.items || result.data || result;
-      setImpactMatrix({ data: items, loading: false, error: null });
-    } catch (err) {
-      setImpactMatrix({ data: null, loading: false, error: err?.message || 'Failed to load impact matrix' });
-    }
-  }, []);
+  // 3. Impact Matrix Query
+  const impactMatrixQuery = useQuery({
+    queryKey: ['journals', 'impact-matrix', projectId, queryParams, refreshTrigger],
+    queryFn: () => getImpactMatrix({ ...queryParams, project_id: projectId }),
+    enabled: !!projectId,
+    staleTime: 30 * 60 * 1000,
+    gcTime: 60 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    select: (result) => result?.items || result?.data || result
+  });
 
-  const loadMigration = useCallback(async (currentFilters, currentProjectId) => {
-    setMigration(prev => ({ ...prev, loading: true, error: null }));
-    try {
-      const result = await getMigrationAnalysis({ ...currentFilters, project_id: currentProjectId });
-      setMigration({ data: result.data || result, loading: false, error: null });
-    } catch (err) {
-      setMigration({ data: null, loading: false, error: err?.message || 'Failed to load migration analysis' });
-    }
-  }, []);
+  // 4. Migration Analysis Query
+  const migrationQuery = useQuery({
+    queryKey: ['journals', 'migration', projectId, queryParams, refreshTrigger],
+    queryFn: () => getMigrationAnalysis({ ...queryParams, project_id: projectId }),
+    enabled: !!projectId,
+    staleTime: 30 * 60 * 1000,
+    gcTime: 60 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    select: (result) => result?.data || result
+  });
 
-  const loadData = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const result = await fetchJournalsData();
-      setData(result);
-    } catch (err) {
-      setError(err?.message || 'Failed to load journals data');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!projectId) return;
-    loadTopRanking(filters, projectId);
-    loadQuartile(filters, projectId);
-    loadImpactMatrix(filters, projectId);
-    loadMigration(filters, projectId);
-    loadData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(filters), projectId, refreshTrigger, loadTopRanking, loadQuartile, loadImpactMatrix, loadMigration, loadData]);
+  const refetch = () => {
+    topRankingQuery.refetch();
+    quartileQuery.refetch();
+    impactMatrixQuery.refetch();
+    migrationQuery.refetch();
+  };
 
   return {
-    data, 
-    loading, 
-    error,
-    topRanking,
-    quartile,
-    impactMatrix,
-    migration,
-    refetch: () => {
-      loadTopRanking(filters, projectId);
-      loadQuartile(filters, projectId);
-      loadImpactMatrix(filters, projectId);
-      loadMigration(filters, projectId);
-      loadData();
-    }
+    data: true, // dummy truthy value to bypass full page loader in JournalsPage
+    loading: false,
+    error: null,
+    topRanking: {
+      data: topRankingQuery.data || null,
+      loading: topRankingQuery.isLoading,
+      error: topRankingQuery.error
+    },
+    quartile: {
+      data: quartileQuery.data || null,
+      loading: quartileQuery.isLoading,
+      error: quartileQuery.error
+    },
+    impactMatrix: {
+      data: impactMatrixQuery.data || null,
+      loading: impactMatrixQuery.isLoading,
+      error: impactMatrixQuery.error
+    },
+    migration: {
+      data: migrationQuery.data || null,
+      loading: migrationQuery.isLoading,
+      error: migrationQuery.error
+    },
+    refetch
   };
 }

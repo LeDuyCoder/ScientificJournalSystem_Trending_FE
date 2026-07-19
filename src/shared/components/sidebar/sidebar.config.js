@@ -1,4 +1,4 @@
-import { FiGrid, FiBook, FiLayers, FiHelpCircle, FiLogOut, FiPieChart } from 'react-icons/fi';
+import { FiGrid, FiBook, FiLayers, FiHelpCircle, FiLogOut, FiPieChart, FiFileText } from 'react-icons/fi';
 
 // Configuration file for the Sidebar component defining menu items, footer items, and logo assets.
 export const sidebarConfig = {
@@ -18,7 +18,7 @@ export const sidebarConfig = {
     { label: "Analytics", segment: "analytics", icon: FiPieChart }
   ],
   footerItems: [
-    { label: "Support", action: "support", icon: FiHelpCircle },
-    { label: "Sign Out", action: "logout", icon: FiLogOut }
+    { label: "Export PDF", action: "export-pdf", icon: FiFileText },
+    { label: "Go Home", action: "logout", icon: FiLogOut }
   ]
 };

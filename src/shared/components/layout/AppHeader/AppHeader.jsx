@@ -18,7 +18,7 @@ const AppHeader = ({
   sticky = true,
   onSearch,
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const location = useLocation();
   const { id } = useParams();
@@ -68,7 +68,14 @@ const AppHeader = ({
 
   const handleResultSelect = (item) => {
     if (item?.detailPath) {
-      navigate(item.detailPath);
+      if (item.detailPath.startsWith('/')) {
+        const lang = i18n.language || 'vi';
+        const baseUrl = import.meta.env.VITE_PAGE_BASE_URL || '';
+        const sanitizedBaseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
+        window.open(`${sanitizedBaseUrl}/${lang}${item.detailPath}`, '_blank');
+      } else {
+        navigate(item.detailPath);
+      }
     }
   };
 

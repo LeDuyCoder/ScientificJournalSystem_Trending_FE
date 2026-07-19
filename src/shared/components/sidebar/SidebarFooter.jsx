@@ -1,16 +1,19 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useQueryClient } from '@tanstack/react-query';
 import { sidebarConfig } from './sidebar.config';
 import { useUserProfileQuery } from '../../hooks/useUserProfile';
+import { generateProfessionalReport } from '../../utils/pdfExport';
 import './Sidebar.css';
 
 // Renders the footer actions of the sidebar like Support and Sign Out
 const SidebarFooter = ({ collapsed }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { lang } = useParams();
+  const queryClient = useQueryClient();
+  const { lang, id } = useParams();
   const currentLang = lang || 'en';
-  
+
   const { data: userProfile } = useUserProfileQuery();
   const rawRole = userProfile?.displayRole || sidebarConfig.userProfile.role;
   const translationKey = `role.${rawRole.toLowerCase().replace(/\s+/g, '')}`;
@@ -24,17 +27,21 @@ const SidebarFooter = ({ collapsed }) => {
   // Handle footer action clicks dynamically based on action type
   const handleAction = (action) => {
     if (action === 'logout') {
-      // Mock logout behavior
-      localStorage.clear();
-      navigate(`/${currentLang}/login`);
+      // Redirect to home page
+      window.location.href = import.meta.env.VITE_PAGE_BASE_URL || '/';
     } else if (action === 'support') {
       navigate(`/${currentLang}/support`);
+    } else if (action === 'export-pdf') {
+      // Generate a structured, professional PDF report from the data cache
+      (async () => {
+        await generateProfessionalReport(queryClient, id);
+      })();
     }
   };
 
   return (
     <div className="sidebar-footer">
-      <div 
+      <div
         className={`sidebar-profile ${collapsed ? 'collapsed' : ''}`}
         title={`${profile.name} (${profile.role})`}
       >
@@ -62,8 +69,8 @@ const SidebarFooter = ({ collapsed }) => {
         const IconComponent = item.icon;
         const translatedLabel = t(`sidebar.${item.label.toLowerCase().replace(/\s+/g, '')}`, item.label);
         return (
-          <button 
-            key={index} 
+          <button
+            key={index}
             className={`sidebar-footer-item ${collapsed ? 'collapsed' : ''}`}
             onClick={() => handleAction(item.action)}
             title={collapsed ? translatedLabel : undefined}

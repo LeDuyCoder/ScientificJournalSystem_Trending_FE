@@ -158,9 +158,32 @@ export const getHighestQuartile = (distribution) => {
  * @returns {object|null}
  */
 export const transformQuartilesData = (data) => {
-  if (!data || !Array.isArray(data.distribution)) return null;
+  if (!data) return null;
 
-  const highestQ = getHighestQuartile(data.distribution);
+  let distribution = data.distribution;
+  let totalJournals = data.totalJournals || 0;
+
+  // Handle new API response structure featuring plural "distributions"
+  if (!distribution && Array.isArray(data.distributions) && data.distributions.length > 0) {
+    const activeRecords = data.distributions.filter(r => (r.total || 0) > 0);
+    const latestRecord = activeRecords.length > 0 
+      ? [...activeRecords].sort((a, b) => Number(b.year) - Number(a.year))[0]
+      : [...data.distributions].sort((a, b) => Number(b.year) - Number(a.year))[0];
+      
+    if (latestRecord) {
+      totalJournals = latestRecord.total || 0;
+      distribution = [
+        { group: 'Q1 (High Impact)', count: latestRecord.Q1 || 0, percentage: totalJournals > 0 ? Math.round(((latestRecord.Q1 || 0) / totalJournals) * 100) : 0 },
+        { group: 'Q2 (Moderate)', count: latestRecord.Q2 || 0, percentage: totalJournals > 0 ? Math.round(((latestRecord.Q2 || 0) / totalJournals) * 100) : 0 },
+        { group: 'Q3 (Standard)', count: latestRecord.Q3 || 0, percentage: totalJournals > 0 ? Math.round(((latestRecord.Q3 || 0) / totalJournals) * 100) : 0 },
+        { group: 'Q4 (Developing)', count: latestRecord.Q4 || 0, percentage: totalJournals > 0 ? Math.round(((latestRecord.Q4 || 0) / totalJournals) * 100) : 0 },
+      ];
+    }
+  }
+
+  if (!Array.isArray(distribution) || distribution.length === 0) return null;
+
+  const highestQ = getHighestQuartile(distribution);
   if (!highestQ) return null;
 
   // Extract the "Q1", "Q2", "Q3", "Q4" part for the label from "Q1 (High Impact)"
@@ -171,7 +194,7 @@ export const transformQuartilesData = (data) => {
     percentage: highestQ.percentage,
     label: label,
     highestGroup: highestQ,
-    totalJournals: data.totalJournals || 0,
+    totalJournals: totalJournals,
   };
 };
 
@@ -191,7 +214,7 @@ export const mapFiltersToQueryParams = (filters) => {
     queryParams.subject_area = filters.domain;
   }
 
-  const currentYear = new Date().getFullYear();
+  const currentYear = new Date().getFullYear() - 1;
   if (filters.timeframe) {
     switch (filters.timeframe) {
       case 'Last Year':
