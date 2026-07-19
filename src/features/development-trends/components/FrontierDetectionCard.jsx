@@ -2,6 +2,10 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ScatterChart, Scatter, XAxis, YAxis, ZAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { FiMaximize, FiX } from 'react-icons/fi';
+import { useDashboardContext } from '../../dashboard/contexts/DashboardContext';
+import { useFrontierDetectionQuery } from '../hooks/useFrontierDetectionQuery';
+import LoadingSkeleton from '../../../shared/components/common/LoadingSkeleton';
+import InlineErrorState from '../../../shared/components/common/InlineErrorState';
 
 const CustomTooltip = ({ active, payload }) => {
   const { t } = useTranslation();
@@ -86,9 +90,37 @@ const ScatterVisualization = ({ data }) => {
   );
 };
 
-export default function FrontierDetectionCard({ data }) {
+export default function FrontierDetectionCard() {
   const { t } = useTranslation();
   const [isExpanded, setIsExpanded] = useState(false);
+  const { projectId, filters, refreshTrigger, refreshData } = useDashboardContext();
+  const { data, isLoading, error } = useFrontierDetectionQuery(projectId, filters, refreshTrigger);
+
+  if (isLoading) {
+    return (
+      <div className="analytics-card">
+        <div className="analytics-card-header">
+          <div className="analytics-card-title-group">
+            <h3 className="analytics-card-title">{t('dashboard.frontierDetection', 'Frontier Detection')}</h3>
+            <p className="analytics-card-subtitle">{t('dashboard.frontierDetectionSub', 'Emerging topics by velocity and impact')}</p>
+          </div>
+        </div>
+        <LoadingSkeleton height="300px" />
+      </div>
+    );
+  }
+
+  if (error || !data) {
+    return (
+      <div className="analytics-card">
+        <InlineErrorState 
+          message={t('dashboard.frontierError', 'Failed to load frontier detection')}
+          onRetry={refreshData}
+        />
+      </div>
+    );
+  }
+
   const rawData = data?.items || [];
 
   if (rawData.length === 0) {

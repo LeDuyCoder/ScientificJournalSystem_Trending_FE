@@ -18,3 +18,30 @@
   display: flex;
   flex-direction: column;
 }
+
+/* PDF Export Styles */
+body.is-exporting-pdf .sidebar,
+body.is-exporting-pdf .dashboard-header,
+body.is-exporting-pdf .sidebar-mobile-toggle,
+body.is-exporting-pdf .sidebar-mobile-backdrop {
+  display: none !important;
+}
+
+body.is-exporting-pdf .app-main-content-wrapper {
+  margin-left: 0 !important;
+  width: 100% !important;
+  padding: 24px !important;
+}
+
+body.is-exporting-pdf .app-container {
+  background-color: #ffffff !important;
+}
+
+body.is-exporting-pdf .card,
+body.is-exporting-pdf .widget {
+  box-shadow: none !important;
+  border: 1px solid #e2e8f0 !important;
+  page-break-inside: avoid !important;
+  break-inside: avoid !important;
+}
+

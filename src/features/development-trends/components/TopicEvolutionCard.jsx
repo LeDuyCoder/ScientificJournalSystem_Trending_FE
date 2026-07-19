@@ -1,6 +1,11 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { useDashboardContext } from '../../dashboard/contexts/DashboardContext';
+import { useTopicEvolutionQuery } from '../hooks/useTopicEvolutionQuery';
+import LoadingSkeleton from '../../../shared/components/common/LoadingSkeleton';
+import InlineErrorState from '../../../shared/components/common/InlineErrorState';
+
 const CustomTooltip = ({ active, payload, label, meta }) => {
   if (active && payload && payload.length && meta) {
     return (
@@ -19,8 +24,36 @@ const CustomTooltip = ({ active, payload, label, meta }) => {
   return null;
 };
 
-export default function TopicEvolutionCard({ topicEvolution }) {
+export default function TopicEvolutionCard() {
   const { t } = useTranslation();
+  const { projectId, filters, refreshTrigger, refreshData } = useDashboardContext();
+  const { data: topicEvolution, isLoading, error } = useTopicEvolutionQuery(projectId, filters, refreshTrigger);
+
+  if (isLoading) {
+    return (
+      <div className="analytics-card">
+        <div className="analytics-card-header">
+          <div className="analytics-card-title-group">
+            <h3 className="analytics-card-title">{t('dashboard.topicEvolution', 'Topic Evolution')}</h3>
+            <p className="analytics-card-subtitle">{t('dashboard.topicEvolutionSub', 'Shifting research focuses across domains')}</p>
+          </div>
+        </div>
+        <LoadingSkeleton height="300px" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="analytics-card">
+        <InlineErrorState 
+          message={t('dashboard.topicError', 'Failed to load topic evolution')}
+          onRetry={refreshData}
+        />
+      </div>
+    );
+  }
+
   const topics = topicEvolution?.topics || [];
 
   if (topics.length === 0) {

@@ -2,6 +2,11 @@ import React, { useMemo, useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { ComposableMap, Geographies, Geography } from 'react-simple-maps';
 import { FiSearch, FiX } from 'react-icons/fi';
+import { useDashboardContext } from '../../dashboard/contexts/DashboardContext';
+import { useGeoDistribution } from '../hooks/useGeoDistribution';
+import { mapFiltersToQueryParams } from '../services/globalEcosystem.service';
+import LoadingSkeleton from '../../../shared/components/common/LoadingSkeleton';
+import InlineErrorState from '../../../shared/components/common/InlineErrorState';
 
 const geoUrl = "https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json";
 
@@ -87,29 +92,28 @@ const getIntensityColor = (intensity) => {
   return INTENSITY_COLORS[String(intensity)?.toUpperCase()] || '#6B7280';
 };
 
-const getIntensityInfo = (intensity) => {
-  const color = getIntensityColor(intensity);
-  if (typeof intensity === 'number') {
-    if (intensity > 80) return { label: 'PEAK', color };
-    if (intensity > 60) return { label: 'HIGH', color };
-    if (intensity > 40) return { label: 'MEDIUM', color };
-    if (intensity > 0) return { label: 'LOW', color };
-    return { label: 'No Data', color: '#9CA3AF' };
-  }
-  return { label: intensity || 'No Data', color };
-};
-
 export default function GlobalHeatMapSection({
-  mapData = [],
-  regionalData = [],
   selectedCountryCode = '',
   onCountryChange,
-  isGeoLoading = false
 }) {
   const { t } = useTranslation();
   const [selectedCountryName, setSelectedCountryName] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [availableCountries, setAvailableCountries] = useState([]);
+  const { projectId, filters, refreshTrigger, refreshData } = useDashboardContext();
+
+  const queryParams = mapFiltersToQueryParams(filters);
+  const regionalQueryParams = useMemo(() => ({
+    ...queryParams,
+    country: selectedCountryCode
+  }), [queryParams, selectedCountryCode]);
+
+  const { data: mapData, isLoading: isGeoLoading, error: geoError } = useGeoDistribution(projectId, queryParams, refreshTrigger);
+  const { data: regionalData, isFetching: isRegionalLoading } = useGeoDistribution(
+    projectId,
+    regionalQueryParams,
+    refreshTrigger
+  );
 
   // When selected country code is active, regional data is passed via props 'data'
   const isRegionMode = Boolean(selectedCountryCode);
@@ -117,6 +121,7 @@ export default function GlobalHeatMapSection({
   // Parse global distribution list. This always uses mapData so clicking a country
   // only updates the detail box, not the whole map coloring/layout.
   const heatMapData = useMemo(() => {
+    if (!mapData) return {};
     return mapData.reduce((acc, item) => {
       const code = item.countryCode || item.country;
       const name = NAME_MAP[code] || code;
@@ -200,10 +205,24 @@ export default function GlobalHeatMapSection({
     return Math.max(...regionalData.map(item => Number(item.count) || 0));
   }, [regionalData, isRegionMode]);
 
-  const globalTotalCount = useMemo(() => {
-    if (!Array.isArray(mapData)) return 0;
-    return mapData.reduce((sum, item) => sum + (Number(item.count) || 0), 0);
-  }, [mapData]);
+  if (isGeoLoading) {
+    return (
+      <div className="world-heatmap-container dashboard-card">
+        <LoadingSkeleton height="500px" />
+      </div>
+    );
+  }
+
+  if (geoError) {
+    return (
+      <div className="world-heatmap-container dashboard-card">
+        <InlineErrorState 
+          message={t('dashboard.mapError', 'Failed to load geographical map')}
+          onRetry={refreshData}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="world-heatmap-container dashboard-card">
@@ -320,12 +339,12 @@ export default function GlobalHeatMapSection({
               <div className="country-detail-name">{selectedCountryName}</div>
               <div className="country-detail-divider"></div>
 
-              {isGeoLoading ? (
+              {(isRegionalLoading && selectedCountryCode !== '') ? (
                 <div className="py-6 flex flex-col items-center justify-center gap-2">
                   <div className="province-spinner"></div>
                   <span className="text-xs text-neutral-400">{t('dashboard.loadingRegionalDetails', 'Loading regional details...')}</span>
                 </div>
-              ) : regionalData.length === 0 ? (
+              ) : (!regionalData || regionalData.length === 0) ? (
                 <div className="py-8 text-center text-xs text-neutral-400">
                   {t('dashboard.noRegionalData', 'No regional data found for this country.')}
                 </div>

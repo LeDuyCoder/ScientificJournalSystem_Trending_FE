@@ -2,6 +2,10 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { FiUsers, FiHome, FiActivity, FiNavigation } from 'react-icons/fi';
 import DashboardGrid from '../../../shared/components/layout/DashboardGrid';
+import { useDashboardContext } from '../../dashboard/contexts/DashboardContext';
+import { useDashboardStatsQuery } from '../hooks/useDashboardStatsQuery';
+import LoadingSkeleton from '../../../shared/components/common/LoadingSkeleton';
+import InlineErrorState from '../../../shared/components/common/InlineErrorState';
 
 const getIcon = (title) => {
   switch (title) {
@@ -46,9 +50,33 @@ const KPIStatCard = ({ title, value, trend, trendValue, icon: Icon }) => {
   );
 };
 
-export default function GlobalStatsSection({ stats }) {
+export default function GlobalStatsSection() {
   const { t } = useTranslation();
-  if (!stats) return null;
+  const { projectId, refreshTrigger, refreshData } = useDashboardContext();
+  const { data: stats, isLoading, error } = useDashboardStatsQuery(projectId, refreshTrigger);
+
+  if (isLoading) {
+    return (
+      <DashboardGrid columns={4} className="kpi-cards-grid">
+        {[1, 2, 3, 4].map(i => (
+          <div className="kpi-stat-card" key={i}>
+            <LoadingSkeleton height="80px" />
+          </div>
+        ))}
+      </DashboardGrid>
+    );
+  }
+
+  if (error || !stats) {
+    return (
+      <DashboardGrid columns={1}>
+        <InlineErrorState 
+          message={t('dashboard.statsError', 'Failed to load stats')}
+          onRetry={refreshData}
+        />
+      </DashboardGrid>
+    );
+  }
 
   const getLocalizedTitle = (title) => {
     switch (title) {

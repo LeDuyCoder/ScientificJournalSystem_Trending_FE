@@ -12,7 +12,7 @@ const CollaborationInsightsCard = ({ data, projectId, filters }) => {
     if (projectId) searchParams.set('project_id', String(projectId));
     
     // Map filters to parameters matching getCountryCollaborationChord Schema
-    const currentYear = new Date().getFullYear();
+    const currentYear = new Date().getFullYear() - 1;
     if (filters?.timeframe) {
       let from_year, to_year;
       switch (filters.timeframe) {

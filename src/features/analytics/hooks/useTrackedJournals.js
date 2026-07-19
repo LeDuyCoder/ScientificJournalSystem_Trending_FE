@@ -20,7 +20,11 @@ export const useTrackedJournalsQuery = (projectId, page = 1, limit = 4) => {
         },
       });
       // Handle axios interceptor that might unwrap to response or response.data
-      return response?.data || response;
+      const rawData = response?.data || response;
+      if (rawData && rawData.data && (rawData.data.journals || rawData.data.pagination)) {
+        return rawData.data;
+      }
+      return rawData;
     },
     enabled: !!projectId,
     staleTime: 5 * 60 * 1000, // 5 minutes

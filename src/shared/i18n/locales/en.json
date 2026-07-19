@@ -49,6 +49,8 @@
     "volumes": "Volumes",
     "analytics": "Analytics",
     "support": "Support",
+    "exportpdf": "Export PDF Report",
+    "gohome": "Go Home",
     "signout": "Sign Out"
   },
   "dashboard": {
