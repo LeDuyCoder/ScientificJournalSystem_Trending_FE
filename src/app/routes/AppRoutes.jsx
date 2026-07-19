@@ -32,7 +32,7 @@ export default function AppRoutes() {
         </Route>
 
         <Route path="project/:id" element={<DashboardLayout />}>
-          <Route index element={<Navigate to="dashboard" replace />} />
+          <Route index element={null} />
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="journals" element={<JournalsPage />} />
 

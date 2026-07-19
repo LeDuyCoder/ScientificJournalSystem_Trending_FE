@@ -11,7 +11,15 @@ import { AccessBadge } from '../../../../shared/components/common/AccessBadge';
  * @param {Object} props.article - Article data object
  */
 export const CuratedArticleCard = ({ article }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+
+  const handleViewDetails = () => {
+    const lang = i18n.language || 'vi';
+    const baseUrl = import.meta.env.VITE_PAGE_BASE_URL || '';
+    const sanitizedBaseUrl = baseUrl.endsWith('/') ? baseUrl.slice(0, -1) : baseUrl;
+    // Construct URL: BASE_URL/lang/articles/id
+    window.open(`${sanitizedBaseUrl}/${lang}/articles/${article.id}`, '_blank');
+  };
 
   return (
     <div className={styles.articleCard}>
@@ -35,7 +43,9 @@ export const CuratedArticleCard = ({ article }) => {
         <span className={styles.publishedYear}>
           {t('analytics.publishedAt', { year: article.publishedYear, defaultValue: `Published ${article.publishedYear}` })}
         </span>
-        <button className={styles.viewBtn}>{t('analytics.viewDetails', 'View Details')}</button>
+        <button className={styles.viewBtn} onClick={handleViewDetails}>
+          {t('analytics.viewDetails', 'View Details')}
+        </button>
       </div>
     </div>
   );

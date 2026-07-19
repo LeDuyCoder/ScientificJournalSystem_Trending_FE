@@ -8,8 +8,8 @@ export const useTopEntities = (projectId, queryOptions = {}) => {
         queryKey: ['topEntities', projectId, { limit, ...filters }, refreshTrigger],
         queryFn: () => fetchTopEntities(projectId, { limit, ...filters }),
         enabled: !!projectId,
-        staleTime: tanstackOptions.staleTime ?? 5 * 60 * 1000,
-        gcTime: tanstackOptions.gcTime ?? 10 * 60 * 1000,
+        staleTime: 30 * 60 * 1000,
+        gcTime: 60 * 60 * 1000,
         refetchOnWindowFocus: false,
         select: (response) => {
             return transformTopEntitiesData(response?.data);

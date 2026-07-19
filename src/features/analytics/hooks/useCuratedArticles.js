@@ -21,6 +21,17 @@ export const useCuratedArticles = (projectId, page = 1, filters = {}) => {
   const refetch = () => setTrigger(t => t + 1);
 
   useEffect(() => {
+    const extractData = (res) => {
+      if (!res) return null;
+      if (res.data && res.data.data !== undefined) {
+        return res.data.data;
+      }
+      if (res.data !== undefined) {
+        return res.data;
+      }
+      return res;
+    };
+
     const fetchArticles = async () => {
       if (!projectId) return;
       try {
@@ -31,7 +42,7 @@ export const useCuratedArticles = (projectId, page = 1, filters = {}) => {
           analyticsService.fetchTrackedJournals({ project_id: projectId })
         ]);
         
-        const articlesData = articlesRes?.data || { items: [], totalPages: 1, total: 0, currentPage: 1 };
+        const articlesData = extractData(articlesRes) || { items: [], totalPages: 1, total: 0, currentPage: 1 };
         
         setArticles(articlesData.items || []);
         setPagination({
@@ -40,8 +51,8 @@ export const useCuratedArticles = (projectId, page = 1, filters = {}) => {
           currentPage: articlesData.currentPage || 1
         });
         
-        setKeywords(keywordsRes?.data || []);
-        setJournals(journalsRes?.data || []);
+        setKeywords(extractData(keywordsRes) || []);
+        setJournals(extractData(journalsRes) || []);
         setError(null);
       } catch (err) {
         setError(err.message || 'Failed to fetch data');

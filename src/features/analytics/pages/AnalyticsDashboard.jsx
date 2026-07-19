@@ -31,9 +31,9 @@ export const AnalyticsDashboard = () => {
 
   const { data, isLoading, error } = useTrackedJournalsQuery(projectId, page, limit);
 
-  const journals = data?.journals || [];
-  const pagination = data?.pagination || { totalCount: 0, page, limit, totalPages: 0 };
-  const summary = data?.summary || { averageImpactFactor: 0, percentageChange: '+0.0%', trackedCount: 0, limit: 100 };
+  const journals = data?.journals || data?.data?.journals || [];
+  const pagination = data?.pagination || data?.data?.pagination || { totalCount: 0, page, limit, totalPages: 0 };
+  const summary = data?.summary || data?.data?.summary || { averageImpactFactor: 0, percentageChange: '+0.0%', trackedCount: 0, limit: 100 };
 
   const handlePrevPage = () => {
     setPage((prev) => Math.max(1, prev - 1));

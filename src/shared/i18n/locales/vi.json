@@ -49,6 +49,8 @@
     "volumes": "Số lượng",
     "analytics": "Phân tích",
     "support": "Hỗ trợ",
+    "exportpdf": "Xuất báo cáo PDF",
+    "gohome": "Về trang chủ",
     "signout": "Đăng xuất"
   },
   "dashboard": {

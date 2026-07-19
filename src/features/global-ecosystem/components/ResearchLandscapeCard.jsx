@@ -1,9 +1,43 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { FiShare2 } from 'react-icons/fi';
+import { useDashboardContext } from '../../dashboard/contexts/DashboardContext';
+import { useDistribution } from '../hooks/useDistribution';
+import { mapFiltersToQueryParams } from '../services/globalEcosystem.service';
+import LoadingSkeleton from '../../../shared/components/common/LoadingSkeleton';
+import InlineErrorState from '../../../shared/components/common/InlineErrorState';
 
-export default function ResearchLandscapeCard({ data }) {
+export default function ResearchLandscapeCard() {
   const { t } = useTranslation();
+  const { projectId, filters, refreshTrigger, refreshData } = useDashboardContext();
+  const queryParams = mapFiltersToQueryParams(filters);
+  const { data, isLoading, error } = useDistribution(projectId, queryParams, refreshTrigger);
+  
+  if (isLoading) {
+    return (
+      <div className="research-landscape-container dashboard-card">
+        <div className="research-landscape-header">
+          <div className="header-title-with-icon">
+            <FiShare2 className="header-icon" />
+            <h3 className="research-landscape-title">{t('dashboard.researchLandscape', 'Research Landscape')}</h3>
+          </div>
+        </div>
+        <LoadingSkeleton height="150px" />
+      </div>
+    );
+  }
+
+  if (error || !data) {
+    return (
+      <div className="research-landscape-container dashboard-card">
+        <InlineErrorState 
+          message={t('dashboard.landscapeError', 'Failed to load research landscape')}
+          onRetry={refreshData}
+        />
+      </div>
+    );
+  }
+
   const validData = Array.isArray(data) ? data : [];
   
   const getClassForIndex = (index) => {

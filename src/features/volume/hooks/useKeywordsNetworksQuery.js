@@ -12,7 +12,7 @@ const mapFiltersToParams = (filters) => {
     queryParams.subject_area = filters.subject_category;
   }
   
-  const currentYear = new Date().getFullYear();
+  const currentYear = new Date().getFullYear() - 1;
   if (filters.timeframe) {
     switch (filters.timeframe) {
       case 'Last Year':
@@ -47,8 +47,8 @@ export const useKeywordVectorsQuery = (projectId, filters = {}, refreshTrigger) 
       params: { project_id: projectId, ...queryParams }
     }),
     enabled: !!projectId,
-    staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
+    staleTime: 30 * 60 * 1000,
+    gcTime: 60 * 60 * 1000,
     refetchOnWindowFocus: false,
     select: (response) => response?.data,
   });
@@ -63,8 +63,8 @@ export const useCountryCollaborationQuery = (projectId, filters = {}, refreshTri
       params: { project_id: projectId, ...queryParams }
     }),
     enabled: !!projectId,
-    staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
+    staleTime: 30 * 60 * 1000,
+    gcTime: 60 * 60 * 1000,
     refetchOnWindowFocus: false,
     select: (response) => response?.data,
   });
@@ -79,8 +79,8 @@ export const useCollaborationInsightsQuery = (projectId, filters = {}, refreshTr
       params: { project_id: projectId, ...queryParams }
     }),
     enabled: !!projectId,
-    staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
+    staleTime: 30 * 60 * 1000,
+    gcTime: 60 * 60 * 1000,
     refetchOnWindowFocus: false,
     select: (response) => response?.data,
   });
@@ -95,8 +95,8 @@ export const useNetworkTopologyQuery = (projectId, filters = {}, refreshTrigger)
       params: { project_id: projectId, network_type: 'conceptual', ...queryParams }
     }),
     enabled: !!projectId,
-    staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
+    staleTime: 30 * 60 * 1000,
+    gcTime: 60 * 60 * 1000,
     refetchOnWindowFocus: false,
     select: (response) => response?.data,
   });
@@ -111,8 +111,8 @@ export const useCrossLinksQuery = (projectId, filters = {}, refreshTrigger) => {
       params: { project_id: projectId, ...queryParams }
     }),
     enabled: !!projectId,
-    staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
+    staleTime: 30 * 60 * 1000,
+    gcTime: 60 * 60 * 1000,
     refetchOnWindowFocus: false,
     select: (response) => response?.data,
   });
@@ -127,8 +127,8 @@ export const useTemporalShiftQuery = (projectId, filters = {}, refreshTrigger) =
       params: { project_id: projectId, ...queryParams }
     }),
     enabled: !!projectId,
-    staleTime: 5 * 60 * 1000,
-    gcTime: 10 * 60 * 1000,
+    staleTime: 30 * 60 * 1000,
+    gcTime: 60 * 60 * 1000,
     refetchOnWindowFocus: false,
     select: (response) => response?.data,
   });

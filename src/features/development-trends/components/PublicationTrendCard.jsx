@@ -1,6 +1,10 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { useDashboardContext } from '../../dashboard/contexts/DashboardContext';
+import { usePublicationTrendQuery } from '../hooks/usePublicationTrendQuery';
+import LoadingSkeleton from '../../../shared/components/common/LoadingSkeleton';
+import InlineErrorState from '../../../shared/components/common/InlineErrorState';
 
 const CustomTooltip = ({ active, payload, label }) => {
   const { t } = useTranslation();
@@ -17,8 +21,36 @@ const CustomTooltip = ({ active, payload, label }) => {
   return null;
 };
 
-export default function PublicationTrendCard({ data }) {
+export default function PublicationTrendCard() {
   const { t } = useTranslation();
+  const { projectId, filters, refreshTrigger, refreshData } = useDashboardContext();
+  const { data, isLoading, error } = usePublicationTrendQuery(projectId, filters, refreshTrigger);
+  
+  if (isLoading) {
+    return (
+      <div className="analytics-card">
+        <div className="analytics-card-header">
+          <div className="analytics-card-title-group">
+            <h3 className="analytics-card-title">{t('dashboard.publicationTrend', 'Publication Trend')}</h3>
+            <p className="analytics-card-subtitle">{t('dashboard.publicationTrendSub', 'Growth of scholarly output over time')}</p>
+          </div>
+        </div>
+        <LoadingSkeleton height="300px" />
+      </div>
+    );
+  }
+
+  if (error || !data) {
+    return (
+      <div className="analytics-card">
+        <InlineErrorState 
+          message={t('dashboard.publicationError', 'Failed to load publication trend')}
+          onRetry={refreshData}
+        />
+      </div>
+    );
+  }
+
   const chartData = data?.data || [];
   const growthRate = data?.growthRate;
   const unit = data?.unit || 'YoY';

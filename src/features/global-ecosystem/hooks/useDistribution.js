@@ -6,8 +6,8 @@ export const useDistribution = (projectId, filters = {}, refreshTrigger) => {
         queryKey: ['distribution', projectId, filters, refreshTrigger],
         queryFn: () => fetchDistribution(projectId, filters),
         enabled: !!projectId,
-        staleTime: 5 * 60 * 1000,
-        gcTime: 10 * 60 * 1000,
+        staleTime: 30 * 60 * 1000,
+        gcTime: 60 * 60 * 1000,
         refetchOnWindowFocus: false,
         select: (response) => {
             return transformDistributionData(response?.data);
