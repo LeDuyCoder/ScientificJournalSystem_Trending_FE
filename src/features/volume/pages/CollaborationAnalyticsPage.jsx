@@ -34,7 +34,8 @@ const CollaborationAnalyticsPage = () => {
   const [intensityType, setIntensityType] = React.useState('author');
   const { data: topicIntensity, isLoading: isLoadingIntensity, error: errIntensity, refetch: refetchIntensity } = useTopicIntensityMatrixQuery(projectId, intensityType);
 
-  const isLoading = isLoadingRankings || isLoadingImpact || isLoadingInsights || isLoadingNetwork || isLoadingIntensity;
+  const hasData = rankings && impactMatrix && keyInsights && globalNetwork && topicIntensity;
+  const isLoading = (isLoadingRankings || isLoadingImpact || isLoadingInsights || isLoadingNetwork || isLoadingIntensity) && !hasData;
   const error = errRankings || errImpact || errInsights || errNetwork || errIntensity;
 
   const handleRefetch = () => {

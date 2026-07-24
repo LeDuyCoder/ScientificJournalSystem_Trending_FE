@@ -33,7 +33,8 @@ const KeywordsNetworksPage = () => {
   const { data: crossLinks, isLoading: isCrossLoading, error: crossError } = useCrossLinksQuery(projectId, filters, refreshTrigger);
   const { data: temporalShift, isLoading: isTemporalLoading, error: temporalError } = useTemporalShiftQuery(projectId, filters, refreshTrigger);
 
-  const isLoading = isVectorsLoading || isCollabLoading || isInsightsLoading || isTopologyLoading || isCrossLoading || isTemporalLoading;
+  const hasData = keywordVectors && countryCollab && collabInsights && topology && crossLinks && temporalShift;
+  const isLoading = (isVectorsLoading || isCollabLoading || isInsightsLoading || isTopologyLoading || isCrossLoading || isTemporalLoading) && !hasData;
   const hasError = vectorsError || collabError || insightsError || topologyError || crossError || temporalError;
 
   return (

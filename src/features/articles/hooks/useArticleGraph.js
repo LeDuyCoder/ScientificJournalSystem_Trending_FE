@@ -1,44 +1,45 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useCallback } from 'react';
 import { searchArticlesGraph } from '../services/articleGraph.service';
 
+/**
+ * Hook to fetch article graph data with TanStack Query caching.
+ * The response is cached by (keyword, limit) to eliminate redundant API calls.
+ *
+ * @param {{ keyword?: string, limit?: number }} params
+ */
 export function useArticleGraph({ keyword = 'graph', limit = 50 } = {}) {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const queryClient = useQueryClient();
 
+  const query = useQuery({
+    queryKey: ['articleGraph', keyword, limit],
+    queryFn: () => searchArticlesGraph({ keyword, limit }),
+    enabled: !!keyword,
+    staleTime: 30 * 60 * 1000,   // 30 minutes fresh -> no refetch
+    gcTime: 60 * 60 * 1000,      // 1 hour in memory
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    retry: 1,
+  });
+
+  // Manual reload (accepts new params via loadGraph({keyword, limit}))
   const loadGraph = useCallback(
-    async (nextParams = {}) => {
+    (nextParams = {}) => {
       const nextKeyword = nextParams.keyword ?? keyword;
       const nextLimit = nextParams.limit ?? limit;
-
-      setLoading(true);
-      setError('');
-
-      try {
-        const result = await searchArticlesGraph({
-          keyword: nextKeyword,
-          limit: nextLimit,
-        });
-
-        setData(result);
-      } catch (err) {
-        setData(null);
-        setError(err?.message || 'Failed to load article graph');
-      } finally {
-        setLoading(false);
-      }
+      return queryClient.fetchQuery({
+        queryKey: ['articleGraph', nextKeyword, nextLimit],
+        queryFn: () => searchArticlesGraph({ keyword: nextKeyword, limit: nextLimit }),
+        staleTime: 30 * 60 * 1000,
+      });
     },
-    [keyword, limit]
+    [keyword, limit, queryClient]
   );
 
-  useEffect(() => {
-    loadGraph();
-  }, [loadGraph]);
-
   return {
-    data,
-    loading,
-    error,
+    data: query.data ?? null,
+    loading: query.isLoading,
+    error: query.error?.message || '',
     loadGraph,
   };
 }

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import ForceGraph2D from 'react-force-graph-2d';
 import { forceCollide, forceX, forceY } from 'd3-force';
 
+import { useTranslation } from 'react-i18next';
 import {
   ARTICLE_GRAPH_THEME,
   buildGraphData,
@@ -20,6 +21,7 @@ export default function ArticleGraphWidget({
   keyword = 'graph',
   limit = 50,
 }) {
+  const { t } = useTranslation();
   const fgRef = useRef(null);
   const graphBoxRef = useRef(null);
 
@@ -330,19 +332,36 @@ export default function ArticleGraphWidget({
 
         {loading ? (
           <OverlayCard>
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 10 }}>
+              <div
+                style={{
+                  width: 28,
+                  height: 28,
+                  borderRadius: '50%',
+                  border: '3px solid rgba(234, 88, 12, 0.2)',
+                  borderTopColor: '#ea580c',
+                  animation: 'article-graph-spin 0.9s linear infinite',
+                }}
+              />
+            </div>
             <div style={{ fontWeight: 700, color: '#9a3412' }}>
-              Loading graph…
+              {t('articleGraph.loadingTitle', 'Loading graph data, please wait...')}
             </div>
             <div style={{ marginTop: 4, fontSize: 13, color: '#c2410c' }}>
-              keyword: {keyword} · limit: {limit}
+              {t('articleGraph.loadingSub', 'Synthesizing related article network')}
             </div>
+            <style>{`
+              @keyframes article-graph-spin {
+                to { transform: rotate(360deg); }
+              }
+            `}</style>
           </OverlayCard>
         ) : null}
 
         {!loading && error ? (
           <OverlayCard>
             <div style={{ fontWeight: 700, color: '#b42318' }}>
-              Cannot load graph
+              {t('articleGraph.errorTitle', 'Cannot load graph')}
             </div>
             <div style={{ marginTop: 4, fontSize: 13, color: '#b42318' }}>
               {error}
@@ -353,10 +372,10 @@ export default function ArticleGraphWidget({
         {!loading && !error && graph.nodes.length === 0 ? (
           <OverlayCard>
             <div style={{ fontWeight: 700, color: '#9a3412' }}>
-              No article graph data
+              {t('articleGraph.noDataTitle', 'No article graph data')}
             </div>
             <div style={{ marginTop: 4, fontSize: 13, color: '#c2410c' }}>
-              Không có article đủ thông tin hoặc relationship hợp lệ.
+              {t('articleGraph.noDataSub', 'No articles with valid relationship data were found.')}
             </div>
           </OverlayCard>
         ) : null}

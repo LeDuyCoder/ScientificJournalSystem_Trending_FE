@@ -137,10 +137,16 @@ const CuratedArticlesPage = () => {
           {/* Left Column - Article Cards */}
           <div className={styles.articlesWrapper}>
             <div className={styles.leftColumn}>
-              {loading ? (
-                <p>{t('analytics.loadingArticles', 'Loading articles...')}</p>
-              ) : error ? (
-                <p>{t('common.error', 'Error')}: {error}</p>
+              {loading && articles.length === 0 ? (
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '300px', gap: '16px' }}>
+                  <div className="update-icon spin" style={{ width: '32px', height: '32px', border: '3px solid var(--color-primary-orange)', borderTopColor: 'transparent', borderRadius: '50%' }}></div>
+                  <div style={{ color: 'var(--color-neutral-500)', fontSize: '14px' }}>{t('analytics.loadingArticles', 'Loading articles...')}</div>
+                </div>
+              ) : error && articles.length === 0 ? (
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '300px', gap: '12px', border: 'var(--border-light)', borderRadius: 'var(--radius-md)', background: 'var(--color-surface)' }}>
+                  <div style={{ color: '#ef4444', fontSize: '16px', fontWeight: 'bold' }}>{t('common.error', 'Error')}</div>
+                  <div style={{ color: 'var(--color-neutral-500)', fontSize: '14px' }}>{error}</div>
+                </div>
               ) : (
                 articles.map(article => (
                   <CuratedArticleCard key={article.id} article={article} />
@@ -148,7 +154,7 @@ const CuratedArticlesPage = () => {
               )}
             </div>
             
-            {!loading && !error && (
+            {articles.length > 0 && (
               <div className={styles.paginationWrapper}>
                 <Pagination 
                   currentPage={pagination.currentPage} 

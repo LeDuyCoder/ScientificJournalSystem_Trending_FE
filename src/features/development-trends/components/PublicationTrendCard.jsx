@@ -26,7 +26,7 @@ export default function PublicationTrendCard() {
   const { projectId, filters, refreshTrigger, refreshData } = useDashboardContext();
   const { data, isLoading, error } = usePublicationTrendQuery(projectId, filters, refreshTrigger);
   
-  if (isLoading) {
+  if (isLoading && !data) {
     return (
       <div className="analytics-card">
         <div className="analytics-card-header">

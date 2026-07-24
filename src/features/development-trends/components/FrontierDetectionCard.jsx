@@ -96,7 +96,7 @@ export default function FrontierDetectionCard() {
   const { projectId, filters, refreshTrigger, refreshData } = useDashboardContext();
   const { data, isLoading, error } = useFrontierDetectionQuery(projectId, filters, refreshTrigger);
 
-  if (isLoading) {
+  if (isLoading && !data) {
     return (
       <div className="analytics-card">
         <div className="analytics-card-header">
