@@ -28,7 +28,7 @@ export default function FutureForecastInsights() {
   const { projectId, filters, refreshTrigger, refreshData } = useDashboardContext();
   const { data, isLoading, error } = useForecastInsightsQuery(projectId, filters, refreshTrigger);
 
-  if (isLoading) {
+  if (isLoading && !data) {
     return (
       <div className="future-insights-wrapper" aria-label="Future Insights Section">
         <DashboardGrid columns={3}>

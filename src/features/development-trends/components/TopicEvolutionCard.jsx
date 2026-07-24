@@ -29,7 +29,7 @@ export default function TopicEvolutionCard() {
   const { projectId, filters, refreshTrigger, refreshData } = useDashboardContext();
   const { data: topicEvolution, isLoading, error } = useTopicEvolutionQuery(projectId, filters, refreshTrigger);
 
-  if (isLoading) {
+  if (isLoading && !topicEvolution) {
     return (
       <div className="analytics-card">
         <div className="analytics-card-header">

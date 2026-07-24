@@ -1,20 +1,22 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchDevelopmentTrendsData } from '../services/developmentTrends.service';
+import { getPreloadedDevTrends } from './devTrendsCache';
 
 /**
  * Hook to fetch publication trend data with TanStack Query caching.
- * @param {string|number} projectId - The project ID
- * @param {object} filters - Active dashboard filters
- * @param {number} refreshTrigger - Dashboard manual refresh trigger
+ * Uses preloader cache as placeholderData to avoid skeleton flash.
  */
 export const usePublicationTrendQuery = (projectId, filters = {}, refreshTrigger) => {
+  const queryClient = useQueryClient();
   return useQuery({
     queryKey: ['developmentTrends', projectId, filters, refreshTrigger],
     queryFn: () => fetchDevelopmentTrendsData(projectId, filters),
     enabled: !!projectId,
-    staleTime: 30 * 60 * 1000, // 30 minutes
-    gcTime: 60 * 60 * 1000,   // 60 minutes
+    staleTime: 30 * 60 * 1000,
+    gcTime: 60 * 60 * 1000,
     refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    placeholderData: () => getPreloadedDevTrends(queryClient, projectId),
     select: (response) => response?.data?.publicationTrend,
   });
 };
