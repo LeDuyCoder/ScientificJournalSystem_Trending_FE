@@ -43,6 +43,9 @@ export const AnalyticsDashboard = () => {
     setPage((prev) => (prev * limit < pagination.totalCount ? prev + 1 : prev));
   };
 
+  const hasData = journals.length > 0;
+  const showLoading = isLoading && !hasData;
+
   return (
     <div className={styles.analyticsPage}>
       <Tabs />
@@ -54,13 +57,15 @@ export const AnalyticsDashboard = () => {
             {t('analytics.trackedJournalsDesc', 'Manage your watchlist for bibliometric monitoring. These journals are currently indexed for real-time impact factor updates and citation frequency alerts.')}
           </p>
         </div>
+      </div>
 
-        {isLoading ? (
+      <div className={styles.pageContent}>
+        {showLoading ? (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '300px', gap: '16px' }}>
             <div className="update-icon spin" style={{ width: '32px', height: '32px', border: '3px solid var(--color-primary-orange)', borderTopColor: 'transparent', borderRadius: '50%' }}></div>
             <div style={{ color: 'var(--color-neutral-500)', fontSize: '14px' }}>{t('common.loading', 'Loading tracked journals...')}</div>
           </div>
-        ) : error ? (
+        ) : error && !hasData ? (
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '300px', gap: '12px', border: 'var(--border-light)', borderRadius: 'var(--radius-md)', background: 'var(--color-surface)' }}>
             <div style={{ color: '#ef4444', fontSize: '16px', fontWeight: 'bold' }}>{t('common.error', 'Error Loading Data')}</div>
             <div style={{ color: 'var(--color-neutral-500)', fontSize: '14px' }}>{error.message || t('analytics.unableToConnect', 'Unable to connect to the server.')}</div>

@@ -81,7 +81,22 @@ export function useJournalsData() {
     staleTime: 30 * 60 * 1000,
     gcTime: 60 * 60 * 1000,
     refetchOnWindowFocus: false,
-    select: (result) => result?.items || result?.data || result
+    select: (result) => {
+      const rawItems = result?.items || result?.data || result;
+      const items = Array.isArray(rawItems) ? rawItems : [];
+      const mapped = items.map(item => ({
+        ...item,
+        journalName: item.journalName || item.name || item.journal,
+        sjrCitationScore: item.sjrCitationScore !== undefined ? item.sjrCitationScore : (item.sjr !== undefined ? item.sjr : item.sjrScore),
+        hIndex: item.hIndex !== undefined ? item.hIndex : (item.h_index !== undefined ? item.h_index : 0),
+        quartile: item.quartile || (Number(item.sjr || item.sjrScore) >= 2.0 ? 'Q1' : (Number(item.sjr || item.sjrScore) >= 0.8 ? 'Q2' : 'Q3')),
+        size: item.size || 10
+      }));
+      
+      // Sắp xếp theo hIndex giảm dần và giới hạn top 100 để tránh giật lag và chồng chéo quá mức
+      mapped.sort((a, b) => b.hIndex - a.hIndex);
+      return mapped.slice(0, 100);
+    }
   });
 
   // 4. Migration Analysis Query

@@ -31,7 +31,7 @@ export default function CitationMirroringCard() {
   const { projectId, filters, refreshTrigger, refreshData } = useDashboardContext();
   const { data, isLoading, error } = useCitationMirroringQuery(projectId, filters, refreshTrigger);
 
-  if (isLoading) {
+  if (isLoading && !data) {
     return (
       <div className="analytics-card">
         <div className="analytics-card-header">

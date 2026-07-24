@@ -44,10 +44,10 @@
     "projectWorkspace": "Không gian làm việc dự án",
     "loadingProject": "ĐANG TẢI DỰ ÁN",
     "selectProject": "CHỌN MỘT DỰ ÁN",
-    "dashboard": "Bảng điều khiển",
+    "dashboard": "Tổng quan",
     "journals": "Tạp chí",
     "volumes": "Số lượng",
-    "analytics": "Phân tích",
+    "analytics": "Theo dõi",
     "support": "Hỗ trợ",
     "exportpdf": "Xuất báo cáo PDF",
     "gohome": "Về trang chủ",
@@ -334,5 +334,12 @@
     "goBackTitle": "Quay lại trang trước",
     "goHome": "Về Dashboard",
     "goHomeTitle": "Về trang chủ Dashboard"
+  },
+  "articleGraph": {
+    "loadingTitle": "Đang tải dữ liệu, vui lòng đợi ít phút...",
+    "loadingSub": "Hệ thống đang tổng hợp mạng lưới bài báo liên quan",
+    "errorTitle": "Không thể tải sơ đồ",
+    "noDataTitle": "Không có dữ liệu sơ đồ bài báo",
+    "noDataSub": "Không tìm thấy bài báo có đủ thông tin hoặc mối liên hệ hợp lệ."
   }
 }

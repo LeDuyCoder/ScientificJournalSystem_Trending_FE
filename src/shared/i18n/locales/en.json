@@ -44,10 +44,10 @@
     "projectWorkspace": "Project Workspace",
     "loadingProject": "LOADING PROJECT",
     "selectProject": "SELECT A PROJECT",
-    "dashboard": "Dashboard",
+    "dashboard": "Overview",
     "journals": "Journals",
     "volumes": "Volumes",
-    "analytics": "Analytics",
+    "analytics": "Tracking",
     "support": "Support",
     "exportpdf": "Export PDF Report",
     "gohome": "Go Home",
@@ -334,5 +334,12 @@
     "goBackTitle": "Go back to the previous page",
     "goHome": "To Dashboard",
     "goHomeTitle": "Return to the Dashboard"
+  },
+  "articleGraph": {
+    "loadingTitle": "Loading data, please wait a moment...",
+    "loadingSub": "The system is synthesizing the related article network",
+    "errorTitle": "Cannot load graph",
+    "noDataTitle": "No article graph data",
+    "noDataSub": "No articles with sufficient information or valid relationships were found."
   }
 }

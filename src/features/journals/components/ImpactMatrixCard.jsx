@@ -25,10 +25,12 @@ const CustomBubble = (props) => {
           fill="#ffffff" 
           stroke="var(--color-primary-orange)" 
           strokeWidth="2" 
+          fillOpacity={0.6}
         />
         <circle 
           cx={cx} cy={cy} r={radius * 0.4} 
           fill="var(--color-primary-orange)" 
+          fillOpacity={0.8}
         />
       </g>
     );
@@ -44,6 +46,9 @@ const CustomBubble = (props) => {
       cy={cy}
       r={radius}
       className={colorClass}
+      fillOpacity={0.65}
+      stroke="#ffffff"
+      strokeWidth={1}
     />
   );
 };
@@ -149,20 +154,21 @@ const ImpactMatrixCard = ({ data, loading, error, onRetry }) => {
         <div className="imc-content">
           <div className="imc-chart-container" aria-label="SJR vs H-Index scatter chart">
             <ResponsiveContainer width="100%" height="100%">
-              <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+              <ScatterChart margin={{ top: 20, right: 20, bottom: 45, left: 45 }}>
                 <CartesianGrid stroke="#f0f0f0" strokeWidth={1} horizontal={true} vertical={true} />
                 <XAxis 
                   type="number" 
                   dataKey="sjrCitationScore" 
                   name={t('journals.sjrCitationScore', 'SJR Citation Score')}
-                  domain={['dataMin - 1', 'dataMax + 1']}
-                  tickCount={5}
+                  domain={['auto', 'auto']}
+                  tickCount={8}
+                  padding={{ left: 20, right: 20 }}
                   tick={false}
-                  axisLine={{ stroke: '#f0f0f0' }}
+                  axisLine={{ stroke: '#e5e7eb' }}
                   label={{ 
                     value: t('journals.sjrCitationScoreUpper', 'SJR CITATION SCORE'), 
                     position: 'bottom', 
-                    offset: 10, 
+                    offset: 15, 
                     fontSize: 10, 
                     fontWeight: 600,
                     letterSpacing: '0.05em',
@@ -173,27 +179,30 @@ const ImpactMatrixCard = ({ data, loading, error, onRetry }) => {
                   type="number" 
                   dataKey="hIndex" 
                   name={t('journals.hIndex', 'H-Index')}
-                  domain={['dataMin - 10', 'dataMax + 10']}
-                  tickCount={5}
+                  domain={['auto', 'auto']}
+                  tickCount={8}
+                  padding={{ top: 20, bottom: 20 }}
                   tick={false}
-                  axisLine={{ stroke: '#f0f0f0' }}
+                  axisLine={{ stroke: '#e5e7eb' }}
                   label={{ 
                     value: t('journals.hIndexUpper', 'H-INDEX'), 
                     angle: -90, 
                     position: 'left', 
-                    offset: 10,
+                    offset: 15,
                     fontSize: 10, 
                     fontWeight: 600,
                     letterSpacing: '0.05em',
                     fill: 'var(--color-neutral-500)' 
                   }}
                 />
-                <ZAxis type="number" dataKey="size" range={[15000, 60000]} name="Size" />
+                <ZAxis type="number" dataKey="size" range={[60, 400]} name="Size" />
                 <Tooltip 
                   content={<CustomTooltip />} 
+                  wrapperStyle={{ zIndex: 100, backgroundColor: 'white', border: '1px solid #e5e7eb', borderRadius: '8px', padding: '10px', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}
                   cursor={{ strokeDasharray: '3 3', stroke: 'var(--color-neutral-300)' }}
+                  shared={false}
                 />
-                <Scatter data={data} shape={<CustomBubble />} isAnimationActive={true} />
+                <Scatter data={data} shape={<CustomBubble />} isAnimationActive={true} animationDuration={800} />
               </ScatterChart>
             </ResponsiveContainer>
           </div>

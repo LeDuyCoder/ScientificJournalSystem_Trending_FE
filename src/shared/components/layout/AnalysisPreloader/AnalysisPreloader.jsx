@@ -16,6 +16,7 @@ import {
   getImpactMatrix,
   getMigrationAnalysis
 } from '../../../../features/journals/services/journals.service';
+import { analyticsService } from '../../../../features/analytics/services/analyticsService';
 import { saveProjectCache } from '../../../utils/cacheStorage';
 import './AnalysisPreloader.css';
 
@@ -211,6 +212,55 @@ export default function AnalysisPreloader({ projectId, onComplete }) {
       name: 'Temporal Cluster Shift Analysis',
       queryKey: ['temporalShift', projectId, mappedFilters, 0],
       queryFn: () => apiClient.get('/analytics/network/temporal-shift', { params: { project_id: projectId, ...mappedFilters } })
+    },
+    // 6. Analytics (Theo dõi)
+    {
+      id: 'tracked-journals-paginated',
+      name: 'Tracked Journals (Page 1)',
+      queryKey: ['trackedJournals', projectId, 1, 4],
+      queryFn: async () => {
+        const response = await apiClient.get('/analytics/journals/ranking', {
+          params: { project_id: projectId, page: 1, limit: 4 }
+        });
+        const rawData = response?.data || response;
+        if (rawData && rawData.data && (rawData.data.journals || rawData.data.pagination)) {
+          return rawData.data;
+        }
+        return rawData;
+      }
+    },
+    {
+      id: 'curated-articles-page-1',
+      name: 'Curated Articles (Page 1)',
+      queryKey: ['curatedArticles', projectId, 1, {}],
+      queryFn: async () => {
+        const res = await analyticsService.fetchCuratedArticles({ project_id: projectId, page: 1, limit: 10 });
+        if (!res) return { items: [], totalPages: 1, total: 0, currentPage: 1 };
+        const data = res.data && res.data.data !== undefined ? res.data.data : (res.data !== undefined ? res.data : res);
+        return data || { items: [], totalPages: 1, total: 0, currentPage: 1 };
+      }
+    },
+    {
+      id: 'project-keywords',
+      name: 'Project Target Keywords',
+      queryKey: ['projectKeywords', projectId],
+      queryFn: async () => {
+        const res = await analyticsService.fetchKeywords({ project_id: projectId });
+        if (!res) return [];
+        const data = res.data && res.data.data !== undefined ? res.data.data : (res.data !== undefined ? res.data : res);
+        return data || [];
+      }
+    },
+    {
+      id: 'tracked-journals-full-list',
+      name: 'Tracked Journals Watchlist',
+      queryKey: ['trackedJournalsFullList', projectId],
+      queryFn: async () => {
+        const res = await analyticsService.fetchTrackedJournals({ project_id: projectId });
+        if (!res) return [];
+        const data = res.data && res.data.data !== undefined ? res.data.data : (res.data !== undefined ? res.data : res);
+        return data || [];
+      }
     }
   ];
 
@@ -243,7 +293,7 @@ export default function AnalysisPreloader({ projectId, onComplete }) {
           let success = false;
           while (!success && active) {
             try {
-              await queryClient.prefetchQuery({
+              await queryClient.fetchQuery({
                 queryKey: q.queryKey,
                 queryFn: q.queryFn,
                 staleTime: 30 * 60 * 1000,
@@ -258,7 +308,7 @@ export default function AnalysisPreloader({ projectId, onComplete }) {
             } catch (err) {
               if (!active) return;
               // Log the error but keep the status as LOADING (or show RETRYING)
-              setLogs(prev => prev.map(log => log.id === q.id ? { ...log, status: 'LOADING', error: `Retry: ${err?.message || 'Error'}` } : log));
+              setLogs(prev => prev.map(log => log.id === q.id ? { ...log, status: 'LOADING', error: `${err?.message || 'Error'}` } : log));
               // Wait 2 seconds before retrying
               await new Promise(r => setTimeout(r, 2000));
             }
@@ -319,7 +369,9 @@ export default function AnalysisPreloader({ projectId, onComplete }) {
   } else if (lastCompleted) {
     statusText = t('dashboard.preloaderDoneItem', 'Đã phân tích xong: {{item}}...', { item: lastCompleted.name });
   } else if (currentLoading) {
-    statusText = t('dashboard.preloaderLoadingItem', 'Đang xử lý: {{item}}...', { item: currentLoading.name });
+    statusText = currentLoading.error
+      ? t('dashboard.preloaderRetryingItem', 'Đang tải lại (Lỗi: {{error}}): {{item}}...', { item: currentLoading.name, error: currentLoading.error })
+      : t('dashboard.preloaderLoadingItem', 'Đang xử lý: {{item}}...', { item: currentLoading.name });
   } else {
     statusText = t('dashboard.preloaderStarting', 'Đang khởi tạo hệ thống...');
   }

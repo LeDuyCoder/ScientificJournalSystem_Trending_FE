@@ -44,10 +44,10 @@
     "projectWorkspace": "プロジェクトワークスペース",
     "loadingProject": "プロジェクト読み込み中",
     "selectProject": "プロジェクトを選択してください",
-    "dashboard": "ダッシュボード",
+    "dashboard": "概要",
     "journals": "ジャーナル",
     "volumes": "ボリューム",
-    "analytics": "分析",
+    "analytics": "追跡",
     "support": "サポート",
     "signout": "サインアウト"
   },
@@ -332,5 +332,12 @@
     "goBackTitle": "前のページに戻る",
     "goHome": "ダッシュボードへ",
     "goHomeTitle": "ダッシュボードに戻る"
+  },
+  "articleGraph": {
+    "loadingTitle": "データを読み込んでいます。少々お待ちください...",
+    "loadingSub": "関連論文ネットワークを構築しています",
+    "errorTitle": "グラフを読み込めません",
+    "noDataTitle": "論文グラフデータがありません",
+    "noDataSub": "十分な情報または有効な関係を持つ論文が見つかりませんでした。"
   }
 }
